@@ -31,7 +31,7 @@ const Navbar: React.FC = () => {
                         </Link>
                     </li>
                     <li>
-                        <Link href="/upload" className={linkClasses('/upload')}>
+                        <Link href="/createTrack" className={linkClasses('/createTrack')}>
                             <div className="flex items-center">
                                 <BsFileEarmarkPlusFill /> <p className="pl-1">Upload</p>
                             </div>

@@ -1,15 +1,16 @@
-// src/app/api/track/create/route.ts
+// src/pages/api/track/create.ts
 
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextApiRequest, NextApiResponse } from 'next';
 import formidable, { File, Fields, Files } from 'formidable';
 import fs from 'fs';
 import path from 'path';
 import { Track } from '@/app/interfaces/Track';
-import { IncomingMessage } from 'http';
 
-// Configure the API route to use Node.js runtime
+// Disable the default body parser to allow formidable to handle the request
 export const config = {
-  runtime: 'nodejs',
+  api: {
+    bodyParser: false,
+  },
 };
 
 // In-memory storage for tracks (Replace with a database in production)
@@ -24,11 +25,11 @@ if (!fs.existsSync(uploadDir)) {
 
 /**
  * Parse the incoming form data using formidable.
- * @param req IncomingMessage object.
+ * @param req NextApiRequest object.
  * @returns Promise resolving to parsed fields and files.
  */
 const parseForm = async (
-  req: IncomingMessage
+  req: NextApiRequest
 ): Promise<{ fields: Fields; files: Files }> => {
   const form = formidable({
     uploadDir,
@@ -45,18 +46,16 @@ const parseForm = async (
       }
     });
   });
-}
+};
 
 /**
  * Handle POST requests to upload a new track.
- * @param request NextRequest object.
- * @returns NextResponse with the created track or an error message.
+ * @param req NextApiRequest object.
+ * @param res NextApiResponse object.
  */
-export async function POST(request: NextRequest) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
-    // Convert NextRequest to IncomingMessage
-    const req = request as unknown as IncomingMessage;
-
+    console.log('Uploading track...');
     // Parse the form data
     const { fields, files } = await parseForm(req);
 
@@ -65,7 +64,8 @@ export async function POST(request: NextRequest) {
     const genre = typeof fields.genre === 'string' ? fields.genre : '';
     const bpm = typeof fields.bpm === 'string' ? parseInt(fields.bpm, 10) : 0;
     const mood = typeof fields.mood === 'string' ? fields.mood : '';
-    const trackPicture = typeof fields.trackPicture === 'string' ? fields.trackPicture : '';
+    const trackPicture =
+      typeof fields.trackPicture === 'string' ? fields.trackPicture : '';
 
     // Type-safe extraction of the uploaded audio file
     let file: File | undefined;
@@ -76,17 +76,16 @@ export async function POST(request: NextRequest) {
     }
 
     if (!file) {
-      return NextResponse.json({ error: 'No audio file uploaded' }, { status: 400 });
+      return res.status(400).json({ error: 'No audio file uploaded' });
     }
 
     // Validate the uploaded file type
     if (file.mimetype !== 'audio/mpeg' && file.mimetype !== 'audio/mp3') {
       // Delete the invalid file
       fs.unlinkSync(file.filepath);
-      return NextResponse.json(
-        { error: 'Invalid file type. Only MP3 files are allowed.' },
-        { status: 400 }
-      );
+      return res
+        .status(400)
+        .json({ error: 'Invalid file type. Only MP3 files are allowed.' });
     }
 
     // Generate a unique file name to prevent conflicts
@@ -119,10 +118,12 @@ export async function POST(request: NextRequest) {
     // Store the track in the in-memory array
     tracks.push(newTrack);
 
+    console.log('New track uploaded:', newTrack);
+
     // Respond with the newly created track
-    return NextResponse.json(newTrack, { status: 201 });
+    return res.status(201).json(newTrack);
   } catch (error) {
     console.error('Error uploading track:', error);
-    return NextResponse.json({ error: 'Failed to upload track' }, { status: 500 });
+    return res.status(500).json({ error: 'Failed to upload track' });
   }
 }
