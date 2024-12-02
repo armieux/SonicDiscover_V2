@@ -1,16 +1,38 @@
 "use client"
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 const Register: React.FC = () => {
     const [username, setUsername] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [confirmPassword, setConfirmPassword] = useState<string>('');
+    const [error, setError] = useState<string | null>(null);
+    const router = useRouter();
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // handle registration logic here
+        if (password !== confirmPassword) {
+            setError('Passwords do not match');
+            return;
+        }
+
+        const res = await fetch('/api/auth/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, email, password })
+        });
+
+        if (res.ok) {
+            setError(null); // Clear any previous error
+            router.push('/'); // Redirect to home page
+        } else {
+            const data = await res.json();
+            setError(data.error || 'Registration failed. Please try again.');
+        }
     };
 
     return (
@@ -18,6 +40,7 @@ const Register: React.FC = () => {
             <div className="w-full max-w-md bg-[#282733] p-8 rounded-lg">
                 <h2 className="text-3xl font-bold text-white mb-6 text-center">Register</h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
+                    {error && <p className="text-red-500 text-sm text-center">{error}</p>}
                     <div>
                         <label className="block text-white text-sm font-medium mb-2" htmlFor="username">
                             Username
