@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BsFillHouseDoorFill, BsClockHistory, BsFileEarmarkPlusFill, BsFilePersonFill, BsFileCodeFill } from "react-icons/bs";
+import { BsFillHouseDoorFill, BsFileEarmarkPlusFill/*, BsClockHistory, BsFileEarmarkPlusFill, BsFilePersonFill, BsFileCodeFill*/ } from "react-icons/bs";
 
 
 
@@ -27,6 +27,13 @@ const Navbar: React.FC = () => {
                         <Link href="/" className={linkClasses('/')}>
                             <div className="flex items-center">
                                 <BsFillHouseDoorFill /> <p className="pl-1">Accueil</p>
+                            </div>
+                        </Link>
+                    </li>
+                    <li>
+                        <Link href="/upload" className={linkClasses('/upload')}>
+                            <div className="flex items-center">
+                                <BsFileEarmarkPlusFill /> <p className="pl-1">Upload</p>
                             </div>
                         </Link>
                     </li>
