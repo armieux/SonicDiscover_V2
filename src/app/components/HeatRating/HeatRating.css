@@ -1,0 +1,15 @@
+.heatRating {
+    width: 10rem;
+    height: 2rem;
+}
+
+@media (max-width: 768px) {
+    .heatRating {
+        width: 8rem;
+        height: 1.5rem;
+    }
+}
+
+.heatRating > button:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
