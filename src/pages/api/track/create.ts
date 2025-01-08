@@ -113,19 +113,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const query = `
       INSERT INTO tracks (
         title,
-        track_picture,
+        trackPicture,
         genre,
         bpm,
         mood,
-        upload_date,
-        audio_file,
-        play_count,
-        like_count,
-        dislike_count,
-        average_rating
+        uploadDate,
+        audioFile,
+        playCount,
+        likeCount,
+        dislikeCount,
+        averageRating
       ) 
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
-      RETURNING id, title, track_picture AS "trackPicture", genre, bpm, mood, upload_date AS "uploadDate", audio_file AS "audioFile", play_count AS "playCount", like_count AS "likeCount", dislike_count AS "dislikeCount", average_rating AS "averageRating"
+      RETURNING id, title, trackPicture AS "trackPicture", genre, bpm, mood, uploadDate AS "uploadDate", audioFile AS "audioFile", playCount AS "playCount", likeCount AS "likeCount", dislikeCount AS "dislikeCount", averageRating AS "averageRating"
     `;
     const values = [
       newTrack.title,
