@@ -1,0 +1,97 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+// Diagramme du projet Sonic Discover
+
+Table users {
+  id integer [primary key]
+  username varchar
+  email varchar
+  password varchar
+  role varchar
+  profile_picture varchar
+  join_date timestamp
+  followers_count integer
+  following_count integer
+}
+
+Table tracks {
+  id integer [primary key]
+  title varchar
+  track_picture varchar
+  genre varchar
+  bpm integer
+  mood varchar
+  upload_date timestamp
+  audio_file varchar
+  play_count integer
+  like_count integer
+  dislike_count integer
+  average_rating float
+}
+
+Table track_artists {
+  artist_id integer [ref: > users.id]
+  track_id integer [ref: > tracks.id]
+  role varchar
+}
+
+Table ratings {
+  id integer [primary key]
+  user_id integer [ref: > users.id]
+  track_id integer [ref: > tracks.id]
+  rating integer
+  rating_date timestamp
+}
+
+Table playlists {
+  id integer [primary key]
+  name varchar
+  playlist_picture varchar
+  description varchar
+  creator_id integer [ref: > users.id]
+}
+
+Table playlist_tracks {
+  playlist_id integer [ref: > playlists.id]
+  track_id integer [ref: > tracks.id]
+  order integer
+}
+
+Table comments {
+  id integer [primary key]
+  user_id integer [ref: > users.id]
+  track_id integer [ref: > tracks.id]
+  content text
+  comment_date timestamp
+}
+
+Table follows {
+  following_user_id integer [ref: > users.id]
+  followed_user_id integer [ref: > users.id]
+  created_at timestamp
+}
+
+Table badges {
+  id integer [primary key]
+  badge_icon varchar
+  name varchar
+  description text
+  criteria text
+}
+
+Table user_badges {
+  user_id integer [ref: > users.id]
+  badge_id integer [ref: > badges.id]
+  awarded_date timestamp
+}
+
+Table statistics {
+  id integer [primary key]
+  track_id integer [ref: > tracks.id]
+  user_id integer [ref: > users.id]
+  listen_count integer
+  favorite boolean
+  listening_date timestamp
+}
+
