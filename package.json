@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 {
   "name": "sonicdiscover",
   "version": "0.1.0",
@@ -37,4 +35,3 @@
     "eslint-config-next": "15.0.2"
   }
 }
->>>>>>> 9350902 (upload songs in db OK)
