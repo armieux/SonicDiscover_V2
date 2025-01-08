@@ -3,6 +3,7 @@ import formidable, { File, Fields, Files } from 'formidable';
 import fs from 'fs';
 import path from 'path';
 import { Track } from '@/app/interfaces/Track';
+import { Pool } from 'pg';
 
 export const config = {
   api: {
@@ -10,7 +11,14 @@ export const config = {
   },
 };
 
-const tracks: Track[] = [];
+const pool = new Pool({
+  user: 'user',
+  host: 'localhost',
+  database: 'sonicdiscover',
+  password: 'password',
+  port: 5432,
+});
+
 let nextId = 1;
 
 const uploadDir = path.join(process.cwd(), 'public', 'uploads');
@@ -102,11 +110,43 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       averageRating: 0,
     };
 
-    tracks.push(newTrack);
+    const query = `
+      INSERT INTO tracks (
+        title,
+        track_picture,
+        genre,
+        bpm,
+        mood,
+        upload_date,
+        audio_file,
+        play_count,
+        like_count,
+        dislike_count,
+        average_rating
+      ) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+      RETURNING id, title, track_picture AS "trackPicture", genre, bpm, mood, upload_date AS "uploadDate", audio_file AS "audioFile", play_count AS "playCount", like_count AS "likeCount", dislike_count AS "dislikeCount", average_rating AS "averageRating"
+    `;
+    const values = [
+      newTrack.title,
+      newTrack.trackPicture,
+      newTrack.genre,
+      newTrack.bpm,
+      newTrack.mood,
+      newTrack.uploadDate,
+      newTrack.audioFile,
+      newTrack.playCount,
+      newTrack.likeCount,
+      newTrack.dislikeCount,
+      newTrack.averageRating,
+    ];
 
-    console.log('New track uploaded:', newTrack);
+    const result = await pool.query(query, values);
+    const insertedTrack = result.rows[0];
 
-    return res.status(201).json(newTrack);
+    console.log('New track uploaded:', insertedTrack);
+
+    return res.status(201).json(insertedTrack);
   } catch (error) {
     console.error('Error uploading track:', error);
     return res.status(500).json({ error: 'Failed to upload track' });
