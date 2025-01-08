@@ -42,4 +42,6 @@ next-env.d.ts
 public/uploads/*
 
 db_config/db_data/*
-/.idea/
+
+# idea
+.idea
