@@ -37,6 +37,13 @@ const Navbar: React.FC = () => {
                             </div>
                         </Link>
                     </li>
+                    <li>
+                        <Link href="/musicListPage" className={linkClasses('/musicListPage')}>
+                            <div className="flex items-center">
+                                <BsFileEarmarkPlusFill /> <p className="pl-1">Liste de Musiques</p>
+                            </div>
+                        </Link>
+                    </li>
                 </ul>
             </div>
         </nav>

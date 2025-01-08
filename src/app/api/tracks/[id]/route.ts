@@ -1,4 +1,5 @@
 // app/api/tracks/[id]/route.ts
+import { Track } from '@/app/interfaces/Track';
 import { NextResponse } from 'next/server';
 import { Pool } from 'pg';
 
@@ -29,8 +30,23 @@ export async function GET(
       return NextResponse.json({ error: 'Track not found' }, { status: 404 });
     }
 
+    const track: Track = {
+        id: result.rows[0].id,
+        title: result.rows[0].title,
+        trackPicture: result.rows[0].trackPicture,
+        genre: result.rows[0].genre,
+        bpm: result.rows[0].bpm,
+        mood: result.rows[0].mood,
+        uploadDate: result.rows[0].uploadDate,
+        audioFile: result.rows[0].audioFile,
+        playCount: result.rows[0].playCount,
+        likeCount: result.rows[0].likeCount,
+        dislikeCount: result.rows[0].dislikeCount,
+        averageRating: result.rows[0].averageRating,
+    };
+
     // Return the single track
-    return NextResponse.json(result.rows[0]);
+    return NextResponse.json(track);
   } catch (error) {
     console.error('Error fetching track:', error);
     return NextResponse.json({ error: 'Failed to fetch track' }, { status: 500 });
