@@ -1,36 +1,18 @@
-import { Track } from '@/app/interfaces/Track';
+import { PrismaClient } from '@prisma/client';
 import { NextResponse } from 'next/server';
-import { Pool } from 'pg';
 
-// Create a pool to connect to PostgreSQL
-const pool = new Pool({
-  user: 'user',
-  host: 'localhost',
-  database: 'sonicdiscover',
-  password: 'password',
-  port: 5432,
-});
+// Initialize Prisma Client
+const prisma = new PrismaClient();
 
 // GET /api/tracks
 export async function GET() {
   try {
-    const { rows } = await pool.query('SELECT * FROM tracks ORDER BY id DESC');
-
-    const tracks: Track[] = rows.map((track: Track) => ({
-        id: track.id,
-        title: track.title,
-        trackPicture: track.trackPicture,
-        genre: track.genre,
-        bpm: track.bpm,
-        mood: track.mood,
-        uploadDate: track.uploadDate,
-        audioFile: track.audioFile,
-        playCount: track.playCount,
-        likeCount: track.likeCount,
-        dislikeCount: track.dislikeCount,
-        averageRating: track.averageRating,
-    }));
-
+    // Fetch tracks from the database using Prisma
+    const tracks = await prisma.tracks.findMany({
+      orderBy: {
+        id: 'desc', // Order tracks by ID in descending order
+      },
+    });
 
     // Return JSON with a 200 status
     return NextResponse.json(tracks);
@@ -40,5 +22,8 @@ export async function GET() {
       { error: 'Failed to fetch tracks' },
       { status: 500 }
     );
+  } finally {
+    // Disconnect Prisma client
+    await prisma.$disconnect();
   }
 }

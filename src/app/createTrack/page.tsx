@@ -45,8 +45,8 @@ const CreateTrackPage: React.FC = () => {
       formData.append('genre', genre);
       formData.append('bpm', bpm.toString());
       formData.append('mood', mood);
-      formData.append('trackPicture', trackPicture);
-      formData.append('audioFile', file);
+      formData.append('trackpicture', trackPicture);
+      formData.append('audiofile', file);
 
       const response = await fetch('/api/track/create', {
         method: 'POST',
@@ -161,7 +161,7 @@ const CreateTrackPage: React.FC = () => {
           </div>
 
           {/* File Upload */}
-          <Upload onFileSelect={(selectedFile) => setFile(selectedFile)} />
+          <Upload onFileSelect={(selectedfile) => setFile(selectedfile)} />
 
           {/* Selected File Name */}
           {file && (
@@ -194,17 +194,17 @@ const CreateTrackPage: React.FC = () => {
               <p className="text-white">
                 <strong>Mood:</strong> {uploadedTrack.mood}
               </p>
-              {uploadedTrack.trackPicture && (
+              {uploadedTrack.trackpicture && (
                 <div className="mt-2">
                   <img
-                    src={uploadedTrack.trackPicture}
+                    src={uploadedTrack.trackpicture}
                     alt="Track Picture"
                     className="w-32 h-32 object-cover rounded"
                   />
                 </div>
               )}
               <audio controls className="mt-2 w-full">
-                <source src={uploadedTrack.audioFile} type="audio/mpeg" />
+                <source src={uploadedTrack.audiofile} type="audio/mpeg" />
                 Your browser does not support the audio element.
               </audio>
             </div>

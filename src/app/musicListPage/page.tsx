@@ -30,12 +30,12 @@ export default async function MusicListPage() {
   const data = await res.json();
 
   const musicList: Music[] = data.map((track: Track) => ({
-    coverImage: track.trackPicture || 'https://via.placeholder.com/500',
+    coverImage: track.trackpicture || 'https://via.placeholder.com/500',
     title: track.title,
     artist: 'Unknown Artist',      // Not in DB, so set a default
     duration: '0:00',              // Not in DB, so set a default
-    listenUrl: track.audioFile,    
-    heat: track.playCount || 0,    
+    listenUrl: track.audiofile,    
+    heat: track.playcount || 0,    
   }));
 
   return (

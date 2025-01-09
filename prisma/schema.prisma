@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,9 +7,132 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id       Int      @id @default(autoincrement())
-  name     String?
-  email    String   @unique
-  password String
+model badges {
+  id          Int          @id @default(autoincrement())
+  badgeicon   String?      @db.VarChar
+  name        String       @db.VarChar
+  description String?
+  criteria    String?
+  userbadges  userbadges[]
+}
+
+model comments {
+  id          Int      @id @default(autoincrement())
+  userid      Int
+  trackid     Int
+  content     String
+  commentdate DateTime @default(now()) @db.Timestamp(6)
+  tracks      tracks   @relation(fields: [trackid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users       users    @relation(fields: [userid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model follows {
+  followinguserid                      Int
+  followeduserid                       Int
+  createdat                            DateTime @default(now()) @db.Timestamp(6)
+  users_follows_followeduseridTousers  users    @relation("follows_followeduseridTousers", fields: [followeduserid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_follows_followinguseridTousers users    @relation("follows_followinguseridTousers", fields: [followinguserid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([followinguserid, followeduserid])
+}
+
+model playlists {
+  id              Int              @id @default(autoincrement())
+  name            String           @db.VarChar
+  playlistpicture String?          @db.VarChar
+  description     String?          @db.VarChar
+  creatorid       Int
+  users           users            @relation(fields: [creatorid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  playlisttracks  playlisttracks[]
+}
+
+model playlisttracks {
+  playlistid Int
+  trackid    Int
+  order      Int
+  playlists  playlists @relation(fields: [playlistid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tracks     tracks    @relation(fields: [trackid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([playlistid, trackid])
+}
+
+model ratings {
+  id         Int      @id @default(autoincrement())
+  userid     Int
+  trackid    Int
+  rating     Int
+  ratingdate DateTime @default(now()) @db.Timestamp(6)
+  tracks     tracks   @relation(fields: [trackid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users      users    @relation(fields: [userid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model statistics {
+  id            Int      @id @default(autoincrement())
+  trackid       Int
+  userid        Int
+  listencount   Int?     @default(0)
+  favorite      Boolean? @default(false)
+  listeningdate DateTime @default(now()) @db.Timestamp(6)
+  tracks        tracks   @relation(fields: [trackid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users         users    @relation(fields: [userid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model trackartists {
+  artistid Int
+  trackid  Int
+  role     String @db.VarChar
+  users    users  @relation(fields: [artistid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tracks   tracks @relation(fields: [trackid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([artistid, trackid])
+}
+
+model tracks {
+  id             Int              @id @default(autoincrement())
+  title          String           @db.VarChar
+  trackpicture   String?          @db.VarChar
+  genre          String?          @db.VarChar
+  bpm            Int?
+  mood           String?          @db.VarChar
+  uploaddate     DateTime         @default(now()) @db.Timestamp(6)
+  audiofile      String           @db.VarChar
+  playcount      Int?             @default(0)
+  likecount      Int?             @default(0)
+  dislikecount   Int?             @default(0)
+  averagerating  Float?           @default(0.0)
+  comments       comments[]
+  playlisttracks playlisttracks[]
+  ratings        ratings[]
+  statistics     statistics[]
+  trackartists   trackartists[]
+}
+
+model userbadges {
+  userid      Int
+  badgeid     Int
+  awardeddate DateTime @default(now()) @db.Timestamp(6)
+  badges      badges   @relation(fields: [badgeid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users       users    @relation(fields: [userid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@id([userid, badgeid])
+}
+
+model users {
+  id                                     Int            @id @default(autoincrement())
+  username                               String         @db.VarChar
+  email                                  String         @db.VarChar
+  password                               String         @db.VarChar
+  role                                   String         @db.VarChar
+  profilepicture                         String?        @db.VarChar
+  joindate                               DateTime       @default(now()) @db.Timestamp(6)
+  followerscount                         Int?           @default(0)
+  followingcount                         Int?           @default(0)
+  comments                               comments[]
+  follows_follows_followeduseridTousers  follows[]      @relation("follows_followeduseridTousers")
+  follows_follows_followinguseridTousers follows[]      @relation("follows_followinguseridTousers")
+  playlists                              playlists[]
+  ratings                                ratings[]
+  statistics                             statistics[]
+  trackartists                           trackartists[]
+  userbadges                             userbadges[]
 }
