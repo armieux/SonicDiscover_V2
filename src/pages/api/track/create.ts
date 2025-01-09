@@ -2,24 +2,16 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import formidable, { File, Fields, Files } from 'formidable';
 import fs from 'fs';
 import path from 'path';
-import { Track } from '@/app/interfaces/Track';
-import { Pool } from 'pg';
+import { PrismaClient } from '@prisma/client';
 
 export const config = {
   api: {
-    bodyParser: false,
+    bodyParser: false, // Disable Next.js's default body parsing
   },
 };
 
-const pool = new Pool({
-  user: 'user',
-  host: 'localhost',
-  database: 'sonicdiscover',
-  password: 'password',
-  port: 5432,
-});
-
-let nextId = 1;
+// Initialize Prisma Client
+const prisma = new PrismaClient();
 
 const uploadDir = path.join(process.cwd(), 'public', 'uploads');
 if (!fs.existsSync(uploadDir)) {
@@ -38,7 +30,7 @@ const parseForm = async (
     uploadDir,
     keepExtensions: true,
     maxFileSize: 50 * 1024 * 1024, // 50 MB
-    multiples: true, // Ensure this is set
+    multiples: true, // Allow multiple files
   });
 
   return new Promise<{ fields: Fields; files: Files }>((resolve, reject) => {
@@ -57,7 +49,10 @@ const parseForm = async (
  * @param req NextApiRequest object.
  * @param res NextApiResponse object.
  */
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   try {
     console.log('Uploading track...');
 
@@ -68,13 +63,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const bpmValue = Array.isArray(fields.bpm) ? fields.bpm[0] : fields.bpm || '0';
     const bpm = parseInt(bpmValue, 10);
     const mood = Array.isArray(fields.mood) ? fields.mood[0] : fields.mood || '';
-    const trackPicture = Array.isArray(fields.trackPicture) ? fields.trackPicture[0] : fields.trackPicture || '';
+    const trackPicture = Array.isArray(fields.trackpicture) ? fields.trackpicture[0] : fields.trackpicture || '';
 
     let file: File | undefined;
-    if (Array.isArray(files.audioFile)) {
-      file = files.audioFile[0];
+    if (Array.isArray(files.audiofile)) {
+      file = files.audiofile[0];
     } else {
-      file = files.audioFile;
+      file = files.audiofile;
     }
 
     if (!file) {
@@ -95,60 +90,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const audioFilePath = `/uploads/${fileName}`;
 
-    const newTrack: Track = {
-      id: nextId++,
-      title,
-      trackPicture,
-      genre,
-      bpm,
-      mood,
-      uploadDate: new Date(),
-      audioFile: audioFilePath,
-      playCount: 0,
-      likeCount: 0,
-      dislikeCount: 0,
-      averageRating: 0,
-    };
-
-    const query = `
-      INSERT INTO tracks (
+    // Use Prisma to insert the track into the database
+    const newTrack = await prisma.tracks.create({
+      data: {
         title,
-        trackPicture,
+        trackpicture: trackPicture,
         genre,
         bpm,
         mood,
-        uploadDate,
-        audioFile,
-        playCount,
-        likeCount,
-        dislikeCount,
-        averageRating
-      ) 
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
-      RETURNING id, title, trackPicture AS "trackPicture", genre, bpm, mood, uploadDate AS "uploadDate", audioFile AS "audioFile", playCount AS "playCount", likeCount AS "likeCount", dislikeCount AS "dislikeCount", averageRating AS "averageRating"
-    `;
-    const values = [
-      newTrack.title,
-      newTrack.trackPicture,
-      newTrack.genre,
-      newTrack.bpm,
-      newTrack.mood,
-      newTrack.uploadDate,
-      newTrack.audioFile,
-      newTrack.playCount,
-      newTrack.likeCount,
-      newTrack.dislikeCount,
-      newTrack.averageRating,
-    ];
+        uploaddate: new Date(),
+        audiofile: audioFilePath,
+        playcount: 0,
+        likecount: 0,
+        dislikecount: 0,
+        averagerating: 0,
+      },
+    });
 
-    const result = await pool.query(query, values);
-    const insertedTrack = result.rows[0];
+    console.log('New track uploaded:', newTrack);
 
-    console.log('New track uploaded:', insertedTrack);
-
-    return res.status(201).json(insertedTrack);
+    return res.status(201).json(newTrack);
   } catch (error) {
     console.error('Error uploading track:', error);
     return res.status(500).json({ error: 'Failed to upload track' });
+  } finally {
+    // Disconnect Prisma client
+    await prisma.$disconnect();
   }
 }

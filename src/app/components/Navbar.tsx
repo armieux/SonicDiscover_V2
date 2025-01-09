@@ -16,29 +16,36 @@ const Navbar: React.FC = () => {
 
     return (
         <nav className="bg-gray-900 p-6 shadow-lg">
-        <div className="container mx-auto flex justify-between items-center">
-        <div className="text-white text-2xl font-bold">
-        <Link href="/" className="hover:text-yellow-400 transition duration-300">
-        Sonic Discover
-        </Link>
-        </div>
-        <ul className="flex space-x-6">
-        <li>
-        <Link href="/" className={linkClasses('/')}>
-        <div className="flex items-center">
-        <BsFillHouseDoorFill /> <p className="pl-1">Accueil</p>
-        </div>
-        </Link>
-        </li>
-        <li>
-        <Link href="/createTrack" className={linkClasses('/createTrack')}>
-        <div className="flex items-center">
-        <BsFileEarmarkPlusFill /> <p className="pl-1">Upload</p>
-        </div>
-        </Link>
-        </li>
-        </ul>
-        </div>
+            <div className="container mx-auto flex justify-between items-center">
+                <div className="text-white text-2xl font-bold">
+                    <Link href="/" className="hover:text-yellow-400 transition duration-300">
+                        Sonic Discover
+                    </Link>
+                </div>
+                <ul className="flex space-x-6">
+                    <li>
+                        <Link href="/" className={linkClasses('/')}>
+                            <div className="flex items-center">
+                                <BsFillHouseDoorFill /> <p className="pl-1">Accueil</p>
+                            </div>
+                        </Link>
+                    </li>
+                    <li>
+                        <Link href="/createTrack" className={linkClasses('/createTrack')}>
+                            <div className="flex items-center">
+                                <BsFileEarmarkPlusFill /> <p className="pl-1">Upload</p>
+                            </div>
+                        </Link>
+                    </li>
+                    <li>
+                        <Link href="/musicListPage" className={linkClasses('/musicListPage')}>
+                            <div className="flex items-center">
+                                <BsFileEarmarkPlusFill /> <p className="pl-1">Liste de Musiques</p>
+                            </div>
+                        </Link>
+                    </li>
+                </ul>
+            </div>
         </nav>
     );
 };

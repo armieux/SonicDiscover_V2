@@ -15,7 +15,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 };
 
 const mainStyles = {
-    padding: '20px',
+    // padding: '20px',
     minHeight: '80vh',
     backgroundColor: '#e8e8e8',
 };
