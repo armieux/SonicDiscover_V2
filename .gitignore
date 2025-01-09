@@ -48,3 +48,4 @@ db_config/db_data/*
 >>>>>>> dev
 # idea
 .idea
+/db_config/ollama-local/
