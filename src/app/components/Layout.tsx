@@ -1,5 +1,7 @@
 import React from 'react';
 import Navbar from './Navbar';
+import MusicPlayer from './MusicPlayer/MusicPlayer';
+import { MusicProvider } from '../context/MusicContext';
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -7,10 +9,13 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
     return (
-        <div>
-            <Navbar />
-            <main style={mainStyles}>{children}</main>
-        </div>
+        <MusicProvider>
+            <div>
+                <Navbar />
+                <main style={mainStyles}>{children}</main>
+                <MusicPlayer />
+            </div>
+        </MusicProvider>
     );
 };
 
