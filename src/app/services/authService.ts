@@ -39,11 +39,12 @@ class AuthService {
         const hashedPassword = bcrypt.hashSync(password, 10);
 
         try {
-            const user = await prisma.user.create({
+            const user = await prisma.users.create({
                 data: {
-                    name: username,
+                    username: username,
                     email,
-                    password: hashedPassword
+                    password: hashedPassword,
+                    role: 'USER'
                 }
             });
 
@@ -55,7 +56,7 @@ class AuthService {
     }
 
     async login(email: string, password: string) {
-        const user = await prisma.user.findUnique({
+        const user = await prisma.users.findUnique({
             where: { email }
         });
 
@@ -91,7 +92,7 @@ class AuthService {
                 try {
                     const secret = process.env.JWT_SECRET || 'default_secret';
                     const decoded = jwt.verify(token, secret) as JwtPayload;
-                    return prisma.user.findUnique({
+                    return prisma.users.findUnique({
                         where: { id: decoded.userId }
                     });
                 } catch (error) {
@@ -121,4 +122,5 @@ class AuthService {
     }
 }
 
-export default new AuthService();
+const authService = new AuthService();
+export default authService;

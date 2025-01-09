@@ -120,7 +120,7 @@ model userbadges {
 model users {
   id                                     Int            @id @default(autoincrement())
   username                               String         @db.VarChar
-  email                                  String         @db.VarChar
+  email                                  String         @unique @db.VarChar
   password                               String         @db.VarChar
   role                                   String         @db.VarChar
   profilepicture                         String?        @db.VarChar
