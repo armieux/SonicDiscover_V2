@@ -1,9 +1,9 @@
 // app/music-list/page.tsx
 
-import React from 'react';
-import MusicCard from '../components/MusicCard/MusicCard';
-import { Track } from '../interfaces/Track';
-import Layout from '../components/Layout';
+import React from "react";
+import MusicCard from "../components/MusicCard/MusicCard";
+import { Track } from "../interfaces/Track";
+import Layout from "../components/Layout";
 
 // Extend your Track interface to add fields not stored in DB (artist, duration)
 interface ExtendedTrack extends Track {
@@ -12,16 +12,15 @@ interface ExtendedTrack extends Track {
 }
 
 export default async function MusicListPage() {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
   const res = await fetch(`${baseUrl}/api/tracks`, {
-    method: 'GET'
-    // Optional: Turn off caching/revalidation if you want fresh data every request:
-    // next: { revalidate: 0 },
+    method: "GET",
+    // next: { revalidate: 0 }, // Optional: Turn off caching/revalidation if you want fresh data every request.
   });
 
   if (!res.ok) {
-    throw new Error('Failed to fetch tracks.');
+    throw new Error("Failed to fetch tracks.");
   }
 
   const data = await res.json();
@@ -30,9 +29,9 @@ export default async function MusicListPage() {
   const trackList: ExtendedTrack[] = data.map((track: Track) => ({
     ...track,
     // Provide defaults for missing fields
-    artist: 'Unknown Artist',               // Not in DB, so set a default
-    duration: '0:00',                       // Not in DB, so set a default
-    trackpicture: track.trackpicture || 'https://via.placeholder.com/500',
+    artist: "Unknown Artist",
+    duration: "0:00",
+    trackpicture: track.trackpicture || "https://placehold.co/400",
   }));
 
   return (
@@ -41,8 +40,12 @@ export default async function MusicListPage() {
         <h1 className="text-3xl font-bold text-gray-800 mb-6">Liste de Musiques</h1>
         <div className="space-y-4 w-full max-w-4xl">
           {trackList.map((track, index) => (
-            // Pass the entire track object to the MusicCard
-            <MusicCard key={index} track={track} />
+            <MusicCard
+              key={index}
+              track={track}
+              index={index}
+              playlist={trackList}
+            />
           ))}
         </div>
       </div>

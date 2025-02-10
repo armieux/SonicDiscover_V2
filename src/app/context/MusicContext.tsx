@@ -1,24 +1,58 @@
-"use client"; // if you're using app router and need client-side contexts
+"use client";
 
-import React, { createContext, useState, useContext } from 'react';
-import { Track } from '@/app/interfaces/Track';
+import React, { createContext, useContext, useState } from "react";
+import { Track } from "@/app/interfaces/Track";
 
 interface MusicContextType {
   currentTrack: Track | null;
-  setCurrentTrack: (track: Track | null) => void;
+  playlist: Track[];
+  currentIndex: number;
+  setCurrentTrack: (track: Track, playlist?: Track[], index?: number) => void;
+  playNext: () => void;
+  playPrev: () => void;
 }
 
 const MusicContext = createContext<MusicContextType>({
   currentTrack: null,
+  playlist: [],
+  currentIndex: 0,
   setCurrentTrack: () => {},
+  playNext: () => {},
+  playPrev: () => {},
 });
 
-// This is the provider that will wrap your app or layout
 export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
+  const [currentTrack, setCurrentTrackState] = useState<Track | null>(null);
+  const [playlist, setPlaylist] = useState<Track[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const setCurrentTrack = (track: Track, playlistParam?: Track[], index?: number) => {
+    setCurrentTrackState(track);
+    if (playlistParam && typeof index === "number") {
+      setPlaylist(playlistParam);
+      setCurrentIndex(index);
+    }
+  };
+
+  const playNext = () => {
+    if (playlist.length === 0) return;
+    const nextIndex = (currentIndex + 1) % playlist.length;
+    setCurrentIndex(nextIndex);
+    setCurrentTrackState(playlist[nextIndex]);
+  };
+
+  const playPrev = () => {
+    if (playlist.length === 0) return;
+    // Use modulo arithmetic to wrap to the end of the list
+    const prevIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+    setCurrentIndex(prevIndex);
+    setCurrentTrackState(playlist[prevIndex]);
+  };
 
   return (
-    <MusicContext.Provider value={{ currentTrack, setCurrentTrack }}>
+    <MusicContext.Provider
+      value={{ currentTrack, playlist, currentIndex, setCurrentTrack, playNext, playPrev }}
+    >
       {children}
     </MusicContext.Provider>
   );
