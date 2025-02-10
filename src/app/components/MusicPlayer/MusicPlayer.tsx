@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { useMusicContext } from "@/app/context/MusicContext";
+import { FaPause, FaPlay } from "react-icons/fa";
+import { SlArrowDown, SlArrowUp, SlControlEnd, SlControlStart } from "react-icons/sl";
 
 const MusicPlayer: React.FC = () => {
   const { currentTrack } = useMusicContext();
@@ -141,13 +143,13 @@ const MusicPlayer: React.FC = () => {
                 onClick={handlePlayPause}
                 className="text-white hover:text-[#FF6A92]"
               >
-                {isPlaying ? "Pause" : "Play"}
+                {isPlaying ? <FaPause size={20}/> : <FaPlay size={20}/>}
               </button>
               <button
                 onClick={toggleFullScreen}
                 className="text-white hover:text-[#FF6A92]"
               >
-                Expand
+                <SlArrowUp size={20}/>
               </button>
             </div>
           </div>
@@ -180,15 +182,15 @@ const MusicPlayer: React.FC = () => {
           <h4 className="text-gray-400 mb-4">
             {currentTrack.genre || "Unknown Genre"}
           </h4>
-          <div className="flex items-center space-x-4 mb-4">
+          <div className="flex items-center space-x-10 mb-4">
             <button onClick={handlePrev} className="text-white">
-              Prev
+              <SlControlStart size={30}/>
             </button>
             <button onClick={handlePlayPause} className="text-white">
-              {isPlaying ? "Pause" : "Play"}
+              {isPlaying ? <FaPause size={30}/> : <FaPlay size={30}/>}
             </button>
             <button onClick={handleNext} className="text-white">
-              Next
+              <SlControlEnd size={30}/>
             </button>
           </div>
           {/* Seekbar with time indicators */}
@@ -209,7 +211,7 @@ const MusicPlayer: React.FC = () => {
             onClick={toggleFullScreen}
             className="mt-4 text-white hover:text-[#FF6A92]"
           >
-            Minimize
+            <SlArrowDown size={30}/>
           </button>
         </div>
       )}
