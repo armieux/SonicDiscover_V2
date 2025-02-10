@@ -7,8 +7,12 @@ export async function POST(request: Request) {
 
     try {
         const { token } = await AuthService.login(email, password);
-        AuthService.saveToken(token);
-        return NextResponse.json({ token }, { status: 200 });
+    
+        const response = NextResponse.json({ token }, { status: 200 });
+        
+        AuthService.saveToken(token, response);
+        
+        return response;
     } catch (error) {
         const err = error as Error;
         return NextResponse.json({ error: err.message }, { status: 401 });
