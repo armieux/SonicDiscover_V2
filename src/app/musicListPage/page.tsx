@@ -16,6 +16,7 @@ export default async function MusicListPage() {
 
   const res = await fetch(`${baseUrl}/api/tracks`, {
     method: "GET",
+    credentials: "include",
     // next: { revalidate: 0 }, // Optional: Turn off caching/revalidation if you want fresh data every request.
   });
 

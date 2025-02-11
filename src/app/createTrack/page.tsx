@@ -51,6 +51,7 @@ const CreateTrackPage: React.FC = () => {
       const response = await fetch('/api/track/create', {
         method: 'POST',
         body: formData,
+        credentials: 'include',
       });
 
       if (response.ok) {

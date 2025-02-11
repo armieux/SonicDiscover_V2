@@ -2,7 +2,8 @@ import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
+import { NextApiRequest } from 'next';
+import { parse } from 'cookie';
 
 const prisma = new PrismaClient();
 
@@ -95,28 +96,36 @@ class AuthService {
     res.cookies.delete('token');
   }
 
-  /**
-   * If you want to get the current user from a cookie-based token on the server,
-   * you'd pass in the request so you can read the cookie. E.g.:
-   */
-  async getCurrentUser() {
-    const cookieStore = cookies();
-    const token = (await cookieStore).get('token')?.value;
-    if (!token) return null;
-
+  async getCurrentUser(req: NextApiRequest) {
     try {
+      // 1. Read token from the request cookies
+      const cookiesHeader = req.headers.cookie || '';
+      const cookies = parse(cookiesHeader);
+      const token = cookies.token;
+
+      if (!token) return null;
+
+      // 2. Verify the JWT
       const secret = process.env.JWT_SECRET || 'default_secret';
       const decoded = jwt.verify(token, secret) as jwt.JwtPayload;
-      return prisma.users.findUnique({ where: { id: decoded.userId } });
+
+      // 3. Query the user from the DB using the decoded userId
+      const user = await prisma.users.findUnique({
+        where: { id: decoded.userId },
+      });
+      return user;
     } catch (error) {
-      console.log('Invalid token', error);
+      console.error('Error in getCurrentUser:', error);
       return null;
     }
   }
 
-  async isLoggedIn() {
-    const cookieStore = cookies();
-    const token = (await cookieStore).get('token')?.value;
+  async isLoggedIn(req: Request): Promise<boolean> {
+    const cookiesHeader = req.headers.get('cookie') || '';
+    const { token } = parse(cookiesHeader);
+
+    console.log('Token:', token);
+
     if (!token) return false;
 
     try {

@@ -3,6 +3,7 @@ import formidable, { File, Fields, Files } from 'formidable';
 import fs from 'fs';
 import path from 'path';
 import { PrismaClient } from '@prisma/client';
+import authService from '@/app/services/authService';
 
 export const config = {
   api: {
@@ -56,6 +57,13 @@ export default async function handler(
   try {
     console.log('Uploading track...');
 
+    const artist = await authService.getCurrentUser(req);
+    if (!artist) {
+      return res
+        .status(401)
+        .json({ error: 'You must be logged in to upload a track' });
+    }
+
     const { fields, files } = await parseForm(req);
 
     const title = Array.isArray(fields.title) ? fields.title[0] : fields.title || '';
@@ -104,6 +112,14 @@ export default async function handler(
         likecount: 0,
         dislikecount: 0,
         averagerating: 0,
+      },
+    });
+
+    await prisma.trackartists.create({
+      data: {
+        trackid: newTrack.id,
+        artistid: artist.id,
+        role: 'ARTIST',
       },
     });
 
