@@ -41,6 +41,23 @@ export async function POST(req: NextRequest) {
         2. Titre : "Stairway to Heaven" – Artiste : Led Zeppelin – Genre : Rock  
         3. Titre : "Shape of You" – Artiste : Ed Sheeran – Genre : Pop  
         4. Titre : "Like a Rolling Stone" – Artiste : Bob Dylan – Genre : Folk  
+        5. Titre : "Smells Like Teen Spirit" – Artiste : Nirvana – Genre : Grunge  
+        6. Titre : "Imagine" – Artiste : John Lennon – Genre : Soft Rock  
+        7. Titre : "Thriller" – Artiste : Michael Jackson – Genre : Pop / Dance  
+        8. Titre : "Hotel California" – Artiste : Eagles – Genre : Rock  
+        9. Titre : "Billie Jean" – Artiste : Michael Jackson – Genre : Pop  
+        10. Titre : "Rolling in the Deep" – Artiste : Adele – Genre : Soul / Pop  
+        11. Titre : "Bad Guy" – Artiste : Billie Eilish – Genre : Pop / Electropop  
+        12. Titre : "Sweet Child O' Mine" – Artiste : Guns N' Roses – Genre : Hard Rock  
+        13. Titre : "All of Me" – Artiste : John Legend – Genre : R&B / Pop  
+        14. Titre : "Hey Jude" – Artiste : The Beatles – Genre : Rock / Pop  
+        15. Titre : "I Will Survive" – Artiste : Gloria Gaynor – Genre : Disco  
+        16. Titre : "La fête est finie" – Artiste : Orelsan – Genre : Rap  
+        17. Titre : "Basique" – Artiste : Orelsan – Genre : Rap  
+        18. Titre : "Au DD" – Artiste : PNL – Genre : Rap  
+        19. Titre : "One More Time" – Artiste : Daft Punk – Genre : Electro House  
+        20. Titre : "Alors on danse" – Artiste : Stromae – Genre : Electro / Dance  
+        21. Titre : "Papaoutai" – Artiste : Stromae – Genre : Electro / Pop  
         
         **Instructions :**
         
