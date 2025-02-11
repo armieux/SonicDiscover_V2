@@ -12,6 +12,13 @@ export async function GET() {
       orderBy: {
         id: 'desc', // Order tracks by ID in descending order
       },
+      include: {
+        trackartists: {
+          include: {
+            users: true
+          }
+        }
+      }
     });
 
     // Return JSON with a 200 status

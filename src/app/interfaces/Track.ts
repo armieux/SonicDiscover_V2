@@ -1,3 +1,5 @@
+import { TrackArtist } from "./TrackArtist";
+
 export interface Track {
     id: number;
     title: string;
@@ -11,4 +13,6 @@ export interface Track {
     likecount: number;
     dislikecount: number;
     averagerating: number;
+    
+    trackartists?: TrackArtist[];
 }

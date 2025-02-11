@@ -27,13 +27,17 @@ export default async function MusicListPage() {
   const data = await res.json();
 
   // Build an array of ExtendedTrack objects from the API data
-  const trackList: ExtendedTrack[] = data.map((track: Track) => ({
-    ...track,
-    // Provide defaults for missing fields
-    artist: "Unknown Artist",
-    duration: "0:00",
-    trackpicture: track.trackpicture || "https://placehold.co/400",
-  }));
+  const trackList: ExtendedTrack[] = data.map((track: Track) => {
+    const mainArtist = track.trackartists?.find((a) => a.role === "ARTIST");
+    console.log("mainArtist", mainArtist?.role);
+    console.log("artistname", mainArtist?.users?.username);
+    return {
+      ...track,
+      artist: mainArtist?.users?.username || "Unknown Artist",
+      duration: "0:00",
+      trackpicture: track.trackpicture || "https://placehold.co/400",
+    };
+  });
 
   return (
     <Layout>
