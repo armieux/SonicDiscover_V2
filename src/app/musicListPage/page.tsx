@@ -31,7 +31,6 @@ export default async function MusicListPage() {
     if (!seconds) return "0:00";
     const minutes = Math.floor(seconds / 60);
     const remaining = seconds % 60;
-    console.log(`${minutes}:${remaining.toString().padStart(2, "0")}`);
     return `${minutes}:${remaining.toString().padStart(2, "0")}`;
   }
 

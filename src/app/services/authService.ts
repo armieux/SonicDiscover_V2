@@ -120,11 +120,29 @@ class AuthService {
     }
   }
 
+  async getCurrentUserFromRequest(req: Request) {
+    const cookiesHeader = req.headers.get('cookie') || '';
+    const cookies = parse(cookiesHeader);
+    const token = cookies.token;
+
+    if (!token) return null;
+
+    try {
+      const secret = process.env.JWT_SECRET || 'default_secret';
+      const decoded = jwt.verify(token, secret) as jwt.JwtPayload;
+      const user = await prisma.users.findUnique({
+        where: { id: decoded.userId },
+      });
+      return user;
+    } catch (error) {
+      console.error('Error in getCurrentUser:', error);
+      return null;
+    }
+  }
+
   async isLoggedIn(req: Request): Promise<boolean> {
     const cookiesHeader = req.headers.get('cookie') || '';
     const { token } = parse(cookiesHeader);
-
-    console.log('Token:', token);
 
     if (!token) return false;
 
@@ -133,7 +151,7 @@ class AuthService {
       jwt.verify(token, secret);
       return true;
     } catch (error) {
-      console.log('Invalid token', error);
+      console.error('Invalid token', error);
       return false;
     }
   }

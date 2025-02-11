@@ -64,6 +64,8 @@ model ratings {
   ratingdate DateTime @default(now()) @db.Timestamp(6)
   tracks     tracks   @relation(fields: [trackid], references: [id], onDelete: NoAction, onUpdate: NoAction)
   users      users    @relation(fields: [userid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([userid, trackid])
 }
 
 model statistics {

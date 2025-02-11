@@ -134,8 +134,6 @@ export default async function handler(
       },
     });
 
-    console.log('New track uploaded:', newTrack);
-
     return res.status(201).json(newTrack);
   } catch (error) {
     console.error('Error uploading track:', error);
