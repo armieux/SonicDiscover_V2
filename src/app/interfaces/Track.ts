@@ -1,3 +1,4 @@
+import { Rating } from "./Rating";
 import { TrackArtist } from "./TrackArtist";
 
 export interface Track {
@@ -16,4 +17,5 @@ export interface Track {
     duration: number;
     
     trackartists?: TrackArtist[];
+    ratings?: Rating[];
 }
