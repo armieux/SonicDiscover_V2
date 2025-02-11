@@ -1,6 +1,8 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import { FcAssistant, FcMusic } from "react-icons/fc";
+import { PiRobotDuotone, PiRobot } from "react-icons/pi";
+
 import './ChatWidget.css';
 import ReactMarkdown from "react-markdown";
 
@@ -171,7 +173,7 @@ const ChatWidget: React.FC = () => {
     return (
         <>
             <button className="chatButton" onClick={openModal}>
-                <FcAssistant style={{ fontSize: "2em" }} />
+                <PiRobotDuotone style={{ fontSize: "2em", color: "red" }} />
                 <FcMusic style={{ fontSize: "2em" }} />
             </button>
 
@@ -224,7 +226,9 @@ const ChatWidget: React.FC = () => {
                                                 boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
                                             }}
                                         >
-                                            <strong>{isUser ? "Vous" : "Assistant"}: </strong>
+                                            <p>
+                                                    {isUser ? "Vous :" : <><PiRobotDuotone /></>}
+                                            </p>
                                             <span>
                         <ReactMarkdown>{msg.content}</ReactMarkdown>
                       </span>
