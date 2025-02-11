@@ -22,41 +22,6 @@ services:
     networks:
       - app-network
 
-  ollama:
-    image: ollama/ollama:latest
-    container_name: ollama
-    restart: always
-    ports:
-      - "30000:11434"
-    volumes:
-      - ./ollama-local:/root/.ollama
-    networks:
-      - app-network
-    healthcheck:
-      test: ollama list || exit 1
-      interval: 10s
-      timeout: 30s
-      retries: 5
-      start_period: 10s
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [ gpu ]
-
-  ollama-models-pull:
-    container_name: ollama-models-pull
-    image: curlimages/curl:latest
-    command: >
-      http://ollama:11434/api/pull -d '{"model":"llama3.1:8b"}'
-    depends_on:
-      ollama:
-        condition: service_healthy
-    networks:
-      - app-network
-
 volumes:
   postgres_data:
 
