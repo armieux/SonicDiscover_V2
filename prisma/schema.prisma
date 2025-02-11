@@ -105,6 +105,7 @@ model tracks {
   ratings        ratings[]
   statistics     statistics[]
   trackartists   trackartists[]
+  duration       Int?
 }
 
 model userbadges {
