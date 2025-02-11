@@ -13,6 +13,7 @@ export interface Track {
     likecount: number;
     dislikecount: number;
     averagerating: number;
+    duration: number;
     
     trackartists?: TrackArtist[];
 }

@@ -4,13 +4,10 @@ import React from "react";
 import HeatRating from "@/app/components/HeatRating/HeatRating";
 import { FaPlay } from "react-icons/fa";
 import { useMusicContext } from "@/app/context/MusicContext";
-import { Track } from "@/app/interfaces/Track";
+import { ExtendedTrack } from "@/app/musicListPage/page";
 
 // Extend the Track interface to include additional fields.
-interface ExtendedTrack extends Track {
-  artist: string;
-  duration: string;
-}
+
 
 interface MusicCardProps {
   track: ExtendedTrack;
@@ -40,7 +37,7 @@ const MusicCard: React.FC<MusicCardProps> = ({ track, index, playlist }) => {
         <HeatRating heat={track.playcount} />
         <h2 className="text-lg font-bold text-gray-800">{track.title}</h2>
         <p className="text-sm text-gray-600">{track.artist}</p>
-        <p className="text-xs text-gray-400">{track.duration}</p>
+        <p className="text-xs text-gray-400">{track.parsedduration}</p>
       </div>
 
       {/* Play button */}

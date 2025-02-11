@@ -6,9 +6,9 @@ import { Track } from "../interfaces/Track";
 import Layout from "../components/Layout";
 
 // Extend your Track interface to add fields not stored in DB (artist, duration)
-interface ExtendedTrack extends Track {
+export interface ExtendedTrack extends Track {
   artist: string;
-  duration: string;
+  parsedduration: string;
 }
 
 export default async function MusicListPage() {
@@ -27,14 +27,20 @@ export default async function MusicListPage() {
   const data = await res.json();
 
   // Build an array of ExtendedTrack objects from the API data
+  function parseDuration(seconds: number | null | undefined): string {
+    if (!seconds) return "0:00";
+    const minutes = Math.floor(seconds / 60);
+    const remaining = seconds % 60;
+    console.log(`${minutes}:${remaining.toString().padStart(2, "0")}`);
+    return `${minutes}:${remaining.toString().padStart(2, "0")}`;
+  }
+
   const trackList: ExtendedTrack[] = data.map((track: Track) => {
     const mainArtist = track.trackartists?.find((a) => a.role === "ARTIST");
-    console.log("mainArtist", mainArtist?.role);
-    console.log("artistname", mainArtist?.users?.username);
     return {
       ...track,
       artist: mainArtist?.users?.username || "Unknown Artist",
-      duration: "0:00",
+      parsedduration: parseDuration(track.duration),
       trackpicture: track.trackpicture || "https://placehold.co/400",
     };
   });

@@ -4,6 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import { PrismaClient } from '@prisma/client';
 import authService from '@/app/services/authService';
+import { parseFile } from 'music-metadata';
 
 export const config = {
   api: {
@@ -98,6 +99,15 @@ export default async function handler(
 
     const audioFilePath = `/uploads/${fileName}`;
 
+    let trackDuration = 0;
+
+    try {
+      const metadata = await parseFile(filePath);
+      trackDuration = Math.floor(metadata.format.duration || 0);
+    } catch (error) {
+      console.error('Error parsing audio file:', error);
+    }
+
     // Use Prisma to insert the track into the database
     const newTrack = await prisma.tracks.create({
       data: {
@@ -112,6 +122,7 @@ export default async function handler(
         likecount: 0,
         dislikecount: 0,
         averagerating: 0,
+        duration: trackDuration,
       },
     });
 
