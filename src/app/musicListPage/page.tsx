@@ -7,8 +7,10 @@ import Layout from "../components/Layout";
 
 // Extend your Track interface to add fields not stored in DB (artist, duration)
 export interface ExtendedTrack extends Track {
-  artist: string;
+  artistname: string;
+  artistid: number;
   parsedduration: string;
+  trackpicture: string;
 }
 
 export default async function MusicListPage() {
@@ -38,7 +40,8 @@ export default async function MusicListPage() {
     const mainArtist = track.trackartists?.find((a) => a.role === "ARTIST");
     return {
       ...track,
-      artist: mainArtist?.users?.username || "Unknown Artist",
+      artistname: mainArtist?.users?.username || "Unknown Artist",
+      artistid: mainArtist?.users?.id || 0,
       parsedduration: parseDuration(track.duration),
       trackpicture: track.trackpicture || "https://placehold.co/400",
     };
