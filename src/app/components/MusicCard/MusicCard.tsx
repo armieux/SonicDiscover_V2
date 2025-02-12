@@ -5,6 +5,7 @@ import HeatRating from "@/app/components/HeatRating/HeatRating";
 import { FaPlay } from "react-icons/fa";
 import { useMusicContext } from "@/app/context/MusicContext";
 import { ExtendedTrack } from "@/app/musicListPage/page";
+import { AddToPlaylistButton } from "../AddToPlaylistButton/AddToPlaylistButton";
 
 // Extend the Track interface to include additional fields.
 
@@ -39,6 +40,8 @@ const MusicCard: React.FC<MusicCardProps> = ({ track, index, playlist }) => {
         <a href={`/profilePage/${track.artistid}`} className="text-sm text-gray-600">{track.artistname}</a>
         <p className="text-xs text-gray-400">{track.parsedduration}</p>
       </div>
+
+      <AddToPlaylistButton trackId={track.id}></AddToPlaylistButton>
 
       {/* Play button */}
       <button

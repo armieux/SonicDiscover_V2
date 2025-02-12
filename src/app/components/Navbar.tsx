@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
+  BsCollectionPlayFill,
   BsFileEarmarkPlusFill,
   BsFilePersonFill
 } from 'react-icons/bs';
@@ -39,7 +40,14 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
           <li>
             <Link href="/musicListPage" className={linkClasses('/musicListPage')}>
               <div className="flex items-center">
-                <BsFileEarmarkPlusFill /> <p className="pl-1">Liste de Musiques</p>
+                <BsFileEarmarkPlusFill /> <p className="pl-1">Musics list</p>
+              </div>
+            </Link>
+          </li>
+          <li>
+            <Link href="/playlistsPage" className={linkClasses('/playlists')}>
+              <div className="flex items-center">
+                <BsCollectionPlayFill  /> <p className="pl-1">Playlists</p>
               </div>
             </Link>
           </li>
