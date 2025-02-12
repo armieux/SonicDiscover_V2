@@ -1,3 +1,4 @@
+import { PlaylistTrack } from "./PlaylistTrack";
 import { Rating } from "./Rating";
 import { TrackArtist } from "./TrackArtist";
 
@@ -18,4 +19,5 @@ export interface Track {
     
     trackartists?: TrackArtist[];
     ratings?: Rating[];
+    playlisttracks?: PlaylistTrack[];
 }

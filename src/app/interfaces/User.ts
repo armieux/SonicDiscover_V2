@@ -1,3 +1,8 @@
+import { PlaylistTrack } from "./PlaylistTrack";
+import { Rating } from "./Rating";
+import { TrackArtist } from "./TrackArtist";
+import { UserBadge } from "./UserBadge";
+
 export interface User {
     id: number;
     username: string;
@@ -8,4 +13,9 @@ export interface User {
     joinDate: Date;
     followerscount: number;
     followingcount: number;
+
+    userbadges?: UserBadge[];
+    trackartists?: TrackArtist[];
+    ratings?: Rating[];
+    playlists?: PlaylistTrack[];
 }
