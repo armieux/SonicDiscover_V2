@@ -22,48 +22,51 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
       : 'text-white font-medium hover:text-yellow-400 transition duration-300';
 
   return (
-    <nav className="bg-gray-900 p-6 shadow-lg">
-      <div className="container mx-auto flex justify-between items-center">
-        <div className="text-white text-2xl font-bold">
-          <Link href="/" className="hover:text-yellow-400 transition duration-300">
+      <nav className="bg-black bg-opacity-90 backdrop-blur-lg p-4 shadow-md">
+        <div className="container mx-auto flex justify-between items-center">
+          <Link
+              href="/"
+              className="text-white text-2xl font-bold hover:text-[#1DB954] transition-colors duration-300"
+          >
             Sonic Discover
           </Link>
+          <ul className="flex space-x-8">
+            <li>
+              <Link href="/createTrack" className={linkClasses('/createTrack')}>
+                <div className="flex items-center space-x-2">
+                  <BsFileEarmarkPlusFill className="text-white" size={25}/>
+                </div>
+              </Link>
+            </li>
+            <li>
+              <Link href="/musicListPage" className={linkClasses('/musicListPage')}>
+                <div className="flex items-center space-x-2">
+                  <BsFileEarmarkPlusFill className="text-white" size={25}/>
+                </div>
+              </Link>
+            </li>
+            <li>
+              <Link href="/playlistsPage" className={linkClasses('/playlists')}>
+                <div className="flex items-center">
+                  <BsCollectionPlayFill  /> <p className="pl-1">Playlists</p>
+                </div>
+              </Link>
+            </li>
+            <li>
+              <Link
+                  href={user ? `/profilePage/${user.id}` : '/login'}
+                  className={linkClasses(user ? `/profile/${user.id}` : '/login')}
+              >
+                <div className="flex items-center space-x-2">
+                  <BsFilePersonFill size={25} className="text-white"/>
+                  <span className="text-white"></span>
+                </div>
+              </Link>
+            </li>
+          </ul>
         </div>
-        <ul className="flex space-x-6">
-          <li>
-            <Link href="/createTrack" className={linkClasses('/createTrack')}>
-              <div className="flex items-center">
-                <BsFileEarmarkPlusFill /> <p className="pl-1">Upload</p>
-              </div>
-            </Link>
-          </li>
-          <li>
-            <Link href="/musicListPage" className={linkClasses('/musicListPage')}>
-              <div className="flex items-center">
-                <BsFileEarmarkPlusFill /> <p className="pl-1">Musics list</p>
-              </div>
-            </Link>
-          </li>
-          <li>
-            <Link href="/playlistsPage" className={linkClasses('/playlists')}>
-              <div className="flex items-center">
-                <BsCollectionPlayFill  /> <p className="pl-1">Playlists</p>
-              </div>
-            </Link>
-          </li>
-          <li>
-            <Link
-              href={user ? `/profilePage/${user.id}` : '/login'}
-              className={linkClasses(user ? `/profile/${user.id}` : '/login')}
-            >
-              <div className="flex items-center">
-                <BsFilePersonFill /> <p className="pl-1">Profile</p>
-              </div>
-            </Link>
-          </li>
-        </ul>
-      </div>
-    </nav>
+      </nav>
+
   );
 };
 

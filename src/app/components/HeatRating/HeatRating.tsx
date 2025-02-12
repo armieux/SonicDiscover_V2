@@ -54,10 +54,10 @@ function HeatRating({ heat, trackId }: HeatRatingProps) {
     }
 
     return (
-        <div className="heatRating flex items-center justify-center space-x-4 border-2 rounded-md">
+        <div className="heatRating flex items-center justify-center space-x-4 bg-[#121212] rounded-md">
             <button
                 onClick={handleDislike}
-                className="px-4 py-2 focus:outline-none rounded-full"
+                className="px-4 py-2 focus:outline-none rounded-full text-white"
             >
                 -
             </button>
@@ -66,7 +66,7 @@ function HeatRating({ heat, trackId }: HeatRatingProps) {
             </span>
             <button
                 onClick={handleLike}
-                className="px-4 py-2 focus:outline-none rounded-full"
+                className="px-4 py-2 focus:outline-none rounded-full text-white"
             >
                 +
             </button>

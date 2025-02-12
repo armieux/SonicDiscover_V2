@@ -25,7 +25,7 @@ const MusicCard: React.FC<MusicCardProps> = ({ track, index, playlist }) => {
   };
 
   return (
-    <div className="flex items-center space-x-4 border-2 rounded-md p-4 shadow-md bg-white">
+    <div className="flex items-center space-x-4 rounded-md p-4 bg-[#1f1f1f] shadow-2xl">
       {/* Cover image */}
       <img
         src={track.trackpicture}
@@ -36,7 +36,7 @@ const MusicCard: React.FC<MusicCardProps> = ({ track, index, playlist }) => {
       {/* Song information */}
       <div className="flex-1">
         <HeatRating heat={track.likecount - track.dislikecount} trackId={track.id.toString()} />
-        <h2 className="text-lg font-bold text-gray-800">{track.title}</h2>
+        <h2 className="text-lg font-bold text-white">{track.title}</h2>
         <a href={`/profilePage/${track.artistid}`} className="text-sm text-gray-600">{track.artistname}</a>
         <p className="text-xs text-gray-400">{track.parsedduration}</p>
       </div>
