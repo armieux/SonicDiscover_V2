@@ -1,3 +1,4 @@
+import { Follow } from "./Follow";
 import { PlaylistTrack } from "./PlaylistTrack";
 import { Rating } from "./Rating";
 import { TrackArtist } from "./TrackArtist";
@@ -18,4 +19,6 @@ export interface User {
     trackartists?: TrackArtist[];
     ratings?: Rating[];
     playlists?: PlaylistTrack[];
+    followers?: Follow[];
+    following?: Follow[];
 }

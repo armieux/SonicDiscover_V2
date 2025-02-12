@@ -2,8 +2,11 @@ import { cookies } from 'next/headers';
 import jwt from 'jsonwebtoken';
 import { PrismaClient } from '@prisma/client';
 import Layout from '@/app/components/Layout';
+import dynamic from 'next/dynamic';
 
 const prisma = new PrismaClient();
+
+const FollowButton = dynamic(() => import("@/app/components/FollowButton/FollowButton").then((mod) => mod.FollowButton), { ssr: true });
 
 interface ProfilePageProps {
   params: { id: string };
@@ -57,6 +60,17 @@ export default async function ProfilePage(context: ProfilePageProps) {
     return <div>User not found</div>;
   }
 
+  const followRecord = await prisma.follows.findUnique({
+    where: {
+      followinguserid_followeduserid: {
+        followinguserid: currentUserId || -1,
+        followeduserid: userId,
+      },
+    },
+  });
+
+  const isFollowing = !!followRecord;
+
   // Extract unique playlists
   const playlists = user.trackartists.flatMap((artist) =>
     artist.tracks.playlisttracks.map((pt) => pt.playlists)
@@ -67,6 +81,20 @@ export default async function ProfilePage(context: ProfilePageProps) {
       <div className="flex flex-col items-center justify-center min-h-screen w-screen bg-[#353445] p-4">
         <div className="w-full max-w-md bg-[#282733] p-8 rounded-lg shadow-lg">
           <h2 className="text-4xl text-white mb-6">Profile of {user.username}</h2>
+
+          {/* Followers & Following Count */}
+          <div className="mt-4 text-white flex flex-row justify-around">
+            <a href={`/profilePage/${user.id}/followers`} className="text-blue-400 hover:underline">
+              <strong>Followers:</strong> {user.followerscount}
+            </a>
+            <a href={`/profilePage/${user.id}/following`} className="text-blue-400 hover:underline">
+              <strong>Following:</strong> {user.followingcount}
+            </a>
+            {/* Follow Button */}
+            {!isOwnProfile && (
+              <FollowButton userId={user.id} isFollowing={isFollowing} />
+            )}
+          </div>
 
           {/* Profile Picture */}
           <img src={user.profilepicture || "/default-avatar.jpg"} alt="Profile" className="w-24 h-24 rounded-full mb-4"/>
