@@ -6,7 +6,6 @@ import HypeTrain from "@/app/components/HypeTrain/HypeTrain";
 const HomePage: React.FC = () => {
 
   return (
-
       <><Head>
         <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
       </Head><Layout>{<>
