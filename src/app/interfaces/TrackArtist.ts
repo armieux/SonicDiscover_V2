@@ -1,3 +1,4 @@
+import { Track } from "./Track";
 import { User } from "./User";
 
 export interface TrackArtist {
@@ -5,4 +6,5 @@ export interface TrackArtist {
     trackId: number;
     role: string;
     users: User;
+    track: Track;
 }
