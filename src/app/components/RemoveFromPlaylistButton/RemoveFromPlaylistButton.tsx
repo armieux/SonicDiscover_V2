@@ -10,7 +10,7 @@ export const RemoveFromPlaylistButton = ({ playlistId, trackId }: { playlistId: 
   const handleRemoveTrack = async () => {
     setLoading(true);
     try {
-      await fetch(`/api/playlists/${playlistId}/removeTrack`, {
+      await fetch(`/api/playlists/${playlistId}/remove`, {
         method: "POST",
         body: JSON.stringify({ trackId }),
         headers: { "Content-Type": "application/json" },

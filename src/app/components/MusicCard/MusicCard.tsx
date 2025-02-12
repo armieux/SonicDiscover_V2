@@ -6,21 +6,20 @@ import { FaPlay } from "react-icons/fa";
 import { useMusicContext } from "@/app/context/MusicContext";
 import { ExtendedTrack } from "@/app/musicListPage/page";
 import { AddToPlaylistButton } from "../AddToPlaylistButton/AddToPlaylistButton";
-
-// Extend the Track interface to include additional fields.
-
+import { RemoveFromPlaylistButton } from "../RemoveFromPlaylistButton/RemoveFromPlaylistButton";
 
 interface MusicCardProps {
   track: ExtendedTrack;
   index: number;
   playlist: ExtendedTrack[];
+  inPlaylist?: boolean; // NEW PROP: If true, show RemoveFromPlaylistButton
+  playlistId?: number;  // NEW PROP: Required for remove action
 }
 
-const MusicCard: React.FC<MusicCardProps> = ({ track, index, playlist }) => {
+const MusicCard: React.FC<MusicCardProps> = ({ track, index, playlist, inPlaylist = false, playlistId }) => {
   const { setCurrentTrack } = useMusicContext();
 
   const handlePlay = () => {
-    // Set the current track along with the entire playlist and its index.
     setCurrentTrack(track, playlist, index);
   };
 
@@ -41,7 +40,12 @@ const MusicCard: React.FC<MusicCardProps> = ({ track, index, playlist }) => {
         <p className="text-xs text-gray-400">{track.parsedduration}</p>
       </div>
 
-      <AddToPlaylistButton trackId={track.id}></AddToPlaylistButton>
+      {/* Show either AddToPlaylistButton or RemoveFromPlaylistButton */}
+      {inPlaylist && playlistId ? (
+        <RemoveFromPlaylistButton playlistId={playlistId} trackId={track.id} />
+      ) : (
+        <AddToPlaylistButton trackId={track.id} />
+      )}
 
       {/* Play button */}
       <button
