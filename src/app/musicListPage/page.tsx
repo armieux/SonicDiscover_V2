@@ -49,8 +49,8 @@ export default async function MusicListPage() {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gray-100 flex flex-col items-center py-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">Liste de Musiques</h1>
+      <div className="min-h-screen flex flex-col items-center py-8 bg-[#121212]">
+        <h1 className="text-3xl font-bold text-white mb-6">Liste de Musiques</h1>
         <div className="space-y-4 w-full max-w-4xl">
           {trackList.map((track, index) => (
             <MusicCard

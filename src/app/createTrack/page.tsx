@@ -78,7 +78,7 @@ const CreateTrackPage: React.FC = () => {
 
   return (
     <Layout>
-      <div className="flex flex-col items-center justify-center min-h-screen w-screen bg-[#353445] p-4">
+      <div className="flex flex-col items-center justify-center min-h-screen w-screen bg-[#121212] p-4">
         <h2 className="text-4xl text-white mb-6">Upload Your MP3</h2>
         <form
           onSubmit={handleUpload}
