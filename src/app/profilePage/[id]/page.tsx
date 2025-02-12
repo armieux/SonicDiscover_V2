@@ -127,7 +127,7 @@ export default async function ProfilePage(context: ProfilePageProps) {
               <ul className="text-white">
                 {playlists.map((playlist) => (
                   <li key={playlist.id}>
-                    <img src={playlist.playlistPicture || "https://placehold.co/50"} alt={playlist.name} className="w-8 h-8 inline-block m-1"/>
+                    <img src={playlist.playlistpicture || "https://placehold.co/50"} alt={playlist.name} className="w-8 h-8 inline-block m-1"/>
                     {playlist.name}
                   </li>
                 ))}

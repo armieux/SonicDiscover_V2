@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
 import Layout from "@/app/components/Layout";
+import { RemoveFromPlaylistButton } from "@/app/components/RemoveFromPlaylistButton/RemoveFromPlaylistButton";
 
 const prisma = new PrismaClient();
 
@@ -9,16 +10,17 @@ interface PlaylistPageProps {
   params: { id: string };
 }
 
-export default async function PlaylistPage({ params }: PlaylistPageProps) {
+export default async function PlaylistPage(context: PlaylistPageProps) {
+  const awaitedParams = await context.params;
   // Get Playlist ID
-  const playlistId = parseInt(params.id, 10);
+  const playlistId = parseInt(awaitedParams.id, 10);
   if (isNaN(playlistId)) {
     return <div>Invalid Playlist ID</div>;
   }
 
   // Identify current logged-in user from cookies
-  const cookieStore = cookies();
-  const rawToken = (await cookieStore).get("token")?.value || "";
+  const cookieStore = await cookies();
+  const rawToken = cookieStore.get("token")?.value || "";
 
   let currentUserId: number | null = null;
   if (rawToken) {
@@ -83,19 +85,7 @@ export default async function PlaylistPage({ params }: PlaylistPageProps) {
                     
                     {/* Remove Button (Only for Owner) */}
                     {isOwner && (
-                      <button
-                        className="text-red-500 hover:text-red-700"
-                        onClick={async () => {
-                          await fetch(`/api/playlists/${playlistId}/removeTrack`, {
-                            method: "POST",
-                            body: JSON.stringify({ trackId: tracks.id }),
-                            headers: { "Content-Type": "application/json" },
-                          });
-                          window.location.reload();
-                        }}
-                      >
-                        ❌ Remove
-                      </button>
+                      <RemoveFromPlaylistButton playlistId={playlistId} trackId={tracks.id} />
                     )}
                   </li>
                 ))}
