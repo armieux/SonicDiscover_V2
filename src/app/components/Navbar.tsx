@@ -7,7 +7,12 @@ import {
   BsFileEarmarkPlusFill,
   BsFilePersonFill
 } from 'react-icons/bs';
-import { User } from '@/app/interfaces/User'; // or define locally if needed
+import { User } from '@/app/interfaces/User';
+import { MdOutlineLibraryMusic } from "react-icons/md";
+import { MdOutlineVideoLibrary } from "react-icons/md";
+import { TbLibraryPlus } from "react-icons/tb";
+
+
 
 interface NavbarProps {
   user: User | null;
@@ -26,44 +31,45 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
         <div className="container mx-auto flex justify-between items-center">
           <Link
               href="/"
-              className="text-white text-2xl font-bold hover:text-[#1DB954] transition-colors duration-300"
+              className="text-2xl font-bold transition-colors duration-300 text-white hover:text-yellow-400"
           >
             Sonic Discover
           </Link>
-          <ul className="flex space-x-8">
+          <ul className="flex align-middle space-x-8 hover:text-[#1DB954]">
             <li>
               <Link href="/createTrack" className={linkClasses('/createTrack')}>
-                <div className="flex items-center space-x-2">
-                  <BsFileEarmarkPlusFill className="text-white" size={25}/>
+                <div className="flex items-center">
+                  <TbLibraryPlus size={25}/>
+                  <p className="pl-1 ">Ajouter</p>
                 </div>
               </Link>
             </li>
             <li>
               <Link href="/musicListPage" className={linkClasses('/musicListPage')}>
-                <div className="flex items-center space-x-2">
-                  <BsFileEarmarkPlusFill className="text-white" size={25}/>
+                <div className="flex items-center">
+                  <MdOutlineLibraryMusic size={25}/>
+                  <p className="pl-1">Liste</p>
                 </div>
               </Link>
             </li>
             <li>
               <Link href="/playlistsPage" className={linkClasses('/playlists')}>
                 <div className="flex items-center">
-                  <BsCollectionPlayFill  /> <p className="pl-1">Playlists</p>
-                </div>
-              </Link>
-            </li>
-            <li>
-              <Link
-                  href={user ? `/profilePage/${user.id}` : '/login'}
-                  className={linkClasses(user ? `/profile/${user.id}` : '/login')}
-              >
-                <div className="flex items-center space-x-2">
-                  <BsFilePersonFill size={25} className="text-white"/>
-                  <span className="text-white"></span>
+                  <MdOutlineVideoLibrary size={25}/>
+                  <p className="pl-1">Playlists</p>
                 </div>
               </Link>
             </li>
           </ul>
+          <Link
+              href={user ? `/profilePage/${user.id}` : '/login'}
+              className={linkClasses(user ? `/profile/${user.id}` : '/login')}
+          >
+            <div className="flex items-center space-x-2">
+              <BsFilePersonFill size={25} />
+              <span className="text-white"></span>
+            </div>
+          </Link>
         </div>
       </nav>
 

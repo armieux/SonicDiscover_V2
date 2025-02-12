@@ -3,7 +3,9 @@ import { CgSpinnerTwo } from "react-icons/cg";
 import {FaPlay} from "react-icons/fa";
 import {useMusicContext} from "@/app/context/MusicContext";
 import { Track } from "../../interfaces/Track";
-import { WiTrain } from "react-icons/wi";
+import { TbBus } from "react-icons/tb";
+
+
 
 
 const HypeTrain: React.FC = () => {
@@ -50,29 +52,46 @@ const HypeTrain: React.FC = () => {
 
     return (
         <div className="max-w-6xl mx-auto p-6">
-            <h2 className="text-3xl font-extrabold text-center mb-8 text-white flex flex-row content-between w-100"
-                style={{color:"gold", textShadow:"0px 0px 15px gold"}}>
-                <WiTrain style={{fontSize:"2.5rem", transform:"scaleX(-1)", color:"gold"}} />
-                Train de la Hype
-                <WiTrain style={{fontSize:"2.5rem", color:"gold"}} />
-            </h2>
+            <div className="flex flex-row">
+                <TbBus style={{
+                    transform:"scaleX(-1)",
+                    fontSize: "2.5rem",
+                    color: "gold",
+                    filter: "drop-shadow(0 0 15px gold)",
+                    background: "transparent"}} />
+                <h2 className="text-3xl font-extrabold text-center mb-8 text-white w-100 px-5"
+                    style={{color:"gold", textShadow:"0px 0px 15px gold"}}>
+                    Bus de la Hype
+                </h2>
+                <TbBus style={{
+                    fontSize: "2.5rem",
+                    color: "gold",
+                    filter: "drop-shadow(0 0 15px gold)",
+                    background: "transparent"
+                }} />
+            </div>
 
             <div className="mb-8 relative">
                 <div
-                    className="flex overflow-x-auto space-x-6 pb-4 ">
+                    className="flex overflow-x-auto space-x-6 pb-4 custom-scroll">
                     {tracks.slice(0, 10).map((track, index) => {
                         let medalTextColor = '';
+                        let medalContent = '';
                         if (index === 0) {
                             medalTextColor = 'gold';
+                            medalContent = '🥇';
                         }
                         else if (index === 1) {
                             medalTextColor = 'silver';
+                            medalContent = '🥈';
                         }
                         else if (index === 2) {
                             medalTextColor = '#CD7F32\n';
+                            medalContent = '🥉';
                         }
                         else {
                             medalTextColor = 'transparent';
+                            medalContent = '';
                         }
 
                         return (
@@ -84,10 +103,9 @@ const HypeTrain: React.FC = () => {
                                     {index < 3 && (
                                         <span
                                             className={`absolute top-0 right-0 font-bold text-lg text-white rounded-full px-2 py-1`}
-                                            style={{color:medalTextColor, textShadow:"1px 1px 5px " + medalTextColor}}
-
+                                            style={{color:medalTextColor, textShadow:"1px 1px 5px " + medalTextColor, fontSize:"1.5rem"}}
                                         >
-                                          {index + 1}er
+                                          {medalContent}
                                         </span>
                                     )}
                                     {track.trackpicture ? (
