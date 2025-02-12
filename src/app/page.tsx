@@ -10,8 +10,8 @@ const HomePage: React.FC = () => {
       <><Head>
         <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
       </Head><Layout>{<>
-          <div className="flex h-screen w-screen bg-[#121212] items-center justify-center flex-col">
-              <h1 className="text-5xl text-white">Welcome to Sonic Discover!</h1>
+          <div className="flex h-screen w-100 bg-[#121212] items-center justify-start flex-col">
+              <h1 className="text-5xl text-white p-5">Welcome to Sonic Discover!</h1>
               <HypeTrain />
           </div>
           <ChatWidget />

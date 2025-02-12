@@ -1,4 +1,3 @@
-// components/HypeTrain.tsx
 import React, { useEffect, useState } from 'react';
 import { CgSpinnerTwo } from "react-icons/cg";
 import {FaPlay} from "react-icons/fa";
@@ -22,7 +21,6 @@ const HypeTrain: React.FC = () => {
                     throw new Error("Erreur lors de la récupération des morceaux");
                 }
                 const data = await response.json();
-                // On extrait le tableau contenu dans data.tracks
                 setTracks(data.tracks || []);
             } catch (err: any) {
                 setError(err.message);
@@ -52,20 +50,17 @@ const HypeTrain: React.FC = () => {
 
     return (
         <div className="max-w-6xl mx-auto p-6">
-            <h2 className="text-3xl font-extrabold text-center mb-8 text-white flex flex-row content-between w-100" style={{color:"gold", textShadow:"0px 0px 15px gold"}}>
+            <h2 className="text-3xl font-extrabold text-center mb-8 text-white flex flex-row content-between w-100"
+                style={{color:"gold", textShadow:"0px 0px 15px gold"}}>
                 <WiTrain style={{fontSize:"2.5rem", transform:"scaleX(-1)", color:"gold"}} />
                 Train de la Hype
                 <WiTrain style={{fontSize:"2.5rem", color:"gold"}} />
             </h2>
 
-            {/* Slider pour le top 10 */}
             <div className="mb-8 relative">
-                {/* Conteneur du slider avec scrollbar customisée */}
                 <div
                     className="flex overflow-x-auto space-x-6 pb-4 ">
                     {tracks.slice(0, 10).map((track, index) => {
-                        // Définition des classes en fonction du rang
-                        let medalClass = '';
                         let medalTextColor = '';
                         if (index === 0) {
                             medalTextColor = 'gold';
@@ -92,8 +87,8 @@ const HypeTrain: React.FC = () => {
                                             style={{color:medalTextColor, textShadow:"1px 1px 5px " + medalTextColor}}
 
                                         >
-                  {index + 1}er
-                </span>
+                                          {index + 1}er
+                                        </span>
                                     )}
                                     {track.trackpicture ? (
                                         <img
@@ -120,12 +115,10 @@ const HypeTrain: React.FC = () => {
                     })}
 
                 </div>
-                {/* Ombre (shadow) sur la droite du slider */}
                 <div
                     className="absolute top-0 right-0 w-12 h-full pointer-events-none bg-gradient-to-l from-[#121212] to-transparent"></div>
             </div>
 
-            {/* Liste des autres morceaux */}
             <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 {tracks.slice(10).map((track) => (
                     <li
