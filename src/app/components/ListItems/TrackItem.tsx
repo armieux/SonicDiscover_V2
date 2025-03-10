@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { SlOptionsVertical } from "react-icons/sl";
 import { TrackArtist } from "@/app/interfaces/TrackArtist";
 
@@ -12,6 +13,7 @@ interface TrackItemProps {
 
 export default function TrackItem({ item, onDelete }: TrackItemProps) {
   const tracks = item;
+  const router = useRouter();
   const [showOptions, setShowOptions] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -26,7 +28,10 @@ export default function TrackItem({ item, onDelete }: TrackItemProps) {
         throw new Error("Failed to delete track");
       }
       console.log("Track deleted successfully");
+      // Optionally, call onDelete if you want local cleanup as well
       if (onDelete) onDelete(tracks.tracks.id);
+      // Refresh the page data to update the track list
+      router.refresh();
     } catch (error) {
       console.error("Error deleting track:", error);
     } finally {
