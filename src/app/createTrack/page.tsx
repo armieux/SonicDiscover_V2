@@ -212,9 +212,8 @@ const CreateTrackPage: React.FC = () => {
           )}
 
           {/* Submit Button */}
-          <button
+          {!uploadedTrack && (<button
             type="submit"
-            disabled={isUploading || uploadedTrack !== null}
             className={`w-full py-2 rounded-lg text-white font-semibold ${
               isUploading
                 ? 'bg-gray-500 cursor-not-allowed'
@@ -222,7 +221,7 @@ const CreateTrackPage: React.FC = () => {
             }`}
           >
             {isUploading ? 'Uploading...' : 'Upload'}
-          </button>
+          </button>)}
         </form>
       </div>
     </Layout>

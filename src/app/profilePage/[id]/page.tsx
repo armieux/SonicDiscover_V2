@@ -3,10 +3,15 @@ import jwt from 'jsonwebtoken';
 import { PrismaClient } from '@prisma/client';
 import Layout from '@/app/components/Layout';
 import dynamic from 'next/dynamic';
+import TrackItem from '@/app/components/ListItems/TrackItem';
+import PlaylistItem from '@/app/components/ListItems/PlaylistItem';
+import BadgeItem from '@/app/components/ListItems/BadgeItem';
+import RatingItem from '@/app/components/ListItems/RatingItem';
 
 const prisma = new PrismaClient();
 
 const FollowButton = dynamic(() => import("@/app/components/FollowButton/FollowButton").then((mod) => mod.FollowButton), { ssr: true });
+const ExpandableList = dynamic(() => import("@/app/components/ExpandableList/ExpandableList"), { ssr: true });
 
 interface ProfilePageProps {
   params: { id: string };
@@ -109,17 +114,7 @@ export default async function ProfilePage(context: ProfilePageProps) {
           {user.trackartists.length > 0 && (
             <div className="bg-[#3a3a4a] p-4 rounded-lg mb-4">
               <h3 className="text-2xl text-white mb-2">Your Tracks</h3>
-              <ul className="text-white">
-                {user.trackartists.map(({ tracks }) => (
-                  <li key={tracks.id} className='flex justify-between items-center'>
-                    <div className='flex items-center'>
-                      <img src={tracks.trackpicture || "https://placehold.co/50"} alt={tracks.title} className="w-8 h-8 inline-block m-1"/>
-                      <p>{tracks.title} - {tracks.genre}</p>
-                    </div>
-                    <p className=''>{tracks.playcount} écoutes</p>
-                  </li>
-                ))}
-              </ul>
+              <ExpandableList items={user.trackartists} ItemComponent={TrackItem} />
             </div>
           )}
 
@@ -127,14 +122,7 @@ export default async function ProfilePage(context: ProfilePageProps) {
           {playlists.length > 0 && (
             <div className="bg-[#3a3a4a] p-4 rounded-lg mb-4">
               <h3 className="text-2xl text-white mb-2">Playlists Featuring Your Tracks</h3>
-              <ul className="text-white">
-                {playlists.map((playlist) => (
-                  <li key={playlist.id}>
-                    <img src={playlist.playlistpicture || "https://placehold.co/50"} alt={playlist.name} className="w-8 h-8 inline-block m-1"/>
-                    {playlist.name}
-                  </li>
-                ))}
-              </ul>
+              <ExpandableList items={playlists} ItemComponent={PlaylistItem} />
             </div>
           )}
 
@@ -142,14 +130,7 @@ export default async function ProfilePage(context: ProfilePageProps) {
           {isOwnProfile && user.userbadges.length > 0 && (
             <div className="bg-[#3a3a4a] p-4 rounded-lg mb-4">
               <h3 className="text-2xl text-white mb-2">Badges</h3>
-              <div className="flex gap-2">
-                {user.userbadges.map((badge) => (
-                  <div key={badge.badgeid} className="text-center">
-                    <img src={badge.badges.badgeicon ?? "https://placehold.co/100"} alt={badge.badges.name} className="w-12 h-12"/>
-                    <p className="text-white text-xs">{badge.badges.name}</p>
-                  </div>
-                ))}
-              </div>
+              <ExpandableList items={user.userbadges} ItemComponent={BadgeItem} />
             </div>
           )}
 
@@ -157,14 +138,7 @@ export default async function ProfilePage(context: ProfilePageProps) {
           {isOwnProfile && user.ratings.length > 0 && (
             <div className="bg-[#3a3a4a] p-4 rounded-lg mb-4">
               <h3 className="text-2xl text-white mb-2">Rated Tracks</h3>
-              <ul className="text-white">
-                {user.ratings.map(({ tracks, liked }) => (
-                  <li key={tracks.id}>
-                    <img src={tracks.trackpicture || "https://placehold.co/50"} alt={tracks.title} className="w-8 h-8 inline-block m-1"/>
-                    {tracks.title} - {liked ? "👍 Liked" : "👎 Disliked"}
-                  </li>
-                ))}
-              </ul>
+              <ExpandableList items={user.ratings} ItemComponent={RatingItem} />
             </div>
           )}
         </div>

@@ -6,5 +6,5 @@ export interface TrackArtist {
     trackId: number;
     role: string;
     users: User;
-    track: Track;
+    tracks: Track;
 }
