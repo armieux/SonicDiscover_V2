@@ -14,7 +14,7 @@ export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const { id } = params;
+  const { id } =  await params;
 
   try {
     // Fetch the track by ID using Prisma
@@ -48,7 +48,7 @@ export async function PATCH(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const { id } = params;
+  const { id } = await params;
   const body = await request.json();
 
   try {
@@ -80,7 +80,7 @@ export async function DELETE(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const { id } = params;
+  const { id } = await params;
 
   try {
     // 1. Find the track to delete, so we can get the audioFile path
