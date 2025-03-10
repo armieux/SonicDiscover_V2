@@ -28,9 +28,7 @@ export default function TrackItem({ item, onDelete }: TrackItemProps) {
         throw new Error("Failed to delete track");
       }
       console.log("Track deleted successfully");
-      // Optionally, call onDelete if you want local cleanup as well
       if (onDelete) onDelete(tracks.tracks.id);
-      // Refresh the page data to update the track list
       router.refresh();
     } catch (error) {
       console.error("Error deleting track:", error);
@@ -61,8 +59,14 @@ export default function TrackItem({ item, onDelete }: TrackItemProps) {
 
       {/* Options Modal */}
       {showOptions && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-gray-800 p-4 rounded shadow-md">
+        <div
+          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+          onClick={() => setShowOptions(false)}
+        >
+          <div
+            className="bg-gray-800 p-4 rounded shadow-md"
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
               onClick={() => {
                 setShowOptions(false);
@@ -71,12 +75,6 @@ export default function TrackItem({ item, onDelete }: TrackItemProps) {
               className="text-red-500 block w-full text-left mb-2"
             >
               Delete
-            </button>
-            <button
-              onClick={() => setShowOptions(false)}
-              className="text-white block w-full text-left"
-            >
-              Cancel
             </button>
           </div>
         </div>
