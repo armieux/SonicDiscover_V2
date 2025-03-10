@@ -4,6 +4,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { SlOptionsVertical } from "react-icons/sl";
 import { TrackArtist } from "@/app/interfaces/TrackArtist";
+import dynamic from "next/dynamic";
+
+// Dynamically import the UpdateTrackForm (client-side only)
+const UpdateTrackForm = dynamic(() => import('@/app/components/UpdateTrackForm/UpdateTrackForm'), { ssr: false });
 
 interface TrackItemProps {
   item: TrackArtist;
@@ -16,6 +20,7 @@ export default function TrackItem({ item, onDelete }: TrackItemProps) {
   const router = useRouter();
   const [showOptions, setShowOptions] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [showUpdate, setShowUpdate] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
@@ -51,10 +56,12 @@ export default function TrackItem({ item, onDelete }: TrackItemProps) {
             {tracks.tracks.title} - {tracks.tracks.genre}
           </p>
         </div>
-        <p>{tracks.tracks.playcount} écoutes</p>
-        <button onClick={() => setShowOptions(true)} className="p-1">
-          <SlOptionsVertical />
-        </button>
+        <div className="flex items-center">
+          <p>{tracks.tracks.playcount} écoutes</p>
+          <button onClick={() => setShowOptions(true)} className="p-1">
+            <SlOptionsVertical />
+          </button>
+        </div>
       </div>
 
       {/* Options Modal */}
@@ -70,6 +77,15 @@ export default function TrackItem({ item, onDelete }: TrackItemProps) {
             <button
               onClick={() => {
                 setShowOptions(false);
+                setShowUpdate(true);
+              }}
+              className="text-blue-400 block w-full text-left mb-2"
+            >
+              Update
+            </button>
+            <button
+              onClick={() => {
+                setShowOptions(false);
                 setShowConfirm(true);
               }}
               className="text-red-500 block w-full text-left mb-2"
@@ -80,7 +96,7 @@ export default function TrackItem({ item, onDelete }: TrackItemProps) {
         </div>
       )}
 
-      {/* Confirmation Modal */}
+      {/* Confirmation Modal for Delete */}
       {showConfirm && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-gray-800 p-4 rounded shadow-md">
@@ -100,6 +116,21 @@ export default function TrackItem({ item, onDelete }: TrackItemProps) {
             >
               Cancel
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Update Track Form Modal */}
+      {showUpdate && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-gray-800 p-4 rounded shadow-md">
+            <UpdateTrackForm
+              track={tracks.tracks}
+              onClose={() => {
+                setShowUpdate(false);
+                router.refresh();
+              }}
+            />
           </div>
         </div>
       )}
