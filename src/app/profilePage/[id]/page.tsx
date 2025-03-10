@@ -111,9 +111,12 @@ export default async function ProfilePage(context: ProfilePageProps) {
               <h3 className="text-2xl text-white mb-2">Your Tracks</h3>
               <ul className="text-white">
                 {user.trackartists.map(({ tracks }) => (
-                  <li key={tracks.id}>
-                    <img src={tracks.trackpicture || "https://placehold.co/50"} alt={tracks.title} className="w-8 h-8 inline-block m-1"/>
-                    {tracks.title} - {tracks.genre} ({tracks.duration} sec)
+                  <li key={tracks.id} className='flex justify-between items-center'>
+                    <div className='flex items-center'>
+                      <img src={tracks.trackpicture || "https://placehold.co/50"} alt={tracks.title} className="w-8 h-8 inline-block m-1"/>
+                      <p>{tracks.title} - {tracks.genre}</p>
+                    </div>
+                    <p className=''>{tracks.playcount} écoutes</p>
                   </li>
                 ))}
               </ul>

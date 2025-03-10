@@ -26,11 +26,16 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [playlist, setPlaylist] = useState<Track[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const setCurrentTrack = (track: Track, playlistParam?: Track[], index?: number) => {
+  const setCurrentTrack = async (track: Track, playlistParam?: Track[], index?: number) => {
     setCurrentTrackState(track);
     if (playlistParam && typeof index === "number") {
       setPlaylist(playlistParam);
       setCurrentIndex(index);
+    }
+    if (track.id !== currentTrack?.id) {
+      await fetch(`/api/tracks/${track.id}/addplay`, {
+        method: "POST",
+      });
     }
   };
 
