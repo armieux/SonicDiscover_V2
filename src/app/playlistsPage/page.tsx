@@ -24,7 +24,7 @@ export default async function PlaylistsPage() {
   }
 
   if (!currentUserId) {
-    return <div>Please log in to view your playlists.</div>;
+    return <div>Connectez vous pour voir vos playlists.</div>;
   }
 
   // Fetch user playlists
@@ -41,7 +41,7 @@ export default async function PlaylistsPage() {
     <Layout>
       <div className="flex flex-col items-center justify-center min-h-screen w-screen bg-[#353445] p-4">
         <div className="w-full max-w-2xl bg-[#282733] p-8 rounded-lg shadow-lg">
-          <h2 className="text-4xl text-white mb-6">Your Playlists</h2>
+          <h2 className="text-4xl text-white mb-6">Vos Playlists</h2>
 
           {/* Create New Playlist Form */}
           <CreatePlaylistForm />
@@ -62,7 +62,7 @@ export default async function PlaylistsPage() {
               ))}
             </ul>
           ) : (
-            <p className="text-gray-300">You have no playlists yet.</p>
+            <p className="text-gray-300">Vous n&apos;avez pas encore de playlists.</p>
           )}
         </div>
       </div>

@@ -33,7 +33,7 @@ const CreatePlaylistForm = () => {
     <form onSubmit={handleCreatePlaylist} className="mb-6">
       <input
         type="text"
-        placeholder="Playlist Name"
+        placeholder="Nom de la Playlist"
         value={name}
         onChange={(e) => setName(e.target.value)}
         required
@@ -47,7 +47,7 @@ const CreatePlaylistForm = () => {
         className="w-full p-2 mb-2 rounded bg-[#3a3a4a] text-white"
       />
       <button type="submit" disabled={loading} className="bg-green-500 px-4 py-2 rounded text-white">
-        {loading ? "Creating..." : "Create Playlist"}
+        {loading ? "Création..." : "Créer la Playlist"}
       </button>
     </form>
   );

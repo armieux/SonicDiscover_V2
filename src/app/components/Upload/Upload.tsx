@@ -34,7 +34,7 @@ const Upload: React.FC<UploadProps> = ({ onFileSelect }) => {
       {/* File Upload */}
       <div className="mb-4">
         <label className="block text-white mb-2" htmlFor="file-upload">
-          Choose MP3 file:
+          Choisissez un fichier MP3:
         </label>
         <input
           type="file"

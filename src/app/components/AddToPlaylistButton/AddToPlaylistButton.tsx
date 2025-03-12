@@ -57,7 +57,7 @@ export const AddToPlaylistButton = ({ trackId }: { trackId: number }) => {
         disabled={loading}
         className="bg-blue-500 px-4 py-2 rounded text-white relative"
       >
-        {loading ? "Adding..." : "Add to Playlist"}
+        {loading ? "Ajout..." : "Ajouter à la Playlist"}
       </button>
 
       {/* Dropdown List */}

@@ -79,7 +79,7 @@ const CreateTrackPage: React.FC = () => {
   return (
     <Layout>
       <div className="flex flex-col items-center justify-center min-h-screen w-screen bg-[#121212] p-4">
-        <h2 className="text-4xl text-white mb-6">Upload Your MP3</h2>
+        <h2 className="text-4xl text-white mb-6">Upload ton MP3</h2>
         <form
           onSubmit={handleUpload}
           className="w-full max-w-md bg-[#282733] p-8 rounded-lg shadow-lg"
@@ -87,7 +87,7 @@ const CreateTrackPage: React.FC = () => {
           {/* Title */}
           <div className="mb-4">
             <label className="block text-white mb-2" htmlFor="title">
-              Title:
+              Titre:
             </label>
             <input
               type="text"
@@ -149,7 +149,7 @@ const CreateTrackPage: React.FC = () => {
           {/* Track Picture URL */}
           <div className="mb-4">
             <label className="block text-white mb-2" htmlFor="trackPicture">
-              Track Picture URL:
+              URL de la cover:
             </label>
             <input
               type="url"
@@ -166,7 +166,7 @@ const CreateTrackPage: React.FC = () => {
 
           {/* Selected File Name */}
           {file && (
-            <div className="text-white mb-4">Selected File: {file.name}</div>
+            <div className="text-white mb-4">Fichier sélectionné: {file.name}</div>
           )}
 
           {/* Error Message */}
@@ -181,10 +181,10 @@ const CreateTrackPage: React.FC = () => {
           {uploadedTrack && (
             <div className="bg-[#3a3a4a] p-4 rounded-lg mb-4 w-full">
               <h3 className="text-2xl text-white mb-2">
-                Uploaded Track Details:
+                Details du titre uploadé:
               </h3>
               <p className="text-white">
-                <strong>Title:</strong> {uploadedTrack.title}
+                <strong>Titre:</strong> {uploadedTrack.title}
               </p>
               <p className="text-white">
                 <strong>Genre:</strong> {uploadedTrack.genre}
@@ -206,7 +206,7 @@ const CreateTrackPage: React.FC = () => {
               )}
               <audio controls className="mt-2 w-full">
                 <source src={uploadedTrack.audiofile} type="audio/mpeg" />
-                Your browser does not support the audio element.
+                Votre navigateur ne supporte pas les éléments audio.
               </audio>
             </div>
           )}

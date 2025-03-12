@@ -31,7 +31,7 @@ export const RemoveFromPlaylistButton = ({ playlistId, trackId }: { playlistId: 
       onClick={handleRemoveTrack}
       disabled={loading}
     >
-      {loading ? "Removing..." : "❌ Remove"}
+      {loading ? "Retrait..." : "❌ Retirer de la Playlist"}
     </button>
   );
 };

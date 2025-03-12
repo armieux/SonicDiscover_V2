@@ -57,7 +57,7 @@ export default async function PlaylistPage(context: PlaylistPageProps) {
   console.log(playlist?.playlisttracks);
 
   if (!playlist) {
-    return <div>Playlist not found</div>;
+    return <div>Playlist non trouvée</div>;
   }
 
   // const isOwner = currentUserId === playlist.creatorid;
@@ -97,13 +97,13 @@ export default async function PlaylistPage(context: PlaylistPageProps) {
             <div>
               <h2 className="text-4xl text-white">{playlist.name}</h2>
               <p className="text-gray-300">{playlist.description}</p>
-              <p className="text-gray-400">Created by {playlist.users.username}</p>
+              <p className="text-gray-400">Créé par {playlist.users.username}</p>
             </div>
           </div>
 
           {/* Tracks List */}
           <div className="bg-[#3a3a4a] p-4 rounded-lg">
-            <h3 className="text-2xl text-white mb-2">Tracks</h3>
+            <h3 className="text-2xl text-white mb-2">Titres</h3>
             {trackList.length > 0 ? (
               <div className="space-y-4">
                 {trackList.map((track, index) => (
@@ -118,7 +118,7 @@ export default async function PlaylistPage(context: PlaylistPageProps) {
                 ))}
               </div>
             ) : (
-              <p className="text-gray-400">No tracks in this playlist yet.</p>
+              <p className="text-gray-400">Aucun titre dans la playlist</p>
             )}
           </div>
         </div>
