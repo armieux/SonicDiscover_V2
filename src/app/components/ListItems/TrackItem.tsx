@@ -82,7 +82,7 @@ export default function TrackItem({ item, onDelete, isOwnProfile }: TrackItemPro
               }}
               className="text-blue-400 block w-full text-left mb-2"
             >
-              Update
+              Modifier
             </button>
             <button
               onClick={() => {
@@ -91,7 +91,7 @@ export default function TrackItem({ item, onDelete, isOwnProfile }: TrackItemPro
               }}
               className="text-red-500 block w-full text-left mb-2"
             >
-              Delete
+              Supprimer
             </button>
           </div>
         </div>
@@ -102,7 +102,7 @@ export default function TrackItem({ item, onDelete, isOwnProfile }: TrackItemPro
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-gray-800 p-4 rounded shadow-md">
             <p className="text-white mb-4">
-              Are you sure you want to delete this track?
+              Etes vous sûr de vouloir supprimer ce titre ?
             </p>
             <button
               onClick={handleDelete}
@@ -115,7 +115,7 @@ export default function TrackItem({ item, onDelete, isOwnProfile }: TrackItemPro
               onClick={() => setShowConfirm(false)}
               className="text-white block w-full text-left"
             >
-              Cancel
+              Annuler
             </button>
           </div>
         </div>

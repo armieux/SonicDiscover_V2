@@ -23,7 +23,7 @@ export default function RatingItem({ item }: RatingItemProps) {
         className="w-8 h-8 inline-block m-1"
       />
       <span>
-        {tracks.title} - {liked ? "👍 Liked" : "👎 Disliked"}
+        {tracks.title} - {liked ? "👍" : "👎"}
       </span>
     </div>
   );

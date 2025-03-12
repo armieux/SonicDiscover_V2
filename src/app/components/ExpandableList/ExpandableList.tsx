@@ -4,7 +4,7 @@ import { useState } from 'react';
 interface ExpandableListProps<T> {
   items: T[];
   ItemComponent: React.ComponentType<{ item: T; index: number; isOwnProfile: boolean; }>;
-  isOwnProfile?: boolean;
+  isOwnProfile: boolean;
 }
 
 export default function ExpandableList<T>({ items, ItemComponent, isOwnProfile }: ExpandableListProps<T>) {
@@ -22,7 +22,7 @@ export default function ExpandableList<T>({ items, ItemComponent, isOwnProfile }
       </ul>
       {items.length > 3 && (
         <button onClick={() => setExpanded(!expanded)} className="text-blue-400 hover:underline">
-          {expanded ? 'See less' : 'See more'}
+          {expanded ? 'Voir plus' : 'Voir moins'}
         </button>
       )}
     </div>

@@ -61,22 +61,28 @@ export const AddToPlaylistButton = ({ trackId }: { trackId: number }) => {
       </button>
 
       {/* Dropdown List */}
-      {dropdownOpen && playlists.length > 0 && (
-        <div className="absolute right-0 mt-2 bg-gray-800 shadow-lg rounded-md w-48 z-10">
-          {playlists.map((playlist) => (
-            <button
-              key={playlist.id}
-              onClick={() => handleAddToPlaylist(playlist.id)}
-              disabled={loading && selectedPlaylist === playlist.id}
-              className={`block w-full text-left px-4 py-2 text-white hover:bg-gray-700 ${
-                loading && selectedPlaylist === playlist.id ? "opacity-50" : ""
-              }`}
-            >
-              {loading && selectedPlaylist === playlist.id ? "Adding..." : playlist.name}
-            </button>
-          ))}
-        </div>
-      )}
+      {dropdownOpen && 
+        ( playlists.length > 0 ? (
+          <div className="absolute right-0 mt-2 bg-gray-800 shadow-lg rounded-md w-48 z-10">
+            {playlists.map((playlist) => (
+              <button
+                key={playlist.id}
+                onClick={() => handleAddToPlaylist(playlist.id)}
+                disabled={loading && selectedPlaylist === playlist.id}
+                className={`block w-full text-left px-4 py-2 text-white hover:bg-gray-700 ${
+                  loading && selectedPlaylist === playlist.id ? "opacity-50" : ""
+                }`}
+              >
+                {loading && selectedPlaylist === playlist.id ? "Adding..." : playlist.name}
+              </button>
+            ))}
+          </div>
+      ) : (
+        <p className="absolute right-0 mt-2 bg-gray-800 text-white shadow-lg rounded-md w-48 z-10 p-2">
+          Aucune playlist trouvée
+        </p>
+      ))
+    }
     </div>
   );
 };

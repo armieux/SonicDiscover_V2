@@ -85,15 +85,15 @@ export default async function ProfilePage(context: ProfilePageProps) {
     <Layout>
       <div className="flex flex-col items-center justify-center min-h-screen w-screen bg-[#353445] p-4">
         <div className="w-full max-w-md bg-[#282733] p-8 rounded-lg shadow-lg">
-          <h2 className="text-4xl text-white mb-6">Profile of {user.username}</h2>
+          <h2 className="text-4xl text-white mb-6">Profil de {user.username}</h2>
 
           {/* Followers & Following Count */}
           <div className="mt-4 text-white flex flex-row justify-around">
             <a href={`/profilePage/${user.id}/followers`} className="text-blue-400 hover:underline">
-              <strong>Followers:</strong> {user.followerscount}
+              <strong>Abonnés:</strong> {user.followerscount}
             </a>
             <a href={`/profilePage/${user.id}/following`} className="text-blue-400 hover:underline">
-              <strong>Following:</strong> {user.followingcount}
+              <strong>Abonnements:</strong> {user.followingcount}
             </a>
             {/* Follow Button */}
             {!isOwnProfile && (
@@ -105,7 +105,7 @@ export default async function ProfilePage(context: ProfilePageProps) {
           <img src={user.profilepicture || "/default-avatar.jpg"} alt="Profile" className="w-24 h-24 rounded-full mb-4"/>
 
           {/* Username */}
-          <p className="text-white"><strong>Username:</strong> {user.username}</p>
+          <p className="text-white"><strong>Nom :</strong> {user.username}</p>
 
           {/* Email - Visible only if it's their own profile */}
           {isOwnProfile && <p className="text-white"><strong>Email:</strong> {user.email}</p>}
@@ -113,7 +113,7 @@ export default async function ProfilePage(context: ProfilePageProps) {
           {/* Tracks as Artist */}
           {user.trackartists.length > 0 && (
             <div className="bg-[#3a3a4a] p-4 rounded-lg mb-4">
-              <h3 className="text-2xl text-white mb-2">Your Tracks</h3>
+              <h3 className="text-2xl text-white mb-2">Vos titres</h3>
               <ExpandableList items={user.trackartists} ItemComponent={TrackItem} isOwnProfile={isOwnProfile} />
             </div>
           )}
@@ -121,7 +121,7 @@ export default async function ProfilePage(context: ProfilePageProps) {
           {/* Playlists Containing the User's Tracks */}
           {playlists.length > 0 && (
             <div className="bg-[#3a3a4a] p-4 rounded-lg mb-4">
-              <h3 className="text-2xl text-white mb-2">Playlists Featuring Your Tracks</h3>
+              <h3 className="text-2xl text-white mb-2">Playlists incluant vos titres</h3>
               <ExpandableList items={playlists} ItemComponent={PlaylistItem} isOwnProfile={isOwnProfile} />
             </div>
           )}
@@ -137,7 +137,7 @@ export default async function ProfilePage(context: ProfilePageProps) {
           {/* Ratings - Only visible to the user */}
           {isOwnProfile && user.ratings.length > 0 && (
             <div className="bg-[#3a3a4a] p-4 rounded-lg mb-4">
-              <h3 className="text-2xl text-white mb-2">Rated Tracks</h3>
+              <h3 className="text-2xl text-white mb-2">Titres notés</h3>
               <ExpandableList items={user.ratings} ItemComponent={RatingItem} isOwnProfile={isOwnProfile} />
             </div>
           )}
