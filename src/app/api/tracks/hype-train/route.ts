@@ -32,7 +32,8 @@ export async function GET(request: Request) {
                     ELSE likecount / NULLIF(dislikecount, 0)
                     END AS averagerating
             FROM tracks
-            WHERE uploaddate > now() - interval '7 days'
+            WHERE uploaddate > now() - interval '7 days' 
+            OR (SELECT COUNT(*) FROM tracks WHERE uploaddate > now() - interval '7 days') = 0
             ORDER BY playcount DESC
                 LIMIT 10;
         `;
