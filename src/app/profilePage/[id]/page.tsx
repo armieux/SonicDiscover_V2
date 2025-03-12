@@ -114,7 +114,7 @@ export default async function ProfilePage(context: ProfilePageProps) {
           {user.trackartists.length > 0 && (
             <div className="bg-[#3a3a4a] p-4 rounded-lg mb-4">
               <h3 className="text-2xl text-white mb-2">Your Tracks</h3>
-              <ExpandableList items={user.trackartists} ItemComponent={TrackItem} />
+              <ExpandableList items={user.trackartists} ItemComponent={TrackItem} isOwnProfile={isOwnProfile} />
             </div>
           )}
 
@@ -122,7 +122,7 @@ export default async function ProfilePage(context: ProfilePageProps) {
           {playlists.length > 0 && (
             <div className="bg-[#3a3a4a] p-4 rounded-lg mb-4">
               <h3 className="text-2xl text-white mb-2">Playlists Featuring Your Tracks</h3>
-              <ExpandableList items={playlists} ItemComponent={PlaylistItem} />
+              <ExpandableList items={playlists} ItemComponent={PlaylistItem} isOwnProfile={isOwnProfile} />
             </div>
           )}
 
@@ -130,7 +130,7 @@ export default async function ProfilePage(context: ProfilePageProps) {
           {isOwnProfile && user.userbadges.length > 0 && (
             <div className="bg-[#3a3a4a] p-4 rounded-lg mb-4">
               <h3 className="text-2xl text-white mb-2">Badges</h3>
-              <ExpandableList items={user.userbadges} ItemComponent={BadgeItem} />
+              <ExpandableList items={user.userbadges} ItemComponent={BadgeItem} isOwnProfile={isOwnProfile} />
             </div>
           )}
 
@@ -138,7 +138,7 @@ export default async function ProfilePage(context: ProfilePageProps) {
           {isOwnProfile && user.ratings.length > 0 && (
             <div className="bg-[#3a3a4a] p-4 rounded-lg mb-4">
               <h3 className="text-2xl text-white mb-2">Rated Tracks</h3>
-              <ExpandableList items={user.ratings} ItemComponent={RatingItem} />
+              <ExpandableList items={user.ratings} ItemComponent={RatingItem} isOwnProfile={isOwnProfile} />
             </div>
           )}
         </div>

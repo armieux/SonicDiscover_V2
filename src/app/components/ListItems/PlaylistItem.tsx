@@ -7,6 +7,7 @@ interface PlaylistItemProps {
     playlistpicture?: string;
   };
   index: number;
+  isOwnProfile: boolean;
 }
 
 export default function PlaylistItem({ item }: PlaylistItemProps) {

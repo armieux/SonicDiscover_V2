@@ -3,10 +3,11 @@ import { useState } from 'react';
 
 interface ExpandableListProps<T> {
   items: T[];
-  ItemComponent: React.ComponentType<{ item: T; index: number }>;
+  ItemComponent: React.ComponentType<{ item: T; index: number; isOwnProfile: boolean; }>;
+  isOwnProfile?: boolean;
 }
 
-export default function ExpandableList<T>({ items, ItemComponent }: ExpandableListProps<T>) {
+export default function ExpandableList<T>({ items, ItemComponent, isOwnProfile }: ExpandableListProps<T>) {
   const [expanded, setExpanded] = useState(false);
   const visibleItems = expanded ? items : items.slice(0, 3);
 
@@ -15,7 +16,7 @@ export default function ExpandableList<T>({ items, ItemComponent }: ExpandableLi
       <ul>
         {visibleItems.map((item, index) => (
           <li key={index}>
-            <ItemComponent item={item} index={index} />
+            <ItemComponent item={item} index={index} isOwnProfile={isOwnProfile}/>
           </li>
         ))}
       </ul>

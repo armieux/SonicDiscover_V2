@@ -13,9 +13,10 @@ interface TrackItemProps {
   item: TrackArtist;
   index: number;
   onDelete?: (deletedTrackId: number) => void;
+  isOwnProfile: boolean;
 }
 
-export default function TrackItem({ item, onDelete }: TrackItemProps) {
+export default function TrackItem({ item, onDelete, isOwnProfile }: TrackItemProps) {
   const tracks = item;
   const router = useRouter();
   const [showOptions, setShowOptions] = useState(false);
@@ -58,9 +59,9 @@ export default function TrackItem({ item, onDelete }: TrackItemProps) {
         </div>
         <div className="flex items-center">
           <p>{tracks.tracks.playcount} écoutes</p>
-          <button onClick={() => setShowOptions(true)} className="p-1">
+          {isOwnProfile && (<button onClick={() => setShowOptions(true)} className="p-1">
             <SlOptionsVertical />
-          </button>
+          </button>)}
         </div>
       </div>
 

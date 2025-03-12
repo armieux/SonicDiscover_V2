@@ -10,6 +10,7 @@ interface RatingItemProps {
     liked: boolean;
   };
   index: number;
+  isOwnProfile: boolean;
 }
 
 export default function RatingItem({ item }: RatingItemProps) {

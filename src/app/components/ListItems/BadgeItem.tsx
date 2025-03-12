@@ -9,6 +9,7 @@ interface BadgeItemProps {
     };
   };
   index: number;
+  isOwnProfile: boolean;
 }
 
 export default function BadgeItem({ item }: BadgeItemProps) {
