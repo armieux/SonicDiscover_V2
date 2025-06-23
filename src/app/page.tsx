@@ -1,5 +1,6 @@
 "use client"
-import Layout from './components/Layout';import Head from 'next/head';
+import PageLayout from './components/PageLayout';
+import Head from 'next/head';
 import ChatWidget from "@/app/components/ChatWidget/ChatWidget";
 import HypeTrain from "@/app/components/HypeTrain/HypeTrain";
 
@@ -8,13 +9,13 @@ const HomePage: React.FC = () => {
   return (
       <><Head>
         <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
-      </Head><Layout>{<>
+      </Head><PageLayout>{<>
           <div className="flex h-screen w-100 bg-[#121212] items-center justify-start flex-col">
               <h1 className="text-5xl text-white p-5">Bienvenue sur Sonic Discover!</h1>
               <HypeTrain />
           </div>
           <ChatWidget />
-      </>}</Layout>
+      </>}</PageLayout>
       </>
   );
 };

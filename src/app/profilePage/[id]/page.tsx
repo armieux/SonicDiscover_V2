@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 import jwt from 'jsonwebtoken';
 import { PrismaClient } from '@prisma/client';
-import Layout from '@/app/components/Layout';
+import PageLayout from '@/app/components/PageLayout';
 import dynamic from 'next/dynamic';
 import TrackItem from '@/app/components/ListItems/TrackItem';
 import PlaylistItem from '@/app/components/ListItems/PlaylistItem';
@@ -82,7 +82,7 @@ export default async function ProfilePage(context: ProfilePageProps) {
   );
 
   return (
-    <Layout>
+    <PageLayout>
       <div className="flex flex-col items-center justify-center min-h-screen w-screen bg-[#353445] p-4">
         <div className="w-full max-w-md bg-[#282733] p-8 rounded-lg shadow-lg">
           <h2 className="text-4xl text-white mb-6">Profil de {user.username}</h2>
@@ -143,6 +143,6 @@ export default async function ProfilePage(context: ProfilePageProps) {
           )}
         </div>
       </div>
-    </Layout>
+    </PageLayout>
   );
 }

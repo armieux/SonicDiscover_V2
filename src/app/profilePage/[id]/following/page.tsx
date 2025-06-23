@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import Layout from '@/app/components/Layout';
+import PageLayout from '@/app/components/PageLayout';
 import Link from 'next/link';
 
 const prisma = new PrismaClient();
@@ -34,7 +34,7 @@ export default async function FollowingPage({ params }: { params: { id: string }
   // Gestion du cas où l'utilisateur n'existe pas
   if (!user) {
     return (
-      <Layout>
+      <PageLayout>
         <div className="flex flex-col items-center justify-center min-h-screen w-screen bg-[#353445] p-4">
           <div className="w-full max-w-md bg-[#282733] p-8 rounded-lg shadow-lg">
             <h1 className="text-3xl text-white mb-6 text-center">
@@ -42,12 +42,12 @@ export default async function FollowingPage({ params }: { params: { id: string }
             </h1>
           </div>
         </div>
-      </Layout>
+      </PageLayout>
     );
   }
 
   return (
-    <Layout>
+    <PageLayout>
       <div className="flex flex-col items-center justify-center min-h-screen w-screen bg-[#353445] p-4">
         <div className="w-full max-w-md bg-[#282733] p-8 rounded-lg shadow-lg">
           <h1 className="text-3xl text-white mb-6 text-center">
@@ -80,6 +80,6 @@ export default async function FollowingPage({ params }: { params: { id: string }
           </div>
         </div>
       </div>
-    </Layout>
+    </PageLayout>
   );
 }

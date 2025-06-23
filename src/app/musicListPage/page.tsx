@@ -3,7 +3,7 @@
 import React from "react";
 import MusicCard from "../components/MusicCard/MusicCard";
 import { Track } from "../interfaces/Track";
-import Layout from "../components/Layout";
+import PageLayout from "../components/PageLayout";
 
 // Extend your Track interface to add fields not stored in DB (artist, duration)
 export interface ExtendedTrack extends Track {
@@ -48,7 +48,7 @@ export default async function MusicListPage() {
   });
 
   return (
-    <Layout>
+    <PageLayout>
       <div className="min-h-screen flex flex-col items-center py-8 bg-[#121212]">
         <h1 className="text-3xl font-bold text-white mb-6">Liste de Musiques</h1>
         <div className="space-y-4 w-full max-w-4xl">
@@ -62,6 +62,6 @@ export default async function MusicListPage() {
           ))}
         </div>
       </div>
-    </Layout>
+    </PageLayout>
   );
 }

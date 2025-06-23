@@ -5,7 +5,7 @@
 import React, { useState } from 'react';
 import Upload from '@/app/components/Upload/Upload';
 import { Track } from '@/app/interfaces/Track';
-import Layout from '../components/Layout';
+import PageLayout from '../components/PageLayout';
 
 const CreateTrackPage: React.FC = () => {
   // State variables for form fields
@@ -77,7 +77,7 @@ const CreateTrackPage: React.FC = () => {
   };
 
   return (
-    <Layout>
+    <PageLayout>
       <div className="flex flex-col items-center justify-center min-h-screen w-screen bg-[#121212] p-4">
         <h2 className="text-4xl text-white mb-6">Upload ton MP3</h2>
         <form
@@ -224,7 +224,7 @@ const CreateTrackPage: React.FC = () => {
           </button>)}
         </form>
       </div>
-    </Layout>
+    </PageLayout>
   );
 };
 

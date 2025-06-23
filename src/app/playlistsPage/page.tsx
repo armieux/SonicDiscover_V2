@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
-import Layout from "@/app/components/Layout";
+import PageLayout from "@/app/components/PageLayout";
 import CreatePlaylistForm from "../components/CreatePlaylistForm/CreatePlaylistForm";
 import Link from "next/link";
 
@@ -38,7 +38,7 @@ export default async function PlaylistsPage() {
   });
 
   return (
-    <Layout>
+    <PageLayout>
       <div className="flex flex-col items-center justify-center min-h-screen w-screen bg-[#353445] p-4">
         <div className="w-full max-w-2xl bg-[#282733] p-8 rounded-lg shadow-lg">
           <h2 className="text-4xl text-white mb-6">Vos Playlists</h2>
@@ -66,6 +66,6 @@ export default async function PlaylistsPage() {
           )}
         </div>
       </div>
-    </Layout>
+    </PageLayout>
   );
 }

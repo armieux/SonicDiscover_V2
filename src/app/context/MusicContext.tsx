@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useRef } from "react";
 import { Track } from "@/app/interfaces/Track";
 
 interface MusicContextType {
@@ -10,6 +10,7 @@ interface MusicContextType {
   setCurrentTrack: (track: Track, playlist?: Track[], index?: number) => void;
   playNext: () => void;
   playPrev: () => void;
+  audioRef: React.RefObject<HTMLAudioElement>;
 }
 
 const MusicContext = createContext<MusicContextType>({
@@ -19,12 +20,16 @@ const MusicContext = createContext<MusicContextType>({
   setCurrentTrack: () => {},
   playNext: () => {},
   playPrev: () => {},
+  audioRef: { current: null },
 });
 
 export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentTrack, setCurrentTrackState] = useState<Track | null>(null);
   const [playlist, setPlaylist] = useState<Track[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  
+  // Ref global pour l'élément audio - persistera entre les navigations
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   const setCurrentTrack = async (track: Track, playlistParam?: Track[], index?: number) => {
     setCurrentTrackState(track);
@@ -56,7 +61,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   return (
     <MusicContext.Provider
-      value={{ currentTrack, playlist, currentIndex, setCurrentTrack, playNext, playPrev }}
+      value={{ currentTrack, playlist, currentIndex, setCurrentTrack, playNext, playPrev, audioRef }}
     >
       {children}
     </MusicContext.Provider>

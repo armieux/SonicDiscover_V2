@@ -1,7 +1,7 @@
 // import { cookies } from "next/headers";
 // import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
-import Layout from "@/app/components/Layout";
+import PageLayout from "@/app/components/PageLayout";
 import MusicCard from "@/app/components/MusicCard/MusicCard";
 import { ExtendedTrack } from "@/app/musicListPage/page";
 
@@ -84,7 +84,7 @@ export default async function PlaylistPage(context: PlaylistPageProps) {
   });
 
   return (
-    <Layout>
+    <PageLayout>
       <div className="flex flex-col items-center justify-center min-h-screen w-screen bg-[#353445] p-4">
         <div className="w-full max-w-4xl bg-[#282733] p-8 rounded-lg shadow-lg">
           {/* Playlist Header */}
@@ -123,6 +123,6 @@ export default async function PlaylistPage(context: PlaylistPageProps) {
           </div>
         </div>
       </div>
-    </Layout>
+    </PageLayout>
   );
 }
