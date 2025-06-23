@@ -22,7 +22,7 @@ export default function ExpandableList<T>({ items, ItemComponent, isOwnProfile }
       </ul>
       {items.length > 3 && (
         <button onClick={() => setExpanded(!expanded)} className="text-blue-400 hover:underline">
-          {expanded ? 'Voir plus' : 'Voir moins'}
+          {expanded ? 'Voir moins' : 'Voir plus'}
         </button>
       )}
     </div>

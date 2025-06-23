@@ -48,7 +48,7 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
               <Link href="/musicListPage" className={linkClasses('/musicListPage')}>
                 <div className="flex items-center">
                   <MdOutlineLibraryMusic size={25}/>
-                  <p className="pl-1">Liste</p>
+                  <p className="pl-1">Toutes les musiques</p>
                 </div>
               </Link>
             </li>
@@ -67,7 +67,7 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
           >
             <div className="flex items-center space-x-2">
               <BsFilePersonFill size={25} />
-              <span className="text-white"></span>
+              <span className="text-white">Mon profil</span>
             </div>
           </Link>
         </div>
