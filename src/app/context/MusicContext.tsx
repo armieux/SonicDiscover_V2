@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useRef } from "react";
+import React, { createContext, useContext, useState, useRef, useCallback, useMemo } from "react";
 import { Track } from "@/app/interfaces/Track";
 
 interface MusicContextType {
@@ -31,38 +31,58 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // Ref global pour l'élément audio - persistera entre les navigations
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  const setCurrentTrack = async (track: Track, playlistParam?: Track[], index?: number) => {
-    setCurrentTrackState(track);
+  const setCurrentTrack = useCallback(async (track: Track, playlistParam?: Track[], index?: number) => {
+    // Ne mettre à jour que si c'est vraiment un nouveau track
+    if (currentTrack?.id !== track.id) {
+      console.log('Nouveau track sélectionné dans le contexte:', track.title);
+      setCurrentTrackState(track);
+      
+      // Incrémenter le compteur de lecture
+      try {
+        await fetch(`/api/tracks/${track.id}/addplay`, {
+          method: "POST",
+        });
+      } catch (err) {
+        console.error('Erreur lors de l\'incrémentation des lectures:', err);
+      }
+    } else {
+      console.log('Même track, pas de changement nécessaire');
+    }
+    
+    // Mettre à jour la playlist et l'index si fournis
     if (playlistParam && typeof index === "number") {
       setPlaylist(playlistParam);
       setCurrentIndex(index);
     }
-    if (track.id !== currentTrack?.id) {
-      await fetch(`/api/tracks/${track.id}/addplay`, {
-        method: "POST",
-      });
-    }
-  };
+  }, [currentTrack]);
 
-  const playNext = () => {
+  const playNext = useCallback(() => {
     if (playlist.length === 0) return;
     const nextIndex = (currentIndex + 1) % playlist.length;
     setCurrentIndex(nextIndex);
     setCurrentTrackState(playlist[nextIndex]);
-  };
+  }, [playlist, currentIndex]);
 
-  const playPrev = () => {
+  const playPrev = useCallback(() => {
     if (playlist.length === 0) return;
     // Use modulo arithmetic to wrap to the end of the list
     const prevIndex = (currentIndex - 1 + playlist.length) % playlist.length;
     setCurrentIndex(prevIndex);
     setCurrentTrackState(playlist[prevIndex]);
-  };
+  }, [playlist, currentIndex]);
+
+  const contextValue = useMemo(() => ({
+    currentTrack,
+    playlist,
+    currentIndex,
+    setCurrentTrack,
+    playNext,
+    playPrev,
+    audioRef
+  }), [currentTrack, playlist, currentIndex, setCurrentTrack, playNext, playPrev]);
 
   return (
-    <MusicContext.Provider
-      value={{ currentTrack, playlist, currentIndex, setCurrentTrack, playNext, playPrev, audioRef }}
-    >
+    <MusicContext.Provider value={contextValue}>
       {children}
     </MusicContext.Provider>
   );

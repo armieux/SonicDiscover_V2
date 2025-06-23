@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useMusicContext } from "@/app/context/MusicContext";
 import { SlArrowDown, SlArrowUp, SlControlEnd, SlControlStart } from "react-icons/sl";
 import { FaPause, FaPlay } from "react-icons/fa";
@@ -11,23 +11,41 @@ const MusicPlayer: React.FC = () => {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const previousTrackIdRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (!currentTrack || !audioRef.current) return;
+    
     const audio = audioRef.current;
-    setCurrentTime(0);
-    setDuration(0);
-    audio.src = currentTrack.audiofile;
-    audio.load();
-    audio
-      .play()
-      .then(() => {
-        setIsPlaying(true);
-      })
-      .catch((error) => {
-        console.error("Auto-play was prevented:", error);
-        setIsPlaying(false);
-      });
+    const isNewTrack = previousTrackIdRef.current !== currentTrack.id;
+    
+    // Seulement si c'est un nouveau track, on change la source et on recharge
+    if (isNewTrack) {
+      console.log('Chargement d\'un nouveau track:', currentTrack.title);
+      previousTrackIdRef.current = currentTrack.id;
+      
+      setCurrentTime(0);
+      setDuration(0);
+      audio.src = currentTrack.audiofile;
+      audio.load();
+      
+      audio
+        .play()
+        .then(() => {
+          setIsPlaying(true);
+        })
+        .catch((error) => {
+          console.error("Auto-play was prevented:", error);
+          setIsPlaying(false);
+        });
+    } else {
+      // Si c'est le même track, on synchronise juste l'état avec l'audio existant
+      console.log('Même track détecté, synchronisation des états');
+      setIsPlaying(!audio.paused);
+      setCurrentTime(audio.currentTime);
+      setDuration(audio.duration || 0);
+    }
+
     const handleLoadedMetadata = () => {
       setDuration(audio.duration);
     };
@@ -59,25 +77,25 @@ const MusicPlayer: React.FC = () => {
     };
   }, [currentTrack, audioRef, playNext]);
 
-  const handlePlayPause = () => {
+  const handlePlayPause = useCallback(() => {
     if (!audioRef.current) return;
     if (isPlaying) {
       audioRef.current.pause();
     } else {
       audioRef.current.play().catch((error) => console.error("Play error:", error));
     }
-  };
+  }, [isPlaying, audioRef]);
 
-  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSeek = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (!audioRef.current) return;
     const newTime = parseFloat(e.target.value);
     audioRef.current.currentTime = newTime;
     setCurrentTime(newTime);
-  };
+  }, [audioRef]);
 
-  const toggleFullScreen = () => {
+  const toggleFullScreen = useCallback(() => {
     setIsFullScreen(!isFullScreen);
-  };
+  }, [isFullScreen]);
 
   if (!currentTrack) {
     return (
