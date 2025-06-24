@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { FiSettings, FiMusic, FiFilter, FiSave, FiX } from 'react-icons/fi';
+import { FiSettings, FiFilter, FiSave, FiX } from 'react-icons/fi';
 
 interface SmartPlaylistCreatorProps {
   isOpen: boolean;
   onClose: () => void;
-  onPlaylistCreated?: (playlist: any) => void;
+  onPlaylistCreated?: (playlist: Record<string, unknown>) => void;
 }
 
 interface PlaylistCriteria {
@@ -45,8 +45,6 @@ export const SmartPlaylistCreator: React.FC<SmartPlaylistCreatorProps> = ({
     maxTracks: 25
   });
   const [isCreating, setIsCreating] = useState(false);
-  const [previewTracks, setPreviewTracks] = useState<any[]>([]);
-  const [showPreview, setShowPreview] = useState(false);
 
   useEffect(() => {
     if (!isOpen) {
@@ -61,8 +59,6 @@ export const SmartPlaylistCreator: React.FC<SmartPlaylistCreatorProps> = ({
         includeFollowedArtists: false,
         maxTracks: 25
       });
-      setPreviewTracks([]);
-      setShowPreview(false);
     }
   }, [isOpen]);
 
@@ -86,10 +82,9 @@ export const SmartPlaylistCreator: React.FC<SmartPlaylistCreatorProps> = ({
 
   const generatePreview = async () => {
     try {
-      setShowPreview(true);
       // This would be a separate endpoint for preview
       // For now, we'll simulate it
-      setPreviewTracks([]);
+      console.log('Preview generated');
     } catch (error) {
       console.error('Error generating preview:', error);
     }
@@ -319,7 +314,7 @@ export const SmartPlaylistCreator: React.FC<SmartPlaylistCreatorProps> = ({
                   className="mr-3"
                 />
                 <span className="text-sm text-gray-700">
-                  Inclure les pistes d'artistes suivis
+                  Inclure les pistes d&apos;artistes suivis
                 </span>
               </label>
             </div>

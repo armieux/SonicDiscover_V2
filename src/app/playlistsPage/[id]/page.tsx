@@ -4,6 +4,7 @@ import { PrismaClient } from "@prisma/client";
 import PageLayout from "@/app/components/PageLayout";
 import MusicCard from "@/app/components/MusicCard/MusicCard";
 import { ExtendedTrack } from "@/app/musicListPage/page";
+import Image from 'next/image';
 
 const prisma = new PrismaClient();
 
@@ -89,7 +90,7 @@ export default async function PlaylistPage(context: PlaylistPageProps) {
         <div className="w-full max-w-4xl bg-[#282733] p-8 rounded-lg shadow-lg">
           {/* Playlist Header */}
           <div className="flex items-center space-x-4 mb-6">
-            <img
+            <Image
               src={playlist.playlistpicture || "https://placehold.co/150"}
               alt={playlist.name}
               className="w-36 h-36 rounded-md shadow-md"

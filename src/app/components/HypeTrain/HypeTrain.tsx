@@ -4,6 +4,7 @@ import {FaPlay} from "react-icons/fa";
 import {useMusicContext} from "@/app/context/MusicContext";
 import { Track } from "../../interfaces/Track";
 import { TbBus } from "react-icons/tb";
+import Image from 'next/image';
 
 
 
@@ -24,8 +25,8 @@ const HypeTrain: React.FC = () => {
                 }
                 const data = await response.json();
                 setTracks(data.tracks || []);
-            } catch (err: any) {
-                setError(err.message);
+            } catch (err: unknown) {
+                setError(err instanceof Error ? err.message : 'Erreur inconnue');
             } finally {
                 setLoading(false);
             }
@@ -109,14 +110,14 @@ const HypeTrain: React.FC = () => {
                                         </span>
                                     )}
                                     {track.trackpicture ? (
-                                        <img
+                                        <Image
                                             src={track.trackpicture}
                                             alt={track.title}
                                             className="w-full h-32 object-cover rounded-lg"
                                         />
                                     ) : (
                                         <div className="w-full h-32 flex items-center justify-center bg-[#1f1f1f]">
-                                            <span className="text-gray-500 text-white">Pas d'image</span>
+                                            <span className="text-gray-500 text-white">Pas d&apos;image</span>
                                         </div>
                                     )}
                                 </div>
@@ -144,14 +145,14 @@ const HypeTrain: React.FC = () => {
                         className="bg-[#1f1f1f] rounded-lg shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300"
                     >
                         {track.trackpicture ? (
-                            <img
+                            <Image
                                 src={track.trackpicture}
                                 alt={track.title}
                                 className="w-full h-48 object-cover"
                             />
                         ) : (
                             <div className="w-full h-48 flex items-center justify-center bg-[#1f1f1f]">
-                                <span className="text-gray-500 text-white">Pas d'image</span>
+                                <span className="text-gray-500 text-white">Pas d&apos;image</span>
                             </div>
                         )}
                         <div className="p-4">

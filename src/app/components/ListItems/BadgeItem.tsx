@@ -1,5 +1,8 @@
 "use client";
 
+import Image from 'next/image';
+
+
 interface BadgeItemProps {
   item: {
     badgeid: number;
@@ -15,7 +18,7 @@ interface BadgeItemProps {
 export default function BadgeItem({ item }: BadgeItemProps) {
   return (
     <div className="text-center">
-      <img
+      <Image
         src={item.badges.badgeicon ?? "https://placehold.co/100"}
         alt={item.badges.name}
         className="w-12 h-12"

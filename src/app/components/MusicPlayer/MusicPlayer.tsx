@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useMusicContext } from "@/app/context/MusicContext";
 import { SlArrowDown, SlArrowUp, SlControlEnd, SlControlStart } from "react-icons/sl";
 import { FaPause, FaPlay } from "react-icons/fa";
+import Image from 'next/image';
 
 const MusicPlayer: React.FC = () => {
   const { currentTrack, playNext, playPrev, audioRef } = useMusicContext();
@@ -123,7 +124,7 @@ const MusicPlayer: React.FC = () => {
           <>
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <img
+                <Image
                   src={trackImage}
                   alt={currentTrack.title}
                   className="w-12 h-12 rounded object-cover"
@@ -161,7 +162,7 @@ const MusicPlayer: React.FC = () => {
 
         {isFullScreen && (
           <div className="flex flex-col items-center justify-center h-full">
-            <img
+            <Image
               src={trackImage}
               alt={currentTrack.title}
               className="w-80 h-80 rounded mb-4 object-cover"

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { FiCompass, FiRefreshCw, FiTrendingUp } from 'react-icons/fi';
 import { Track } from '../../interfaces/Track';
@@ -18,7 +18,7 @@ export const RecommendationWidget: React.FC<RecommendationWidgetProps> = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchRecommendations = async () => {
+  const fetchRecommendations = useCallback(async () => {
     setLoading(true);
     setError(null);
     
@@ -40,11 +40,11 @@ export const RecommendationWidget: React.FC<RecommendationWidgetProps> = ({
     } finally {
       setLoading(false);
     }
-  };
+  }, [compact]);
 
   useEffect(() => {
     fetchRecommendations();
-  }, []);
+  }, [fetchRecommendations]);
 
   if (error && error.includes('Unauthorized')) {
     return null;

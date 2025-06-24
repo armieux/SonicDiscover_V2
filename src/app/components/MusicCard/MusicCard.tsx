@@ -7,6 +7,7 @@ import { useMusicContext } from "@/app/context/MusicContext";
 import { ExtendedTrack } from "@/app/musicListPage/page";
 import { AddToPlaylistButton } from "../AddToPlaylistButton/AddToPlaylistButton";
 import { RemoveFromPlaylistButton } from "../RemoveFromPlaylistButton/RemoveFromPlaylistButton";
+import Image from 'next/image';
 
 interface MusicCardProps {
   track: ExtendedTrack;
@@ -26,7 +27,7 @@ const MusicCard: React.FC<MusicCardProps> = ({ track, index, playlist, inPlaylis
   return (
     <div className="flex items-center space-x-4 rounded-md p-4 bg-[#1f1f1f] shadow-2xl">
       {/* Cover image */}
-      <img
+      <Image
         src={track.trackpicture}
         alt={track.title}
         className="w-20 md:w-30 lg:w-40 h-20 md:h-30 lg:h-40 rounded-md"

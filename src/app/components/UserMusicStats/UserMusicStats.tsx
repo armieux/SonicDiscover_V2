@@ -21,7 +21,7 @@ interface UserStats {
     favoriteArtists: { id: number; username: string; profilepicture: string; total_listens: number }[];
   };
   activity: {
-    recent: any[];
+    recent: Record<string, unknown>[];
   };
 }
 
@@ -118,20 +118,20 @@ export const UserMusicStats: React.FC = () => {
         <div className="bg-orange-50 rounded-lg p-4 text-center">
           <FiCalendar className="w-6 h-6 text-orange-600 mx-auto mb-2" />
           <div className="text-2xl font-bold text-orange-600">{stats.listening.currentStreak}</div>
-          <div className="text-sm text-gray-600">Série d'écoute</div>
+          <div className="text-sm text-gray-600">Série d&apos;écoute</div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <h3 className="text-lg font-semibold text-gray-800 mb-3">Habitudes d'écoute</h3>
+          <h3 className="text-lg font-semibold text-gray-800 mb-3">Habitudes d&apos;écoute</h3>
           <div className="space-y-3">
             <div className="flex justify-between items-center">
               <span className="text-gray-600">Morceaux uniques écoutés</span>
               <span className="font-medium">{stats.listening.uniqueTracks}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-gray-600">Série d'écoute</span>
+              <span className="text-gray-600">Série d&apos;écoute</span>
               <span className="font-medium">{getStreakText(stats.listening.currentStreak)}</span>
             </div>
             <div className="flex justify-between items-center">

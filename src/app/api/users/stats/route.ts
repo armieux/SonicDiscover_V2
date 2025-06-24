@@ -5,6 +5,19 @@ import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 
+interface TopGenre {
+  genre: string;
+  count: bigint;
+  total_listens: bigint;
+}
+
+interface FavoriteArtist {
+  id: bigint;
+  username: string;
+  profilepicture: string | null;
+  total_listens: bigint;
+}
+
 export async function GET() {
   try {
     const cookieStore = await cookies();
@@ -153,13 +166,13 @@ export async function GET() {
     `;
 
     // Convert BigInt values to regular numbers for JSON serialization
-    const processedTopGenres = (topGenres as any[]).map(genre => ({
+    const processedTopGenres = (topGenres as TopGenre[]).map(genre => ({
       genre: genre.genre,
       count: Number(genre.count),
       total_listens: Number(genre.total_listens)
     }));
 
-    const processedFavoriteArtists = (favoriteArtists as any[]).map(artist => ({
+    const processedFavoriteArtists = (favoriteArtists as FavoriteArtist[]).map(artist => ({
       id: Number(artist.id),
       username: artist.username,
       profilepicture: artist.profilepicture,

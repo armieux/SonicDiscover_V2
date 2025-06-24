@@ -12,6 +12,29 @@ interface UserPreferences {
   followedArtists: number[];
 }
 
+interface DiscoveryTrack {
+  id: number;
+  title: string | null;
+  genre: string | null;
+  mood: string | null;
+  bpm: number | null;
+  averagerating: number | null;
+  likecount: number | null;
+  uploaddate: Date | null;
+  trackartists?: {
+    artistid: number;
+    users: {
+      id: number;
+      username: string | null;
+      profilepicture: string | null;
+    } | null;
+  }[] | null;
+  ratings?: {
+    liked: boolean | null;
+  }[] | null;
+  discoveryScore: number;
+}
+
 export async function GET() {
   try {
     const cookieStore = await cookies();
@@ -147,7 +170,7 @@ async function analyzeUserPreferences(userId: number): Promise<UserPreferences> 
   };
 }
 
-async function generateDiscoveryPlaylist(userId: number, preferences: UserPreferences): Promise<any[]> {
+async function generateDiscoveryPlaylist(userId: number, preferences: UserPreferences): Promise<DiscoveryTrack[]> {
   // Get tracks the user hasn't interacted with much
   const userRatedTracks = await prisma.ratings.findMany({
     where: { userid: userId },

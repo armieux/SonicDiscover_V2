@@ -3,6 +3,7 @@
 import React from 'react';
 import { Track } from '../../interfaces/Track';
 import { FiPlay, FiHeart, FiClock } from 'react-icons/fi';
+import Image from 'next/image';
 
 interface DiscoveryTrackItemProps {
   track: Track;
@@ -34,7 +35,7 @@ export const DiscoveryTrackItem: React.FC<DiscoveryTrackItemProps> = ({ track, o
       {/* Track Image */}
       <div className="relative w-12 h-12 rounded-md overflow-hidden bg-gray-200 flex-shrink-0">
         {track.trackpicture ? (
-          <img 
+          <Image 
             src={track.trackpicture} 
             alt={track.title}
             className="w-full h-full object-cover"

@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
-import { FcAssistant, FcMusic } from "react-icons/fc";
-import { PiRobotDuotone, PiRobot } from "react-icons/pi";
+import { FcMusic } from "react-icons/fc";
+import { PiRobotDuotone } from "react-icons/pi";
 
 import './ChatWidget.css';
 import ReactMarkdown from "react-markdown";
@@ -64,7 +64,7 @@ const ChatWidget: React.FC = () => {
 
             // Ajout d'un nouveau message assistant vide
             // (qu'on remplira via le streaming)
-            let assistantMessage: Message = { role: "assistant", content: "" };
+            const assistantMessage: Message = { role: "assistant", content: "" };
 
             if (isInitial && welcomeMessage) {
                 setMessages((prev) => [

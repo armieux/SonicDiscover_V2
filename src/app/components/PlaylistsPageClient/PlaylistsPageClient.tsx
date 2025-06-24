@@ -5,13 +5,14 @@ import Link from 'next/link';
 import { FiPlus, FiSettings, FiMusic } from 'react-icons/fi';
 import CreatePlaylistForm from '../CreatePlaylistForm/CreatePlaylistForm';
 import { SmartPlaylistCreator } from '../SmartPlaylistCreator/SmartPlaylistCreator';
+import Image from 'next/image';
 
 interface Playlist {
   id: number;
   name: string;
   playlistpicture: string | null;
   description: string | null;
-  playlisttracks: any[];
+  playlisttracks: Record<string, unknown>[];
 }
 
 export const PlaylistsPageClient: React.FC = () => {
@@ -114,7 +115,7 @@ export const PlaylistsPageClient: React.FC = () => {
               >
                 <div className="bg-[#3a3a4a] rounded-lg p-4 hover:bg-[#4a4a5a] transition-colors cursor-pointer">
                   <div className="aspect-square mb-4 overflow-hidden rounded-md">
-                    <img 
+                    <Image 
                       src={playlist.playlistpicture || "https://placehold.co/200x200/666/fff?text=Playlist"} 
                       alt={playlist.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform"

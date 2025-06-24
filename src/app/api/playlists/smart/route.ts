@@ -37,8 +37,8 @@ export async function POST(request: Request) {
     }
 
     // Build WHERE clause based on criteria
-    const whereConditions: any = {};
-    const orConditions: any[] = [];
+    const whereConditions: Record<string, unknown> = {};
+    const orConditions: Record<string, unknown>[] = [];
 
     // Genre filtering
     if (criteria.genres && criteria.genres.length > 0) {

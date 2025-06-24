@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import Upload from '@/app/components/Upload/Upload';
 import { Track } from '@/app/interfaces/Track';
 import PageLayout from '../components/PageLayout';
+import Image from 'next/image';
 
 const CreateTrackPage: React.FC = () => {
   // State variables for form fields
@@ -197,7 +198,7 @@ const CreateTrackPage: React.FC = () => {
               </p>
               {uploadedTrack.trackpicture && (
                 <div className="mt-2">
-                  <img
+                  <Image
                     src={uploadedTrack.trackpicture}
                     alt="Track Picture"
                     className="w-32 h-32 object-cover rounded"

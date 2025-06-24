@@ -3,8 +3,6 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  BsCollectionPlayFill,
-  BsFileEarmarkPlusFill,
   BsFilePersonFill
 } from 'react-icons/bs';
 import { User } from '@/app/interfaces/User';

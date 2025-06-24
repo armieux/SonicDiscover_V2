@@ -4,7 +4,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function GET(request: Request) {
+export async function GET() {
     try {
         // Récupérer les morceaux ajoutés dans les 7 derniers jours,
         // calculer le ratio like/dislike (en évitant la division par zéro)

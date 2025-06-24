@@ -1,5 +1,8 @@
 "use client";
 
+import Image from 'next/image';
+
+
 interface RatingItemProps {
   item: {
     tracks: {
@@ -17,7 +20,7 @@ export default function RatingItem({ item }: RatingItemProps) {
   const { tracks, liked } = item;
   return (
     <div className="flex items-center text-white">
-      <img
+      <Image
         src={tracks.trackpicture || "https://placehold.co/50"}
         alt={tracks.title}
         className="w-8 h-8 inline-block m-1"

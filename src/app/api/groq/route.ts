@@ -127,7 +127,7 @@ export async function POST(req: NextRequest) {
                 "Transfer-Encoding": "chunked",
             },
         });
-    } catch (err: any) {
+    } catch (err: unknown) {
         console.error("Erreur route /api/groq :", err);
         return new Response(
             "Erreur interne lors de l'appel à Groq.",

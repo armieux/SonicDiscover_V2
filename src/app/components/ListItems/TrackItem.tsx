@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { SlOptionsVertical } from "react-icons/sl";
 import { TrackArtist } from "@/app/interfaces/TrackArtist";
 import dynamic from "next/dynamic";
+import Image from 'next/image';
+
 
 // Dynamically import the UpdateTrackForm (client-side only)
 const UpdateTrackForm = dynamic(() => import('@/app/components/UpdateTrackForm/UpdateTrackForm'), { ssr: false });
@@ -48,7 +50,7 @@ export default function TrackItem({ item, onDelete, isOwnProfile }: TrackItemPro
     <div className="relative">
       <div className="flex justify-between items-center text-white">
         <div className="flex items-center">
-          <img
+          <Image
             src={tracks.tracks.trackpicture || "https://placehold.co/50"}
             alt={tracks.tracks.title}
             className="w-8 h-8 inline-block m-1"
