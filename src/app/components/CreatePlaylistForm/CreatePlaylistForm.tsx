@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 
-const CreatePlaylistForm = () => {
+interface CreatePlaylistFormProps {
+  onPlaylistCreated?: () => void;
+}
+
+const CreatePlaylistForm: React.FC<CreatePlaylistFormProps> = ({ onPlaylistCreated }) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
@@ -20,7 +24,13 @@ const CreatePlaylistForm = () => {
       });
 
       if (response.ok) {
-        window.location.reload();
+        setName("");
+        setDescription("");
+        if (onPlaylistCreated) {
+          onPlaylistCreated();
+        } else {
+          window.location.reload();
+        }
       }
     } catch (error) {
       console.error("Error creating playlist:", error);

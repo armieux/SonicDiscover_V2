@@ -11,6 +11,7 @@ import { User } from '@/app/interfaces/User';
 import { MdOutlineLibraryMusic } from "react-icons/md";
 import { MdOutlineVideoLibrary } from "react-icons/md";
 import { TbLibraryPlus } from "react-icons/tb";
+import { FiCompass } from "react-icons/fi";
 
 
 
@@ -25,6 +26,8 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
     pathname === path
       ? 'text-yellow-400 font-medium transition duration-300 hover:text-yellow-500'
       : 'text-white font-medium hover:text-yellow-400 transition duration-300';
+
+  console.log(user?.role);
 
   return (
       <nav className="bg-black bg-opacity-90 backdrop-blur-lg p-4 shadow-md">
@@ -49,6 +52,14 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
                 <div className="flex items-center">
                   <MdOutlineLibraryMusic size={25}/>
                   <p className="pl-1">Toutes les musiques</p>
+                </div>
+              </Link>
+            </li>
+            <li>
+              <Link href="/discover" className={linkClasses('/discover')}>
+                <div className="flex items-center">
+                  <FiCompass size={25}/>
+                  <p className="pl-1">Découverte</p>
                 </div>
               </Link>
             </li>
