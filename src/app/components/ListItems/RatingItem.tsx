@@ -23,7 +23,9 @@ export default function RatingItem({ item }: RatingItemProps) {
       <Image
         src={tracks.trackpicture || "https://placehold.co/50"}
         alt={tracks.title}
-        className="w-8 h-8 inline-block m-1"
+        width={32}
+        height={32}
+        className="w-8 h-8 inline-block m-1 object-cover"
       />
       <span>
         {tracks.title} - {liked ? "👍" : "👎"}

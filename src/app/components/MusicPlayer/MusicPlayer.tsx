@@ -127,6 +127,8 @@ const MusicPlayer: React.FC = () => {
                 <Image
                   src={trackImage}
                   alt={currentTrack.title}
+                  width={48}
+                  height={48}
                   className="w-12 h-12 rounded object-cover"
                 />
                 <div className="ml-4">
@@ -165,6 +167,8 @@ const MusicPlayer: React.FC = () => {
             <Image
               src={trackImage}
               alt={currentTrack.title}
+              width={320}
+              height={320}
               className="w-80 h-80 rounded mb-4 object-cover"
             />
             <h2 className="text-white text-2xl">{currentTrack.title}</h2>

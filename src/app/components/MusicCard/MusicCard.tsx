@@ -30,7 +30,9 @@ const MusicCard: React.FC<MusicCardProps> = ({ track, index, playlist, inPlaylis
       <Image
         src={track.trackpicture}
         alt={track.title}
-        className="w-20 md:w-30 lg:w-40 h-20 md:h-30 lg:h-40 rounded-md"
+        width={160}
+        height={160}
+        className="w-20 md:w-30 lg:w-40 h-20 md:h-30 lg:h-40 rounded-md object-cover"
       />
 
       {/* Song information */}

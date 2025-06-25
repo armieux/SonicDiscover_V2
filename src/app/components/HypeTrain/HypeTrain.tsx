@@ -113,6 +113,8 @@ const HypeTrain: React.FC = () => {
                                         <Image
                                             src={track.trackpicture}
                                             alt={track.title}
+                                            width={160}
+                                            height={128}
                                             className="w-full h-32 object-cover rounded-lg"
                                         />
                                     ) : (
@@ -148,6 +150,8 @@ const HypeTrain: React.FC = () => {
                             <Image
                                 src={track.trackpicture}
                                 alt={track.title}
+                                width={400}
+                                height={192}
                                 className="w-full h-48 object-cover"
                             />
                         ) : (

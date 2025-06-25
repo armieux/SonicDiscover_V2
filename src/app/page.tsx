@@ -22,27 +22,10 @@ const HomePage: React.FC = () => {
       <><Head>
         <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
       </Head><PageLayout>{<>
-          <div className="flex h-screen w-100 bg-[#121212] items-center justify-start flex-col">
+          <div className="flex w-100 bg-[#121212] items-center justify-start flex-col min-h-screen">
               <h1 className="text-5xl text-white p-5">Bienvenue sur Sonic Discover!</h1>
               <HypeTrain />
-          </div>
-          <div className="w-full max-w-6xl px-4">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                  {/* Discovery Section */}
-                  <div>
-                      <DiscoveryPreview onTrackSelect={handleTrackSelect} />
-                  </div>
-
-                  {/* User Stats Section */}
-                  <div>
-                      <UserMusicStats />
-                  </div>
-              </div>
-
-              {/* Hype Train Section - Full Width */}
-              <div className="mb-8">
-                  <HypeTrain />
-              </div>
+              <DiscoveryPreview onTrackSelect={handleTrackSelect} />
           </div>
           <ChatWidget />
       </>}</PageLayout>

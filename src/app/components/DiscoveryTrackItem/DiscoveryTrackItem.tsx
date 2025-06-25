@@ -38,6 +38,8 @@ export const DiscoveryTrackItem: React.FC<DiscoveryTrackItemProps> = ({ track, o
           <Image 
             src={track.trackpicture} 
             alt={track.title}
+            width={48}
+            height={48}
             className="w-full h-full object-cover"
           />
         ) : (

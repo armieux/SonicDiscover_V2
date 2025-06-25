@@ -93,7 +93,9 @@ export default async function PlaylistPage(context: PlaylistPageProps) {
             <Image
               src={playlist.playlistpicture || "https://placehold.co/150"}
               alt={playlist.name}
-              className="w-36 h-36 rounded-md shadow-md"
+              width={144}
+              height={144}
+              className="w-36 h-36 rounded-md shadow-md object-cover"
             />
             <div>
               <h2 className="text-4xl text-white">{playlist.name}</h2>

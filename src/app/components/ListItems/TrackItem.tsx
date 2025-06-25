@@ -53,7 +53,9 @@ export default function TrackItem({ item, onDelete, isOwnProfile }: TrackItemPro
           <Image
             src={tracks.tracks.trackpicture || "https://placehold.co/50"}
             alt={tracks.tracks.title}
-            className="w-8 h-8 inline-block m-1"
+            width={32}
+            height={32}
+            className="w-8 h-8 inline-block m-1 object-cover"
           />
           <p>
             {tracks.tracks.title} - {tracks.tracks.genre}

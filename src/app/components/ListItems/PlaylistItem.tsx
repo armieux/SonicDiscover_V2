@@ -19,7 +19,9 @@ export default function PlaylistItem({ item }: PlaylistItemProps) {
       <Image
         src={item.playlistpicture || "https://placehold.co/50"}
         alt={item.name}
-        className="w-8 h-8 inline-block m-1"
+        width={32}
+        height={32}
+        className="w-8 h-8 inline-block m-1 object-cover"
       />
       <span>{item.name}</span>
     </div>

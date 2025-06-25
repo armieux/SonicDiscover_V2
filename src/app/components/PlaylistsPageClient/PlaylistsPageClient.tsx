@@ -118,6 +118,8 @@ export const PlaylistsPageClient: React.FC = () => {
                     <Image 
                       src={playlist.playlistpicture || "https://placehold.co/200x200/666/fff?text=Playlist"} 
                       alt={playlist.name}
+                      width={200}
+                      height={200}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                     />
                   </div>

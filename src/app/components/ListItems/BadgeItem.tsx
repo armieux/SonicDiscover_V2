@@ -21,7 +21,9 @@ export default function BadgeItem({ item }: BadgeItemProps) {
       <Image
         src={item.badges.badgeicon ?? "https://placehold.co/100"}
         alt={item.badges.name}
-        className="w-12 h-12"
+        width={48}
+        height={48}
+        className="w-12 h-12 object-cover"
       />
       <p className="text-white text-xs">{item.badges.name}</p>
     </div>

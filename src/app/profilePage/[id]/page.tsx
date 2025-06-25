@@ -8,6 +8,7 @@ import PlaylistItem from '@/app/components/ListItems/PlaylistItem';
 import BadgeItem from '@/app/components/ListItems/BadgeItem';
 import RatingItem from '@/app/components/ListItems/RatingItem';
 import Image from 'next/image';
+import UserMusicStats from "@/app/components/UserMusicStats/UserMusicStats";
 
 const prisma = new PrismaClient();
 
@@ -103,7 +104,13 @@ export default async function ProfilePage(context: ProfilePageProps) {
           </div>
 
           {/* Profile Picture */}
-          <Image src={user.profilepicture || "/default-avatar.jpg"} alt="Profile" className="w-24 h-24 rounded-full mb-4"/>
+          <Image 
+            src={user.profilepicture || "/default-avatar.jpg"} 
+            alt="Profile" 
+            width={96}
+            height={96}
+            className="w-24 h-24 rounded-full mb-4 object-cover"
+          />
 
           {/* Username */}
           <p className="text-white"><strong>Nom :</strong> {user.username}</p>
@@ -143,6 +150,10 @@ export default async function ProfilePage(context: ProfilePageProps) {
             </div>
           )}
         </div>
+      </div>
+      {/* User Stats Section */}
+      <div>
+        <UserMusicStats />
       </div>
     </PageLayout>
   );
