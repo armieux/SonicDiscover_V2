@@ -5,10 +5,11 @@ import { useMusicContext } from "@/app/context/MusicContext";
 import { SlArrowDown, SlArrowUp, SlControlEnd, SlControlStart } from "react-icons/sl";
 import { FaPause, FaPlay, FaShuffle, FaRepeat } from "react-icons/fa6";
 import { HiVolumeUp, HiVolumeOff } from "react-icons/hi";
+import { IoClose } from "react-icons/io5";
 import Image from 'next/image';
 
 const MusicPlayer: React.FC = () => {
-  const { currentTrack, playNext, playPrev, audioRef } = useMusicContext();
+  const { currentTrack, playNext, playPrev, audioRef, stopPlayback } = useMusicContext();
   const [isPlaying, setIsPlaying] = useState(false);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -293,6 +294,15 @@ const MusicPlayer: React.FC = () => {
                 >
                   <SlArrowUp size={16}/>
                 </button>
+                
+                {/* Bouton de fermeture */}
+                <button 
+                  onClick={stopPlayback} 
+                  className="p-2 text-[#B8B8B8] hover:text-red-400 hover:bg-red-500 hover:bg-opacity-10 rounded-lg transition-all duration-300 flex-shrink-0"
+                  title="Arrêter et fermer le lecteur"
+                >
+                  <IoClose size={18}/>
+                </button>
               </div>
             </div>
           </div>
@@ -300,13 +310,26 @@ const MusicPlayer: React.FC = () => {
 
         {isFullScreen && (
           <div className="h-full flex flex-col items-center justify-center px-8 relative">
-            {/* Bouton de fermeture */}
-            <button 
-              onClick={toggleFullScreen} 
-              className="absolute top-8 right-8 text-[#B8B8B8] hover:text-[#F2A365] transition-colors duration-300"
-            >
-              <SlArrowDown size={24}/>
-            </button>
+            {/* Boutons de contrôle en haut */}
+            <div className="absolute top-8 right-8 flex items-center gap-4">
+              {/* Bouton de réduction */}
+              <button 
+                onClick={toggleFullScreen} 
+                className="p-2 text-[#B8B8B8] hover:text-[#F2A365] hover:bg-[#F2A365] hover:bg-opacity-10 rounded-lg transition-all duration-300"
+                title="Réduire"
+              >
+                <SlArrowDown size={24}/>
+              </button>
+              
+              {/* Bouton de fermeture */}
+              <button 
+                onClick={stopPlayback} 
+                className="p-2 text-[#B8B8B8] hover:text-red-400 hover:bg-red-500 hover:bg-opacity-10 rounded-lg transition-all duration-300"
+                title="Arrêter et fermer le lecteur"
+              >
+                <IoClose size={24}/>
+              </button>
+            </div>
 
             {/* Image de l'album */}
             <div className="relative mb-8 group">

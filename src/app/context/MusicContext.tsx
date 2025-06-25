@@ -13,6 +13,7 @@ interface MusicContextType {
   setIsPlaying: (playing: boolean) => void;
   playNext: () => void;
   playPrev: () => void;
+  stopPlayback: () => void;
 }
 
 const MusicContext = createContext<MusicContextType>({
@@ -25,6 +26,7 @@ const MusicContext = createContext<MusicContextType>({
   setIsPlaying: () => {},
   playNext: () => {},
   playPrev: () => {},
+  stopPlayback: () => {},
 });
 
 export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -59,6 +61,17 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   }, [currentTrack]);
 
+  const stopPlayback = useCallback(() => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+    setCurrentTrackState(null);
+    setPlaylist([]);
+    setCurrentIndex(0);
+    setIsPlaying(false);
+  }, [audioRef]);
+
   const playNext = useCallback(async () => {
     if (playlist.length === 0) return;
     const nextIndex = (currentIndex + 1) % playlist.length;
@@ -91,6 +104,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         setIsPlaying,
         playNext,
         playPrev,
+        stopPlayback,
       }}
     >
       {children}
