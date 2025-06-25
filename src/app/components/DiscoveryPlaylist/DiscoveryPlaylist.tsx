@@ -113,7 +113,7 @@ export const DiscoveryPlaylist: React.FC<DiscoveryPlaylistProps> = ({ onTrackSel
             <div className="animate-spin rounded-full h-6 w-6 border-2 border-peach-soft border-t-transparent"></div>
             <span className="text-text-secondary text-lg">Génération de votre playlist de découverte...</span>
           </div>
-          <p className="text-text-muted text-sm">L'IA analyse vos goûts musicaux</p>
+          <p className="text-text-muted text-sm">L&apos;IA analyse vos goûts musicaux</p>
         </div>
       </div>
     );

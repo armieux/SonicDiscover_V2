@@ -134,7 +134,7 @@ const HypeTrain: React.FC = () => {
                                         />
                                     ) : (
                                         <div className="w-full h-40 flex items-center justify-center bg-[#3E5C76] bg-opacity-30">
-                                            <span className="text-[#B8B8B8] text-sm">Pas d'image</span>
+                                            <span className="text-[#B8B8B8] text-sm">Pas d&apos;image</span>
                                         </div>
                                     )}
                                     
@@ -186,7 +186,7 @@ const HypeTrain: React.FC = () => {
                                         />
                                     ) : (
                                         <div className="w-full h-48 flex items-center justify-center bg-[#3E5C76] bg-opacity-30">
-                                            <span className="text-[#B8B8B8]">Pas d'image</span>
+                                            <span className="text-[#B8B8B8]">Pas d&apos;image</span>
                                         </div>
                                     )}
                                     

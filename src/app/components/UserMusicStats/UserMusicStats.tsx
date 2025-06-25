@@ -134,7 +134,7 @@ const UserMusicStats: React.FC = () => {
           </div>
           <div>
             <h2 className="text-3xl font-bold text-[#F1F1F1]">Vos Statistiques Musicales</h2>
-            <p className="text-[#B8B8B8]">Découvrez vos habitudes d'écoute</p>
+            <p className="text-[#B8B8B8]">Découvrez vos habitudes d&apos;écoute</p>
           </div>
         </div>
         <div className="w-16 h-16 bg-gradient-to-br from-[#F2A365] to-[#D9BF77] rounded-full flex items-center justify-center">
@@ -176,7 +176,7 @@ const UserMusicStats: React.FC = () => {
             <FaFire className="text-xl text-[#1C1C2E]" />
           </div>
           <div className="text-3xl font-bold text-[#D9BF77] mb-1">{stats.listening.currentStreak}</div>
-          <div className="text-[#B8B8B8] text-sm font-medium">Série d'écoute</div>
+          <div className="text-[#B8B8B8] text-sm font-medium">Série d&apos;écoute</div>
           <div className="mt-2 text-xs text-[#8A8A8A]">🔥 Votre régularité</div>
         </div>
       </div>
@@ -189,7 +189,7 @@ const UserMusicStats: React.FC = () => {
             <div className="w-8 h-8 bg-gradient-to-r from-[#F2A365] to-[#D9BF77] rounded-lg flex items-center justify-center">
               <FiActivity className="text-[#1C1C2E]" />
             </div>
-            <h3 className="text-xl font-semibold text-[#F1F1F1]">Habitudes d'écoute</h3>
+            <h3 className="text-xl font-semibold text-[#F1F1F1]">Habitudes d&apos;écoute</h3>
           </div>
           
           <div className="space-y-4">
@@ -208,7 +208,7 @@ const UserMusicStats: React.FC = () => {
                 <div className="w-8 h-8 bg-[#D9BF77] bg-opacity-20 rounded-lg flex items-center justify-center">
                   <FiCalendar className="text-[#D9BF77] text-sm" />
                 </div>
-                <span className="text-[#B8B8B8]">Série d'écoute</span>
+                <span className="text-[#B8B8B8]">Série d&apos;écoute</span>
               </div>
               <span className="font-semibold text-[#F1F1F1]">{getStreakText(stats.listening.currentStreak)}</span>
             </div>
@@ -282,7 +282,7 @@ const UserMusicStats: React.FC = () => {
                 <div className="text-lg font-bold text-night-blue">
                   {stats.social.followers > 0 ? ((stats.social.followers / Math.max(stats.social.following, 1)) * 100).toFixed(1) : 0}%
                 </div>
-                <div className="text-xs text-[#8A8A8A]">Ratio d'engagement social</div>
+                <div className="text-xs text-[#8A8A8A]">Ratio d&apos;engagement social</div>
               </div>
             </div>
           </div>

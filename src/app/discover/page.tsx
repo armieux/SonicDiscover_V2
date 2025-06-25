@@ -89,7 +89,7 @@ export default function DiscoverPage() {
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-gold-soft">•</span>
-                  <span>Notez vos morceaux favoris pour améliorer l'algorithme</span>
+                  <span>Notez vos morceaux favoris pour améliorer l&apos;algorithme</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-gold-soft">•</span>

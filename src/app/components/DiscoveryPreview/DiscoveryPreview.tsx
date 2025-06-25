@@ -201,7 +201,7 @@ export const DiscoveryPreview: React.FC<DiscoveryPreviewProps> = ({ onTrackSelec
           className="w-full btn-secondary flex items-center justify-center gap-3 text-center"
         >
           <FiCompass className="text-lg" />
-          <span>Plonger dans l'exploration musicale</span>
+          <span>Plonger dans l&apos;exploration musicale</span>
           <div className="flex items-center gap-1">
             <div className="w-1 h-1 bg-peach-soft rounded-full animate-ping"></div>
             <div className="w-1 h-1 bg-gold-soft rounded-full animate-ping" style={{ animationDelay: '0.2s' }}></div>

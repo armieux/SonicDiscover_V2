@@ -61,7 +61,7 @@ const HomePage: React.FC = () => {
                   <span className="text-2xl font-bold text-[#1C1C2E]">🎧</span>
                 </div>
                 <h3 className="text-xl font-semibold text-[#F1F1F1] mb-2">Écoutes Personnalisées</h3>
-                <p className="text-[#B8B8B8]">Algorithme intelligent d'adaptation musicale</p>
+                <p className="text-[#B8B8B8]">Algorithme intelligent d&apos;adaptation musicale</p>
               </div>
 
               <div className="glass-effect p-6 rounded-2xl text-center">
@@ -89,7 +89,7 @@ const HomePage: React.FC = () => {
                 </h2>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <button className="btn-primary text-lg px-8 py-4 rounded-2xl font-semibold">
-                    Commencer l'exploration
+                    Commencer l&apos;exploration
                   </button>
                 </div>
               </div>
