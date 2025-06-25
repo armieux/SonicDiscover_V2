@@ -1,0 +1,89 @@
+.commentsPanel {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.commentInput:focus {
+  box-shadow: 0 0 0 1px rgba(242, 163, 101, 0.5);
+}
+
+.commentInput::-webkit-scrollbar {
+  width: 6px;
+}
+
+.commentInput::-webkit-scrollbar-track {
+  background: rgba(62, 92, 118, 0.1);
+  border-radius: 3px;
+}
+
+.commentInput::-webkit-scrollbar-thumb {
+  background: rgba(242, 163, 101, 0.3);
+  border-radius: 3px;
+}
+
+.commentInput::-webkit-scrollbar-thumb:hover {
+  background: rgba(242, 163, 101, 0.5);
+}
+
+.floatingComment {
+  animation: fadeInOut 4s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  15% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  85% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+}
+
+.commentsList {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(242, 163, 101, 0.3) rgba(62, 92, 118, 0.1);
+}
+
+.commentsList::-webkit-scrollbar {
+  width: 8px;
+}
+
+.commentsList::-webkit-scrollbar-track {
+  background: rgba(62, 92, 118, 0.1);
+  border-radius: 4px;
+}
+
+.commentsList::-webkit-scrollbar-thumb {
+  background: rgba(242, 163, 101, 0.3);
+  border-radius: 4px;
+}
+
+.commentsList::-webkit-scrollbar-thumb:hover {
+  background: rgba(242, 163, 101, 0.5);
+}
+
+.commentCard {
+  transition: all 0.2s ease-in-out;
+}
+
+.commentCard:hover {
+  background: rgba(42, 42, 64, 0.7);
+  border-color: rgba(242, 163, 101, 0.2);
+}
+
+.submitButton:disabled {
+  transform: none !important;
+}
+
+.submitButton:not(:disabled):hover {
+  box-shadow: 0 4px 20px rgba(242, 163, 101, 0.3);
+}

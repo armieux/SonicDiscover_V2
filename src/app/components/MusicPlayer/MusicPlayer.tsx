@@ -1,12 +1,28 @@
 "use client";
 
+/**
+ * MusicPlayer - Lecteur musical avec système de commentaires à timecode
+ * 
+ * Nouvelles fonctionnalités ajoutées :
+ * 1. Bouton commentaires en mode plein écran
+ * 2. Intégration du composant TimecodeComments
+ * 3. Gestion de l'affichage du panel de commentaires
+ * 4. Ajustement automatique de la mise en page quand les commentaires sont visibles
+ * 
+ * Usage :
+ * - En mode plein écran, cliquer sur l'icône commentaire pour ouvrir le panel
+ * - Écrire un commentaire qui sera associé au timecode actuel
+ * - Les commentaires d'autres utilisateurs apparaissent aléatoirement au bon moment
+ */
+
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useMusicContext } from "@/app/context/MusicContext";
 import { SlArrowDown, SlArrowUp, SlControlEnd, SlControlStart } from "react-icons/sl";
-import { FaPause, FaPlay, FaShuffle, FaRepeat } from "react-icons/fa6";
+import { FaPause, FaPlay, FaShuffle, FaRepeat, FaComment } from "react-icons/fa6";
 import { HiVolumeUp, HiVolumeOff } from "react-icons/hi";
 import { IoClose } from "react-icons/io5";
 import Image from 'next/image';
+import TimecodeComments from '../TimecodeComments';
 
 const MusicPlayer: React.FC = () => {
   const { currentTrack, playNext, playPrev, audioRef, stopPlayback } = useMusicContext();
@@ -18,6 +34,7 @@ const MusicPlayer: React.FC = () => {
   const [isMuted, setIsMuted] = useState(false);
   const [isShuffled, setIsShuffled] = useState(false);
   const [repeatMode, setRepeatMode] = useState<'none' | 'one' | 'all'>('none');
+  const [showComments, setShowComments] = useState(false);
   const previousTrackIdRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -148,6 +165,10 @@ const MusicPlayer: React.FC = () => {
   const toggleFullScreen = useCallback(() => {
     setIsFullScreen(!isFullScreen);
   }, [isFullScreen]);
+
+  const toggleComments = useCallback(() => {
+    setShowComments(!showComments);
+  }, [showComments]);
 
   if (!currentTrack) {
     return (
@@ -312,6 +333,19 @@ const MusicPlayer: React.FC = () => {
           <div className="h-full flex flex-col items-center justify-center px-8 relative">
             {/* Boutons de contrôle en haut */}
             <div className="absolute top-8 right-8 flex items-center gap-4">
+              {/* Bouton commentaires */}
+              <button 
+                onClick={toggleComments} 
+                className={`p-2 transition-all duration-300 rounded-lg ${
+                  showComments 
+                    ? 'text-[#F2A365] bg-[#F2A365] bg-opacity-20' 
+                    : 'text-[#B8B8B8] hover:text-[#F2A365] hover:bg-[#F2A365] hover:bg-opacity-10'
+                }`}
+                title="Commentaires"
+              >
+                <FaComment size={20}/>
+              </button>
+              
               {/* Bouton de réduction */}
               <button 
                 onClick={toggleFullScreen} 
@@ -331,103 +365,118 @@ const MusicPlayer: React.FC = () => {
               </button>
             </div>
 
-            {/* Image de l'album */}
-            <div className="relative mb-8 group">
-              <div className="w-80 h-80 rounded-3xl overflow-hidden shadow-2xl">
-                <Image
-                  src={trackImage}
-                  alt={currentTrack.title}
-                  width={320}
-                  height={320}
-                  className="w-full h-full object-cover"
+            {/* Contenu principal avec ajustement si commentaires visibles */}
+            <div className={`flex flex-col items-center justify-center transition-all duration-300 ${
+              showComments ? 'mr-96' : ''
+            }`}>
+              {/* Image de l'album */}
+              <div className="relative mb-8 group">
+                <div className="w-80 h-80 rounded-3xl overflow-hidden shadow-2xl">
+                  <Image
+                    src={trackImage}
+                    alt={currentTrack.title}
+                    width={320}
+                    height={320}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-30 rounded-3xl transition-opacity duration-300" />
+              </div>
+
+              {/* Informations du track */}
+              <div className="text-center mb-8">
+                <h2 className="text-4xl font-bold text-[#F1F1F1] mb-2">{currentTrack.title}</h2>
+                <h4 className="text-xl text-[#B8B8B8] mb-4">
+                  {currentTrack.genre || "Genre inconnu"}
+                </h4>
+              </div>
+
+              {/* Barre de progression */}
+              <div className="w-full max-w-2xl mb-8">
+                <input
+                  type="range"
+                  className="w-full h-2 bg-[#3E5C76] bg-opacity-30 rounded-lg appearance-none cursor-pointer progress-slider"
+                  min={0}
+                  max={duration}
+                  step="0.01"
+                  value={currentTime}
+                  onChange={handleSeek}
+                />
+                <div className="flex justify-between text-[#B8B8B8] text-sm mt-2 font-mono">
+                  <span>{formatTime(currentTime)}</span>
+                  <span>{formatTime(duration)}</span>
+                </div>
+              </div>
+
+              {/* Contrôles */}
+              <div className="flex items-center space-x-8 mb-8">
+                <button 
+                  onClick={toggleShuffle}
+                  className={`transition-colors duration-300 ${isShuffled ? 'text-[#F2A365]' : 'text-[#B8B8B8] hover:text-[#F2A365]'}`}
+                >
+                  <FaShuffle size={24}/>
+                </button>
+                
+                <button 
+                  onClick={playPrev} 
+                  className="text-[#B8B8B8] hover:text-[#F2A365] transition-colors duration-300"
+                >
+                  <SlControlStart size={32}/>
+                </button>
+                
+                <button 
+                  onClick={handlePlayPause} 
+                  className="w-16 h-16 bg-gradient-to-br from-[#F2A365] to-[#D9BF77] rounded-full flex items-center justify-center text-[#1C1C2E] hover:scale-105 transition-transform duration-300 shadow-2xl"
+                >
+                  {isPlaying ? <FaPause size={24}/> : <FaPlay size={24} className="ml-1"/>}
+                </button>
+                
+                <button 
+                  onClick={playNext} 
+                  className="text-[#B8B8B8] hover:text-[#F2A365] transition-colors duration-300"
+                >
+                  <SlControlEnd size={32}/>
+                </button>
+                
+                <button 
+                  onClick={toggleRepeat}
+                  className={`transition-colors duration-300 ${
+                    repeatMode !== 'none' ? 'text-[#F2A365]' : 'text-[#B8B8B8] hover:text-[#F2A365]'
+                  }`}
+                >
+                  <FaRepeat size={24}/>
+                  {repeatMode === 'one' && (
+                    <span className="absolute -mt-2 -mr-2 text-xs bg-[#F2A365] text-[#1C1C2E] rounded-full w-4 h-4 flex items-center justify-center font-bold">1</span>
+                  )}
+                </button>
+              </div>
+
+              {/* Contrôle du volume */}
+              <div className="flex items-center space-x-4">
+                <button onClick={toggleMute} className="text-[#B8B8B8] hover:text-[#F2A365] transition-colors duration-300">
+                  {isMuted ? <HiVolumeOff size={24}/> : <HiVolumeUp size={24}/>}
+                </button>
+                <input
+                  type="range"
+                  className="w-32 h-2 bg-[#3E5C76] bg-opacity-30 rounded-lg appearance-none cursor-pointer slider"
+                  min={0}
+                  max={1}
+                  step="0.01"
+                  value={isMuted ? 0 : volume}
+                  onChange={handleVolumeChange}
                 />
               </div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-30 rounded-3xl transition-opacity duration-300" />
             </div>
 
-            {/* Informations du track */}
-            <div className="text-center mb-8">
-              <h2 className="text-4xl font-bold text-[#F1F1F1] mb-2">{currentTrack.title}</h2>
-              <h4 className="text-xl text-[#B8B8B8] mb-4">
-                {currentTrack.genre || "Genre inconnu"}
-              </h4>
-            </div>
-
-            {/* Barre de progression */}
-            <div className="w-full max-w-2xl mb-8">
-              <input
-                type="range"
-                className="w-full h-2 bg-[#3E5C76] bg-opacity-30 rounded-lg appearance-none cursor-pointer progress-slider"
-                min={0}
-                max={duration}
-                step="0.01"
-                value={currentTime}
-                onChange={handleSeek}
+            {/* Composant des commentaires */}
+            {showComments && (
+              <TimecodeComments
+                trackId={currentTrack.id}
+                currentTime={currentTime}
+                isVisible={showComments}
+                onClose={() => setShowComments(false)}
               />
-              <div className="flex justify-between text-[#B8B8B8] text-sm mt-2 font-mono">
-                <span>{formatTime(currentTime)}</span>
-                <span>{formatTime(duration)}</span>
-              </div>
-            </div>
-
-            {/* Contrôles */}
-            <div className="flex items-center space-x-8 mb-8">
-              <button 
-                onClick={toggleShuffle}
-                className={`transition-colors duration-300 ${isShuffled ? 'text-[#F2A365]' : 'text-[#B8B8B8] hover:text-[#F2A365]'}`}
-              >
-                <FaShuffle size={24}/>
-              </button>
-              
-              <button 
-                onClick={playPrev} 
-                className="text-[#B8B8B8] hover:text-[#F2A365] transition-colors duration-300"
-              >
-                <SlControlStart size={32}/>
-              </button>
-              
-              <button 
-                onClick={handlePlayPause} 
-                className="w-16 h-16 bg-gradient-to-br from-[#F2A365] to-[#D9BF77] rounded-full flex items-center justify-center text-[#1C1C2E] hover:scale-105 transition-transform duration-300 shadow-2xl"
-              >
-                {isPlaying ? <FaPause size={24}/> : <FaPlay size={24} className="ml-1"/>}
-              </button>
-              
-              <button 
-                onClick={playNext} 
-                className="text-[#B8B8B8] hover:text-[#F2A365] transition-colors duration-300"
-              >
-                <SlControlEnd size={32}/>
-              </button>
-              
-              <button 
-                onClick={toggleRepeat}
-                className={`transition-colors duration-300 ${
-                  repeatMode !== 'none' ? 'text-[#F2A365]' : 'text-[#B8B8B8] hover:text-[#F2A365]'
-                }`}
-              >
-                <FaRepeat size={24}/>
-                {repeatMode === 'one' && (
-                  <span className="absolute -mt-2 -mr-2 text-xs bg-[#F2A365] text-[#1C1C2E] rounded-full w-4 h-4 flex items-center justify-center font-bold">1</span>
-                )}
-              </button>
-            </div>
-
-            {/* Contrôle du volume */}
-            <div className="flex items-center space-x-4">
-              <button onClick={toggleMute} className="text-[#B8B8B8] hover:text-[#F2A365] transition-colors duration-300">
-                {isMuted ? <HiVolumeOff size={24}/> : <HiVolumeUp size={24}/>}
-              </button>
-              <input
-                type="range"
-                className="w-32 h-2 bg-[#3E5C76] bg-opacity-30 rounded-lg appearance-none cursor-pointer slider"
-                min={0}
-                max={1}
-                step="0.01"
-                value={isMuted ? 0 : volume}
-                onChange={handleVolumeChange}
-              />
-            </div>
+            )}
           </div>
         )}
       </div>
