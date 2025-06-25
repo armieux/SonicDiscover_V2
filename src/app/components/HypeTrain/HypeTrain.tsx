@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { CgSpinnerTwo } from "react-icons/cg";
-import {FaPlay} from "react-icons/fa";
-import {useMusicContext} from "@/app/context/MusicContext";
+import { FaPlay, FaFire } from "react-icons/fa";
+import { useMusicContext } from "@/app/context/MusicContext";
 import { Track } from "../../interfaces/Track";
 import { TbBus } from "react-icons/tb";
 import Image from 'next/image';
-
-
-
 
 const HypeTrain: React.FC = () => {
     const [tracks, setTracks] = useState<Track[]>([]);
@@ -37,142 +34,199 @@ const HypeTrain: React.FC = () => {
     if (loading) {
         return (
             <div className="flex justify-center items-center h-64">
-                <p className="text-xl font-semibold text-white">
-                    <CgSpinnerTwo className="animate-spin mr-2 size-10" />
-                </p>
+                <div className="flex items-center space-x-3">
+                    <CgSpinnerTwo className="animate-spin text-[#F2A365] text-4xl" />
+                    <p className="text-xl font-semibold text-[#F1F1F1]">
+                        Chargement des tendances...
+                    </p>
+                </div>
             </div>
         );
     }
+
     if (error) {
         return (
             <div className="flex justify-center items-center h-64">
-                <p className="text-xl font-semibold text-red-600">Erreur : {error}</p>
+                <div className="text-center">
+                    <p className="text-xl font-semibold text-red-400 mb-2">Erreur : {error}</p>
+                    <p className="text-[#B8B8B8]">Impossible de charger les tendances</p>
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="max-w-6xl mx-auto p-6">
-            <div className="flex flex-row">
-                <TbBus style={{
-                    transform:"scaleX(-1)",
-                    fontSize: "2.5rem",
-                    color: "gold",
-                    filter: "drop-shadow(0 0 15px gold)",
-                    background: "transparent"}} />
-                <h2 className="text-3xl font-extrabold text-center mb-8 text-white w-100 px-5"
-                    style={{color:"gold", textShadow:"0px 0px 15px gold"}}>
-                    Bus de la Hype
-                </h2>
-                <TbBus style={{
-                    fontSize: "2.5rem",
-                    color: "gold",
-                    filter: "drop-shadow(0 0 15px gold)",
-                    background: "transparent"
-                }} />
+        <div className="w-full">
+            {/* Header du Hype Train */}
+            <div className="flex items-center justify-center mb-8">
+                <div className="flex items-center space-x-4">
+                    <TbBus 
+                        className="text-4xl text-[#F2A365] transform scale-x-[-1] filter drop-shadow-lg" 
+                        style={{ filter: "drop-shadow(0 0 15px #F2A365)" }}
+                    />
+                    <div className="text-center">
+                        <h2 className="text-4xl font-bold bg-gradient-to-r from-[#F2A365] to-[#D9BF77] bg-clip-text text-transparent mb-1">
+                            Bus de la Hype
+                        </h2>
+                        <div className="flex items-center justify-center space-x-2">
+                            <FaFire className="text-[#F2A365]" />
+                            <span className="text-[#B8B8B8] text-sm">Les morceaux les plus populaires</span>
+                            <FaFire className="text-[#F2A365]" />
+                        </div>
+                    </div>
+                    <TbBus 
+                        className="text-4xl text-[#F2A365] filter drop-shadow-lg" 
+                        style={{ filter: "drop-shadow(0 0 15px #F2A365)" }}
+                    />
+                </div>
             </div>
 
-            <div className="mb-8 relative">
-                <div
-                    className="flex overflow-x-auto space-x-6 pb-4 custom-scroll">
+            {/* Top 3 avec medals */}
+            <div className="mb-12">
+                <div className="flex overflow-x-auto space-x-6 pb-6 custom-scroll">
                     {tracks.slice(0, 10).map((track, index) => {
-                        let medalTextColor = '';
-                        let medalContent = '';
-                        if (index === 0) {
-                            medalTextColor = 'gold';
-                            medalContent = '🥇';
-                        }
-                        else if (index === 1) {
-                            medalTextColor = 'silver';
-                            medalContent = '🥈';
-                        }
-                        else if (index === 2) {
-                            medalTextColor = '#CD7F32\n';
-                            medalContent = '🥉';
-                        }
-                        else {
-                            medalTextColor = 'transparent';
-                            medalContent = '';
-                        }
+                        const getMedalInfo = (position: number) => {
+                            switch (position) {
+                                case 0:
+                                    return { emoji: '🥇', color: '#FFD700', glow: 'drop-shadow(0 0 20px #FFD700)' };
+                                case 1:
+                                    return { emoji: '🥈', color: '#C0C0C0', glow: 'drop-shadow(0 0 15px #C0C0C0)' };
+                                case 2:
+                                    return { emoji: '🥉', color: '#CD7F32', glow: 'drop-shadow(0 0 15px #CD7F32)' };
+                                default:
+                                    return { emoji: `#${position + 1}`, color: '#F2A365', glow: 'none' };
+                            }
+                        };
+
+                        const medalInfo = getMedalInfo(index);
 
                         return (
                             <div
                                 key={track.id}
-                                className="w-40 bg-[#1f1f1f] rounded-lg shadow-2xl p-4 flex-shrink-0 relative"
+                                className={`group relative flex-shrink-0 w-48 music-card interactive-hover ${
+                                    index < 3 ? 'border-2' : ''
+                                }`}
+                                style={{
+                                    borderColor: index < 3 ? medalInfo.color : 'transparent'
+                                }}
                             >
-                                <div className="relative">
-                                    {index < 3 && (
-                                        <span
-                                            className={`absolute top-0 right-0 font-bold text-lg text-white rounded-full px-2 py-1`}
-                                            style={{color:medalTextColor, textShadow:"1px 1px 5px " + medalTextColor, fontSize:"1.5rem"}}
-                                        >
-                                          {medalContent}
-                                        </span>
-                                    )}
+                                {/* Badge de position */}
+                                <div 
+                                    className="absolute -top-3 -right-3 z-10 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold"
+                                    style={{
+                                        background: index < 3 ? `linear-gradient(135deg, ${medalInfo.color}, ${medalInfo.color}dd)` : 'linear-gradient(135deg, #F2A365, #D9BF77)',
+                                        color: '#1C1C2E',
+                                        filter: medalInfo.glow
+                                    }}
+                                >
+                                    {index < 3 ? medalInfo.emoji : `#${index + 1}`}
+                                </div>
+
+                                {/* Image du track */}
+                                <div className="relative overflow-hidden rounded-xl mb-4">
                                     {track.trackpicture ? (
                                         <Image
                                             src={track.trackpicture}
                                             alt={track.title}
-                                            width={160}
-                                            height={128}
-                                            className="w-full h-32 object-cover rounded-lg"
+                                            width={192}
+                                            height={192}
+                                            className="w-full h-40 object-cover transition-transform duration-300 group-hover:scale-110"
                                         />
                                     ) : (
-                                        <div className="w-full h-32 flex items-center justify-center bg-[#1f1f1f]">
-                                            <span className="text-gray-500 text-white">Pas d&apos;image</span>
+                                        <div className="w-full h-40 flex items-center justify-center bg-[#3E5C76] bg-opacity-30">
+                                            <span className="text-[#B8B8B8] text-sm">Pas d'image</span>
                                         </div>
                                     )}
+                                    
+                                    {/* Overlay avec bouton play */}
+                                    <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-60 transition-all duration-300 flex items-center justify-center">
+                                        <button
+                                            onClick={() => setCurrentTrack(track, tracks, index)}
+                                            className="w-12 h-12 bg-gradient-to-br from-[#F2A365] to-[#D9BF77] rounded-full flex items-center justify-center text-[#1C1C2E] opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all duration-300 shadow-lg"
+                                        >
+                                            <FaPlay size={16} className="ml-0.5"/>
+                                        </button>
+                                    </div>
                                 </div>
-                                <h3 className="text-xl font-bold text-white mt-2">{track.title}</h3>
 
-                                <button
-                                    onClick={() => setCurrentTrack(track, tracks, index)}
-                                    className="p-3 text-white bg-blue-500 hover:bg-blue-600 rounded-full absolute bottom-4 right-4"
-                                >
-                                    <FaPlay size={10}/>
-                                </button>
+                                {/* Informations du track */}
+                                <div>
+                                    <h3 className="text-[#F1F1F1] font-semibold text-lg mb-1 line-clamp-2">
+                                        {track.title}
+                                    </h3>
+                                    <p className="text-[#B8B8B8] text-sm">
+                                        {track.genre || "Genre inconnu"}
+                                    </p>
+                                </div>
                             </div>
                         );
                     })}
-
                 </div>
-                <div
-                    className="absolute top-0 right-0 w-12 h-full pointer-events-none bg-gradient-to-l from-[#121212] to-transparent"></div>
             </div>
 
-            <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                {tracks.slice(10).map((track) => (
-                    <li
-                        key={track.id}
-                        className="bg-[#1f1f1f] rounded-lg shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300"
-                    >
-                        {track.trackpicture ? (
-                            <Image
-                                src={track.trackpicture}
-                                alt={track.title}
-                                width={400}
-                                height={192}
-                                className="w-full h-48 object-cover"
-                            />
-                        ) : (
-                            <div className="w-full h-48 flex items-center justify-center bg-[#1f1f1f]">
-                                <span className="text-gray-500 text-white">Pas d&apos;image</span>
+            {/* Grille des autres tracks */}
+            {tracks.length > 10 && (
+                <div>
+                    <h3 className="text-2xl font-bold text-[#F1F1F1] mb-6">Autres tendances</h3>
+                    <div className="grid-modern">
+                        {tracks.slice(10).map((track, index) => (
+                            <div
+                                key={track.id}
+                                className="group music-card interactive-hover cursor-pointer"
+                                onClick={() => setCurrentTrack(track, tracks, index + 10)}
+                            >
+                                <div className="relative overflow-hidden rounded-xl mb-4">
+                                    {track.trackpicture ? (
+                                        <Image
+                                            src={track.trackpicture}
+                                            alt={track.title}
+                                            width={300}
+                                            height={200}
+                                            className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
+                                        />
+                                    ) : (
+                                        <div className="w-full h-48 flex items-center justify-center bg-[#3E5C76] bg-opacity-30">
+                                            <span className="text-[#B8B8B8]">Pas d'image</span>
+                                        </div>
+                                    )}
+                                    
+                                    {/* Overlay avec informations */}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                        <div className="absolute bottom-4 left-4 right-4">
+                                            <div className="flex items-center justify-between">
+                                                <span className="text-white text-sm font-medium">
+                                                    #{index + 11} Tendance
+                                                </span>
+                                                <FaPlay className="text-[#F2A365] text-lg" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 className="text-[#F1F1F1] font-semibold text-xl mb-2">
+                                        {track.title}
+                                    </h3>
+                                    {track.genre && (
+                                        <p className="text-[#B8B8B8] text-sm">
+                                            Genre : <span className="text-[#F2A365]">{track.genre}</span>
+                                        </p>
+                                    )}
+                                </div>
                             </div>
-                        )}
-                        <div className="p-4">
-                            <h3 className="text-xl font-bold text-white mb-2">{track.title}</h3>
-                            {track.genre && (
-                                <p className="text-white text-sm mb-1">
-                                    Genre : <span className="font-medium">{track.genre}</span>
-                                </p>
-                            )}
-                        </div>
-                    </li>
-                ))}
-            </ul>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            {tracks.length === 0 && (
+                <div className="text-center py-12">
+                    <div className="text-6xl mb-4">🎵</div>
+                    <h3 className="text-2xl font-semibold text-[#F1F1F1] mb-2">Aucune tendance pour le moment</h3>
+                    <p className="text-[#B8B8B8]">Soyez le premier à faire le buzz !</p>
+                </div>
+            )}
         </div>
-
-
     );
 };
 

@@ -1,25 +1,22 @@
-'use client'; // <-- Indicate this is a client component
+'use client';
 
 import React, { useEffect, useState } from 'react';
 import Navbar from './Navbar';
-import { User } from '@/app/interfaces/User'; // or define locally if needed
+import { User } from '@/app/interfaces/User';
 
 interface PageLayoutProps {
   children: React.ReactNode;
 }
 
 const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
-  // 1. Manage user state on the client
   const [user, setUser] = useState<User | null>(null);
 
-  // 2. Fetch user data in a useEffect
   useEffect(() => {
-    // Example: fetch an API route that returns { id, username, ... } or null
     fetch('/api/auth/current', { credentials: 'include' })
       .then(res => res.ok ? res.json() : null)
       .then(data => {
-        if (data) setUser(data); // set user if logged in
-        else setUser(null);      // or null if not logged in
+        if (data) setUser(data);
+        else setUser(null);
       })
       .catch(err => {
         console.error('Error fetching current user:', err);
@@ -28,18 +25,23 @@ const PageLayout: React.FC<PageLayoutProps> = ({ children }) => {
   }, []);
 
   return (
-    <div>
-      {/* 3. Pass user to Navbar */}
+    <div className="min-h-screen bg-[#1C1C2E]">
       <Navbar user={user} />
-      <main style={mainStyles}>{children}</main>
+      
+      {/* Contenu principal avec espacement pour la navbar fixe */}
+      <main className="pt-20 min-h-screen pb-28 bg-[#1C1C2E]">
+        <div className="relative">
+          {/* Effet de gradient subtil en arrière-plan */}
+          <div className="absolute inset-0 bg-gradient-to-br from-[#1C1C2E] via-[#242438] to-[#2A2A40] opacity-50"></div>
+          
+          {/* Contenu avec z-index pour être au-dessus du gradient */}
+          <div className="relative z-10">
+            {children}
+          </div>
+        </div>
+      </main>
     </div>
   );
-};
-
-const mainStyles = {
-  minHeight: '80vh',
-  backgroundColor: '#e8e8e8',
-  paddingBottom: '112px', // Espace pour le player fixe en bas (28 * 4 = 112px)
 };
 
 export default PageLayout;
