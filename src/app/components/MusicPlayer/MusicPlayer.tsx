@@ -102,6 +102,16 @@ const MusicPlayer: React.FC = () => {
     }
   }, [isPlaying, audioRef]);
 
+  // Gestionnaire de clic sur la barre de progression
+  const handleProgressClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (!audioRef.current || !duration) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const newTime = (clickX / rect.width) * duration;
+    audioRef.current.currentTime = newTime;
+    setCurrentTime(newTime);
+  }, [audioRef, duration]);
+
   const handleSeek = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (!audioRef.current) return;
     const newTime = parseFloat(e.target.value);
@@ -159,87 +169,131 @@ const MusicPlayer: React.FC = () => {
         }`}
       >
         {!isFullScreen && (
-          <div className="h-full flex items-center px-6 bg-[#2A2A40] bg-opacity-95 backdrop-blur-xl border-t border-[#3E5C76] border-opacity-30">
-            {/* Barre de progression en haut */}
-            <div className="absolute top-0 left-0 right-0 h-1 bg-[#3E5C76] bg-opacity-30">
+          <div className="h-full flex items-center px-8 bg-[#2A2A40] bg-opacity-95 backdrop-blur-xl border-[#3E5C76] border-opacity-30 relative">
+            {/* Barre de progression en haut - séparée du contenu et cliquable */}
+            <div 
+              className="absolute -top-2 left-0 right-0 h-1 bg-[#3E5C76] bg-opacity-20 overflow-hidden z-10 cursor-pointer group hover:h-2 transition-all duration-200"
+              onClick={handleProgressClick}
+              title="Cliquez pour naviguer dans la piste"
+            >
               <div 
-                className="h-full bg-gradient-to-r from-[#F2A365] to-[#D9BF77] transition-all duration-100"
+                className="h-full bg-gradient-to-r from-[#F2A365] to-[#D9BF77] transition-all duration-200 ease-out relative"
                 style={{ width: `${duration ? (currentTime / duration) * 100 : 0}%` }}
-              />
-            </div>
-
-            {/* Informations du track */}
-            <div className="flex items-center flex-1 min-w-0">
-              <div className="relative group">
-                <Image
-                  src={trackImage}
-                  alt={currentTrack.title}
-                  width={56}
-                  height={56}
-                  className="w-14 h-14 rounded-xl object-cover shadow-lg"
-                />
-                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 rounded-xl transition-all duration-300" />
+              >
+                {/* Indicateur de position au survol */}
+                <div className="absolute right-0 top-0 w-1 h-full bg-white opacity-0 group-hover:opacity-80 transition-opacity duration-200 shadow-lg" />
               </div>
-              
-              <div className="ml-4 flex-1 min-w-0">
-                <h3 className="text-[#F1F1F1] text-lg font-semibold truncate">{currentTrack.title}</h3>
-                <p className="text-[#B8B8B8] text-sm truncate">
-                  {currentTrack.genre || "Genre inconnu"}
-                </p>
+              {/* Zone de survol pour améliorer l'UX */}
+              <div className="absolute inset-0 bg-transparent group-hover:bg-[#F2A365] group-hover:bg-opacity-10 transition-colors duration-200" />
+            </div>
+
+            {/* Contenu principal avec espacement correct */}
+            <div className="flex items-center justify-between w-full h-full py-4">
+              {/* Informations du track */}
+              <div className="flex items-center flex-1 min-w-0 max-w-[35%]">
+                {/* Image du track */}
+                <div className="relative group flex-shrink-0">
+                  <div className="w-14 h-14 rounded-xl overflow-hidden shadow-lg ring-1 ring-[#3E5C76] ring-opacity-30">
+                    <Image
+                      src={trackImage}
+                      alt={currentTrack.title}
+                      width={56}
+                      height={56}
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
+                  
+                  {/* Indicateur de lecture */}
+                  <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-gradient-to-br from-[#F2A365] to-[#D9BF77] rounded-full flex items-center justify-center shadow-md z-20">
+                    {isPlaying ? (
+                      <div className="w-1.5 h-1.5 bg-[#1C1C2E] rounded-full animate-pulse" />
+                    ) : (
+                      <div className="w-1.5 h-1.5 bg-[#1C1C2E] rounded-full opacity-60" />
+                    )}
+                  </div>
+                </div>
+                
+                {/* Informations textuelles */}
+                <div className="ml-4 flex-1 min-w-0">
+                  <h3 className="text-[#F1F1F1] text-sm font-semibold truncate leading-tight mb-1">
+                    {currentTrack.title}
+                  </h3>
+                  <div className="flex items-center gap-2 text-xs">
+                    <p className="text-[#B8B8B8] truncate">
+                      {currentTrack.genre || "Genre inconnu"}
+                    </p>
+                  </div>
+                </div>
               </div>
-            </div>
 
-            {/* Contrôles centraux */}
-            <div className="flex items-center space-x-4 mx-8">
-              <button 
-                onClick={playPrev} 
-                className="text-[#B8B8B8] hover:text-[#F2A365] transition-colors duration-300"
-              >
-                <SlControlStart size={20}/>
-              </button>
-              
-              <button 
-                onClick={handlePlayPause} 
-                className="w-12 h-12 bg-gradient-to-br from-[#F2A365] to-[#D9BF77] rounded-full flex items-center justify-center text-[#1C1C2E] hover:scale-105 transition-transform duration-300 shadow-lg"
-              >
-                {isPlaying ? <FaPause size={16}/> : <FaPlay size={16} className="ml-0.5"/>}
-              </button>
-              
-              <button 
-                onClick={playNext} 
-                className="text-[#B8B8B8] hover:text-[#F2A365] transition-colors duration-300"
-              >
-                <SlControlEnd size={20}/>
-              </button>
-            </div>
-
-            {/* Contrôles de droite */}
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <button onClick={toggleMute} className="text-[#B8B8B8] hover:text-[#F2A365] transition-colors duration-300">
-                  {isMuted ? <HiVolumeOff size={20}/> : <HiVolumeUp size={20}/>}
+              {/* Contrôles centraux */}
+              <div className="flex items-center justify-center space-x-4">
+                <button 
+                  onClick={playPrev} 
+                  className="p-2 text-[#B8B8B8] hover:text-[#F2A365] hover:bg-[#F2A365] hover:bg-opacity-10 rounded-lg transition-all duration-300"
+                  title="Précédent"
+                >
+                  <SlControlStart size={18}/>
                 </button>
-                <input
-                  type="range"
-                  className="w-20 h-1 bg-[#3E5C76] rounded-lg appearance-none cursor-pointer slider"
-                  min={0}
-                  max={1}
-                  step="0.01"
-                  value={isMuted ? 0 : volume}
-                  onChange={handleVolumeChange}
-                />
+                
+                <button 
+                  onClick={handlePlayPause} 
+                  className="w-12 h-12 bg-gradient-to-br from-[#F2A365] to-[#D9BF77] rounded-full flex items-center justify-center text-[#1C1C2E] hover:scale-105 hover:shadow-xl transition-all duration-300 shadow-lg relative overflow-hidden group"
+                  title={isPlaying ? "Pause" : "Lecture"}
+                >
+                  <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+                  {isPlaying ? <FaPause size={14}/> : <FaPlay size={14} className="ml-0.5"/>}
+                </button>
+                
+                <button 
+                  onClick={playNext} 
+                  className="p-2 text-[#B8B8B8] hover:text-[#F2A365] hover:bg-[#F2A365] hover:bg-opacity-10 rounded-lg transition-all duration-300"
+                  title="Suivant"
+                >
+                  <SlControlEnd size={18}/>
+                </button>
               </div>
-              
-              <span className="text-[#B8B8B8] text-sm font-mono min-w-[80px] text-center">
-                {formatTime(currentTime)} / {formatTime(duration)}
-              </span>
-              
-              <button 
-                onClick={toggleFullScreen} 
-                className="text-[#B8B8B8] hover:text-[#F2A365] transition-colors duration-300"
-              >
-                <SlArrowUp size={20}/>
-              </button>
+
+              {/* Contrôles de droite */}
+              <div className="flex items-center justify-end space-x-3 flex-1 max-w-[35%]">
+                {/* Temps de lecture */}
+                <div className="bg-[#242438] bg-opacity-40 px-2 py-1 rounded-lg">
+                  <span className="text-[#B8B8B8] text-xs font-mono leading-none whitespace-nowrap">
+                    {formatTime(currentTime)} / {formatTime(duration)}
+                  </span>
+                </div>
+                
+                {/* Contrôle du volume */}
+                <div className="flex items-center space-x-2 bg-[#242438] bg-opacity-40 px-3 py-2 rounded-lg">
+                  <button 
+                    onClick={toggleMute} 
+                    className="text-[#B8B8B8] hover:text-[#F2A365] transition-colors duration-300 flex-shrink-0"
+                    title={isMuted ? "Activer le son" : "Couper le son"}
+                  >
+                    {isMuted ? <HiVolumeOff size={16}/> : <HiVolumeUp size={16}/>}
+                  </button>
+                  <div className="relative w-16">
+                    <input
+                      type="range"
+                      className="w-full h-1 bg-[#3E5C76] bg-opacity-50 rounded-full appearance-none cursor-pointer volume-slider"
+                      min={0}
+                      max={1}
+                      step="0.01"
+                      value={isMuted ? 0 : volume}
+                      onChange={handleVolumeChange}
+                    />
+                  </div>
+                </div>
+                
+                {/* Bouton plein écran */}
+                <button 
+                  onClick={toggleFullScreen} 
+                  className="p-2 text-[#B8B8B8] hover:text-[#F2A365] hover:bg-[#F2A365] hover:bg-opacity-10 rounded-lg transition-all duration-300 flex-shrink-0"
+                  title="Mode plein écran"
+                >
+                  <SlArrowUp size={16}/>
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -356,6 +410,48 @@ const MusicPlayer: React.FC = () => {
       </div>
 
       <style jsx>{`
+        .volume-slider {
+          background: transparent;
+        }
+        
+        .volume-slider::-webkit-slider-track {
+          width: 100%;
+          height: 4px;
+          background: rgba(62, 92, 118, 0.3);
+          border-radius: 2px;
+        }
+        
+        .volume-slider::-webkit-slider-thumb {
+          appearance: none;
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #F2A365, #D9BF77);
+          cursor: pointer;
+          box-shadow: 0 2px 6px rgba(242, 163, 101, 0.4);
+          border: none;
+          position: relative;
+          top: -4px;
+        }
+        
+        .volume-slider::-moz-range-track {
+          width: 100%;
+          height: 4px;
+          background: rgba(62, 92, 118, 0.3);
+          border-radius: 2px;
+          border: none;
+        }
+        
+        .volume-slider::-moz-range-thumb {
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #F2A365, #D9BF77);
+          cursor: pointer;
+          border: none;
+          box-shadow: 0 2px 6px rgba(242, 163, 101, 0.4);
+        }
+        
         .slider::-webkit-slider-thumb {
           appearance: none;
           width: 16px;
