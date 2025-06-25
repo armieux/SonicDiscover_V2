@@ -12,7 +12,7 @@ import UserMusicStats from "@/app/components/UserMusicStats/UserMusicStats";
 
 const prisma = new PrismaClient();
 
-const FollowButton = dynamic(() => import("@/app/components/FollowButton/FollowButton").then((mod) => mod.FollowButton), { ssr: true });
+const FollowButton = dynamic(() => import("@/app/components/FollowButton/FollowButton"), { ssr: true });
 const ExpandableList = dynamic(() => import("@/app/components/ExpandableList/ExpandableList"), { ssr: true });
 
 interface ProfilePageProps {
@@ -85,75 +85,95 @@ export default async function ProfilePage(context: ProfilePageProps) {
 
   return (
     <PageLayout>
-      <div className="flex flex-col items-center justify-center min-h-screen w-screen bg-[#353445] p-4">
-        <div className="w-full max-w-md bg-[#282733] p-8 rounded-lg shadow-lg">
-          <h2 className="text-4xl text-white mb-6">Profil de {user.username}</h2>
+      <div className="min-h-screen bg-[#1C1C2E] p-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid lg:grid-cols-3 gap-8">
+            {/* Profil principal */}
+            <div className="lg:col-span-1">
+              <div className="bg-[#2A2A40] bg-opacity-70 backdrop-blur-lg border border-[#3E5C76] border-opacity-30 p-8 rounded-3xl">
+                <div className="text-center">
+                  {/* Profile Picture */}
+                  <div className="relative w-32 h-32 mx-auto mb-6">
+                    <Image 
+                      src={user.profilepicture || "/default-avatar.jpg"} 
+                      alt="Profile" 
+                      width={128}
+                      height={128}
+                      className="w-full h-full rounded-full object-cover border-4 border-[#F2A365] shadow-lg"
+                    />
+                  </div>
 
-          {/* Followers & Following Count */}
-          <div className="mt-4 text-white flex flex-row justify-around">
-            <a href={`/profilePage/${user.id}/followers`} className="text-blue-400 hover:underline">
-              <strong>Abonnés:</strong> {user.followerscount}
-            </a>
-            <a href={`/profilePage/${user.id}/following`} className="text-blue-400 hover:underline">
-              <strong>Abonnements:</strong> {user.followingcount}
-            </a>
-            {/* Follow Button */}
-            {!isOwnProfile && (
-              <FollowButton userId={user.id} isFollowing={isFollowing} />
-            )}
+                  {/* Username */}
+                  <h2 className="text-4xl font-bold text-[#F1F1F1] mb-2">{user.username}</h2>
+                  
+                  {/* Email - Visible only if it's their own profile */}
+                  {isOwnProfile && (
+                    <p className="text-[#B8B8B8] mb-4">{user.email}</p>
+                  )}
+
+                  {/* Followers & Following Count */}
+                  <div className="flex justify-center gap-6 mb-6">
+                    <a href={`/profilePage/${user.id}/followers`} className="text-center hover:scale-105 transition-transform duration-300">
+                      <div className="text-2xl font-bold text-[#F2A365]">{user.followerscount}</div>
+                      <div className="text-[#B8B8B8] text-sm">Abonnés</div>
+                    </a>
+                    <a href={`/profilePage/${user.id}/following`} className="text-center hover:scale-105 transition-transform duration-300">
+                      <div className="text-2xl font-bold text-[#D9BF77]">{user.followingcount}</div>
+                      <div className="text-[#B8B8B8] text-sm">Abonnements</div>
+                    </a>
+                  </div>
+
+                  {/* Follow Button */}
+                  {!isOwnProfile && (
+                    <FollowButton userId={user.id} isFollowing={isFollowing} />
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Contenu principal */}
+            <div className="lg:col-span-2 space-y-8">
+              {/* Tracks as Artist */}
+              {user.trackartists.length > 0 && (
+                <div className="bg-[#2A2A40] bg-opacity-70 backdrop-blur-lg border border-[#3E5C76] border-opacity-30 p-6 rounded-2xl">
+                  <h3 className="text-2xl font-bold text-[#F2A365] mb-4">🎵 Vos titres</h3>
+                  <ExpandableList items={user.trackartists} ItemComponent={TrackItem} isOwnProfile={isOwnProfile} />
+                </div>
+              )}
+
+              {/* Playlists Containing the User's Tracks */}
+              {playlists.length > 0 && (
+                <div className="bg-[#2A2A40] bg-opacity-70 backdrop-blur-lg border border-[#3E5C76] border-opacity-30 p-6 rounded-2xl">
+                  <h3 className="text-2xl font-bold text-[#D9BF77] mb-4">📁 Playlists incluant vos titres</h3>
+                  <ExpandableList items={playlists} ItemComponent={PlaylistItem} isOwnProfile={isOwnProfile} />
+                </div>
+              )}
+
+              {/* Badges - Only visible to the user */}
+              {isOwnProfile && user.userbadges.length > 0 && (
+                <div className="bg-[#2A2A40] bg-opacity-70 backdrop-blur-lg border border-[#3E5C76] border-opacity-30 p-6 rounded-2xl">
+                  <h3 className="text-2xl font-bold text-[#3E5C76] mb-4">🏆 Badges</h3>
+                  <ExpandableList items={user.userbadges} ItemComponent={BadgeItem} isOwnProfile={isOwnProfile} />
+                </div>
+              )}
+
+              {/* Ratings - Only visible to the user */}
+              {isOwnProfile && user.ratings.length > 0 && (
+                <div className="bg-[#2A2A40] bg-opacity-70 backdrop-blur-lg border border-[#3E5C76] border-opacity-30 p-6 rounded-2xl">
+                  <h3 className="text-2xl font-bold text-[#F2A365] mb-4">⭐ Titres notés</h3>
+                  <ExpandableList items={user.ratings} ItemComponent={RatingItem} isOwnProfile={isOwnProfile} />
+                </div>
+              )}
+            </div>
           </div>
-
-          {/* Profile Picture */}
-          <Image 
-            src={user.profilepicture || "/default-avatar.jpg"} 
-            alt="Profile" 
-            width={96}
-            height={96}
-            className="w-24 h-24 rounded-full mb-4 object-cover"
-          />
-
-          {/* Username */}
-          <p className="text-white"><strong>Nom :</strong> {user.username}</p>
-
-          {/* Email - Visible only if it's their own profile */}
-          {isOwnProfile && <p className="text-white"><strong>Email:</strong> {user.email}</p>}
-
-          {/* Tracks as Artist */}
-          {user.trackartists.length > 0 && (
-            <div className="bg-[#3a3a4a] p-4 rounded-lg mb-4">
-              <h3 className="text-2xl text-white mb-2">Vos titres</h3>
-              <ExpandableList items={user.trackartists} ItemComponent={TrackItem} isOwnProfile={isOwnProfile} />
-            </div>
-          )}
-
-          {/* Playlists Containing the User's Tracks */}
-          {playlists.length > 0 && (
-            <div className="bg-[#3a3a4a] p-4 rounded-lg mb-4">
-              <h3 className="text-2xl text-white mb-2">Playlists incluant vos titres</h3>
-              <ExpandableList items={playlists} ItemComponent={PlaylistItem} isOwnProfile={isOwnProfile} />
-            </div>
-          )}
-
-          {/* Badges - Only visible to the user */}
-          {isOwnProfile && user.userbadges.length > 0 && (
-            <div className="bg-[#3a3a4a] p-4 rounded-lg mb-4">
-              <h3 className="text-2xl text-white mb-2">Badges</h3>
-              <ExpandableList items={user.userbadges} ItemComponent={BadgeItem} isOwnProfile={isOwnProfile} />
-            </div>
-          )}
-
-          {/* Ratings - Only visible to the user */}
-          {isOwnProfile && user.ratings.length > 0 && (
-            <div className="bg-[#3a3a4a] p-4 rounded-lg mb-4">
-              <h3 className="text-2xl text-white mb-2">Titres notés</h3>
-              <ExpandableList items={user.ratings} ItemComponent={RatingItem} isOwnProfile={isOwnProfile} />
+          
+          {/* User Stats Section - Full Width */}
+          {isOwnProfile && (
+            <div className="mt-12">
+              <UserMusicStats />
             </div>
           )}
         </div>
-      </div>
-      {/* User Stats Section */}
-      <div>
-        <UserMusicStats />
       </div>
     </PageLayout>
   );

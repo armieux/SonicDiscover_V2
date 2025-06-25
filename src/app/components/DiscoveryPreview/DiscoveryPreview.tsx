@@ -4,7 +4,8 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Track } from '../../interfaces/Track';
 import { DiscoveryTrackItem } from '../DiscoveryTrackItem/DiscoveryTrackItem';
-import { FiCompass, FiArrowRight, FiRefreshCw } from 'react-icons/fi';
+import { FiCompass, FiArrowRight, FiRefreshCw, FiShuffle, FiTrendingUp } from 'react-icons/fi';
+import { FaRobot, FaMusic } from 'react-icons/fa';
 
 interface DiscoveryPreviewProps {
   onTrackSelect?: (track: Track) => void;
@@ -24,7 +25,6 @@ export const DiscoveryPreview: React.FC<DiscoveryPreviewProps> = ({ onTrackSelec
       
       if (!response.ok) {
         if (response.status === 401) {
-          // User not logged in, show nothing
           setPreviewTracks([]);
           return;
         }
@@ -32,7 +32,6 @@ export const DiscoveryPreview: React.FC<DiscoveryPreviewProps> = ({ onTrackSelec
       }
       
       const data = await response.json();
-      // Show only top 3 tracks for preview
       setPreviewTracks(data.tracks.slice(0, 3));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur inconnue');
@@ -45,23 +44,27 @@ export const DiscoveryPreview: React.FC<DiscoveryPreviewProps> = ({ onTrackSelec
     fetchPreview();
   }, []);
 
-  // Don't show anything if user is not logged in
   if (error && error.includes('Unauthorized')) {
     return null;
   }
 
   if (loading) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-            <FiCompass className="text-blue-600" />
-            Découvertes pour vous
-          </h2>
+      <div className="glass-effect p-8 rounded-3xl">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-primary rounded-xl flex items-center justify-center">
+              <FiCompass className="text-xl text-night-blue" />
+            </div>
+            <h2 className="text-2xl font-bold text-text-primary">Découvertes pour vous</h2>
+          </div>
         </div>
-        <div className="flex items-center justify-center py-8">
-          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-          <span className="ml-3 text-gray-600">Chargement...</span>
+        
+        <div className="flex items-center justify-center py-12">
+          <div className="flex items-center gap-3">
+            <div className="animate-spin rounded-full h-8 w-8 border-2 border-peach-soft border-t-transparent"></div>
+            <span className="text-text-secondary text-lg">Génération de vos recommandations...</span>
+          </div>
         </div>
       </div>
     );
@@ -69,20 +72,23 @@ export const DiscoveryPreview: React.FC<DiscoveryPreviewProps> = ({ onTrackSelec
 
   if (error) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-            <FiCompass className="text-blue-600" />
-            Découvertes pour vous
-          </h2>
+      <div className="glass-effect p-8 rounded-3xl border border-red-400 border-opacity-30">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-red-500 bg-opacity-20 rounded-xl flex items-center justify-center">
+              <FiCompass className="text-xl text-red-400" />
+            </div>
+            <h2 className="text-2xl font-bold text-text-primary">Découvertes pour vous</h2>
+          </div>
         </div>
+        
         <div className="text-center py-8">
-          <div className="text-red-600 mb-4">{error}</div>
+          <div className="text-red-400 mb-6 text-lg">{error}</div>
           <button
             onClick={fetchPreview}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center gap-2 mx-auto"
+            className="btn-primary flex items-center gap-2 mx-auto"
           >
-            <FiRefreshCw /> Réessayer
+            <FiRefreshCw className="animate-spin" /> Réessayer
           </button>
         </div>
       </div>
@@ -91,83 +97,116 @@ export const DiscoveryPreview: React.FC<DiscoveryPreviewProps> = ({ onTrackSelec
 
   if (!previewTracks.length) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-            <FiCompass className="text-blue-600" />
-            Découvertes pour vous
-          </h2>
+      <div className="glass-effect p-8 rounded-3xl">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-primary rounded-xl flex items-center justify-center">
+              <FiCompass className="text-xl text-night-blue" />
+            </div>
+            <h2 className="text-2xl font-bold text-text-primary">Découvertes pour vous</h2>
+          </div>
         </div>
-        <div className="text-center py-8">
-          <FiCompass className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Pas encore de recommandations</h3>
-          <p className="text-gray-600 mb-4">
-            Écoutez plus de musique et likez vos pistes préférées pour recevoir des recommandations personnalisées.
+        
+        <div className="text-center py-12">
+          <div className="w-20 h-20 bg-gradient-to-br from-blue-gray-cold to-peach-soft rounded-full flex items-center justify-center mx-auto mb-6 opacity-50">
+            <FaRobot className="text-3xl text-text-primary" />
+          </div>
+          <h3 className="text-xl font-semibold text-text-primary mb-3">Intelligence en apprentissage</h3>
+          <p className="text-text-secondary mb-6 max-w-md mx-auto leading-relaxed">
+            Écoutez plus de musique et interagissez avec vos pistes préférées pour que notre IA apprenne vos goûts et vous propose des découvertes personnalisées.
           </p>
-          <Link
-            href="/musicListPage"
-            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-          >
-            Explorer la musique
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Link
+              href="/musicListPage"
+              className="btn-primary flex items-center gap-2"
+            >
+              <FaMusic /> Explorer la bibliothèque
+            </Link>
+            <Link
+              href="/discover"
+              className="btn-secondary flex items-center gap-2"
+            >
+              <FiShuffle /> Découverte aléatoire
+            </Link>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-          <FiCompass className="text-blue-600" />
-          Découvertes pour vous
-        </h2>
+    <div className="glass-effect p-8 rounded-3xl">
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-gradient-primary rounded-xl flex items-center justify-center">
+            <FiCompass className="text-xl text-night-blue" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold text-text-primary">Découvertes pour vous</h2>
+            <p className="text-text-secondary text-sm">Sélectionnées par notre IA musicale</p>
+          </div>
+        </div>
         <Link
           href="/discover"
-          className="text-blue-600 hover:text-blue-800 transition-colors flex items-center gap-1 text-sm font-medium"
+          className="flex items-center gap-2 text-peach-soft hover:text-gold-soft transition-colors font-medium"
         >
           Voir tout <FiArrowRight />
         </Link>
       </div>
 
-      <div className="space-y-3">
-        {previewTracks.map((track) => (
+      <div className="space-y-4 mb-6">
+        {previewTracks.map((track, index) => (
           <div
             key={track.id}
-            className="border border-gray-200 rounded-lg p-3 hover:border-blue-300 transition-colors cursor-pointer"
+            className="group p-4 rounded-2xl bg-surface-card bg-opacity-50 border border-surface-elevated hover:border-peach-soft hover:border-opacity-50 transition-all duration-300 cursor-pointer interactive-hover"
             onClick={() => onTrackSelect && onTrackSelect(track)}
           >
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-6 h-6 bg-gradient-primary rounded-lg flex items-center justify-center text-night-blue font-bold text-sm">
+                {index + 1}
+              </div>
+              <span className="text-peach-soft text-sm font-medium">Recommandation IA</span>
+            </div>
+            
             <DiscoveryTrackItem track={track} />
             
-            {/* Additional discovery info */}
-            <div className="mt-2 flex flex-wrap gap-2 text-xs">
+            {/* Tags de découverte */}
+            <div className="mt-4 flex flex-wrap gap-2">
               {track.genre && (
-                <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full">
-                  {track.genre}
+                <span className="px-3 py-1 bg-blue-gray-cold bg-opacity-30 text-blue-gray-cold border border-blue-gray-cold border-opacity-30 rounded-full text-xs font-medium">
+                  🎵 {track.genre}
                 </span>
               )}
               {track.mood && (
-                <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full">
-                  {track.mood}
+                <span className="px-3 py-1 bg-gold-soft bg-opacity-20 text-gold-soft border border-gold-soft border-opacity-30 rounded-full text-xs font-medium">
+                  😊 {track.mood}
                 </span>
               )}
               {track.averagerating && track.averagerating > 0 && (
-                <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full">
+                <span className="px-3 py-1 bg-peach-soft bg-opacity-20 text-peach-soft border border-peach-soft border-opacity-30 rounded-full text-xs font-medium">
                   ⭐ {track.averagerating.toFixed(1)}
                 </span>
               )}
+              <span className="px-3 py-1 bg-gradient-primary bg-opacity-20 text-peach-soft border border-peach-soft border-opacity-30 rounded-full text-xs font-medium">
+                <FiTrendingUp className="inline mr-1" /> Nouveauté
+              </span>
             </div>
           </div>
         ))}
       </div>
 
-      <div className="mt-4 pt-4 border-t border-gray-200">
+      <div className="pt-6 border-t border-surface-elevated">
         <Link
           href="/discover"
-          className="w-full flex items-center justify-center px-4 py-2 border border-blue-600 text-blue-600 rounded-md hover:bg-blue-50 transition-colors gap-2"
+          className="w-full btn-secondary flex items-center justify-center gap-3 text-center"
         >
-          <FiCompass />
-          Découvrir plus de musique
+          <FiCompass className="text-lg" />
+          <span>Plonger dans l'exploration musicale</span>
+          <div className="flex items-center gap-1">
+            <div className="w-1 h-1 bg-peach-soft rounded-full animate-ping"></div>
+            <div className="w-1 h-1 bg-gold-soft rounded-full animate-ping" style={{ animationDelay: '0.2s' }}></div>
+            <div className="w-1 h-1 bg-blue-gray-cold rounded-full animate-ping" style={{ animationDelay: '0.4s' }}></div>
+          </div>
         </Link>
       </div>
     </div>

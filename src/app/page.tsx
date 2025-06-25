@@ -7,7 +7,6 @@ import DiscoveryPreview from './components/DiscoveryPreview/DiscoveryPreview';
 import { useContext } from 'react';
 import { MusicContext } from './context/MusicContext';
 import { Track } from './interfaces/Track';
-import UserMusicStats from './components/UserMusicStats/UserMusicStats';
 
 const HomePage: React.FC = () => {
   const { setCurrentTrack, setIsPlaying } = useContext(MusicContext);
