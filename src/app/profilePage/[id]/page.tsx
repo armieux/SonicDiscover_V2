@@ -85,7 +85,7 @@ export default async function ProfilePage(context: ProfilePageProps) {
 
   return (
     <PageLayout>
-      <div className="min-h-screen bg-[#1C1C2E] p-6">
+      <div className="min-h-screen bg-[#1C1C2E] p-14">
         <div className="max-w-6xl mx-auto">
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Profil principal */}

@@ -10,6 +10,7 @@ import { MdOutlineLibraryMusic } from "react-icons/md";
 import { MdOutlineVideoLibrary } from "react-icons/md";
 import { TbLibraryPlus } from "react-icons/tb";
 import { FiCompass } from "react-icons/fi";
+import { RiHeartPulseFill } from "react-icons/ri";
 
 interface NavbarProps {
   user: User | null;
@@ -37,16 +38,6 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
 
           {/* Navigation principale */}
           <div className="hidden md:flex items-center space-x-2">
-            <Link href="/createTrack" className={linkClasses('/createTrack')}>
-              <TbLibraryPlus size={20}/>
-              <span>Ajouter</span>
-            </Link>
-            
-            <Link href="/musicListPage" className={linkClasses('/musicListPage')}>
-              <MdOutlineLibraryMusic size={20}/>
-              <span>Musiques</span>
-            </Link>
-            
             <Link href="/discover" className={linkClasses('/discover')}>
               <FiCompass size={20}/>
               <span>Découverte</span>
@@ -55,6 +46,21 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
             <Link href="/playlistsPage" className={linkClasses('/playlistsPage')}>
               <MdOutlineVideoLibrary size={20}/>
               <span>Playlists</span>
+            </Link>
+
+            <Link href="/mood-playlists" className={linkClasses('/mood-playlists')}>
+              <RiHeartPulseFill size={20}/>
+              <span>Mon Ambiance</span>
+            </Link>
+
+            <Link href="/musicListPage" className={linkClasses('/musicListPage')}>
+              <MdOutlineLibraryMusic size={20}/>
+              <span>Musiques</span>
+            </Link>
+
+            <Link href="/createTrack" className={linkClasses('/createTrack')}>
+              <TbLibraryPlus size={20}/>
+              <span>Ajouter</span>
             </Link>
           </div>
 
@@ -88,6 +94,10 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
           
           <Link href="/playlistsPage" className={`${linkClasses('/playlistsPage')} px-3 py-2 text-sm`}>
             <MdOutlineVideoLibrary size={18}/>
+          </Link>
+
+          <Link href="/mood-playlists" className={`${linkClasses('/mood-playlists')} px-3 py-2 text-sm`}>
+            <RiHeartPulseFill size={18}/>
           </Link>
         </div>
       </div>

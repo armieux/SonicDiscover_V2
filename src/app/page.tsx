@@ -22,7 +22,7 @@ const HomePage: React.FC = () => {
         <link rel="icon" href="/favicon.ico" type="image/x-icon"/>
       </Head>
       <PageLayout>
-        <div className="min-h-screen bg-[#1C1C2E] px-6 py-8">
+        <div className="min-h-screen bg-[#1C1C2E] px-6 py-16">
           {/* Hero Section */}
           <div className="text-center mb-12 fade-in-up">
             <h1 className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-[#F2A365] to-[#D9BF77] bg-clip-text text-transparent mb-4">

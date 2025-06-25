@@ -55,7 +55,7 @@ export const PlaylistsPageClient: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen w-screen bg-[#353445] p-4">
+    <div className="flex flex-col items-center justify-center min-h-screen w-screen bg-[#353445] my-16">
       <div className="w-full max-w-4xl bg-[#282733] p-8 rounded-lg shadow-lg">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-4xl text-white flex items-center gap-3">

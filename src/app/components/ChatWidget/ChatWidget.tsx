@@ -2,6 +2,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FcMusic } from "react-icons/fc";
 import { PiRobotDuotone } from "react-icons/pi";
+import { FiSend, FiX } from "react-icons/fi";
 
 import './ChatWidget.css';
 import ReactMarkdown from "react-markdown";
@@ -20,11 +21,18 @@ const ChatWidget: React.FC = () => {
     const chatContainerRef = useRef<HTMLDivElement>(null);
 
     // Prompt initial
-    const initialPrompt = `
-        Bonjour !
-  `;
-    // Optionnel
+    const initialPrompt = `Bonjour ! Je suis votre assistant musical intelligent. Comment puis-je vous aider aujourd'hui ?`;
+    
+    // Message de bienvenue
     const welcomeMessage = null;
+
+    // Suggestions initiales
+    const suggestions = [
+        "Recommande-moi de la musique",
+        "Explique-moi les genres musicaux",
+        "Comment créer une playlist ?",
+        "Analyse mes goûts musicaux"
+    ];
 
     // Ouvre la modal
     const openModal = () => {
@@ -108,7 +116,7 @@ const ChatWidget: React.FC = () => {
                             try {
                                 const json = JSON.parse(jsonStr);
 
-                                // Récupérer le texte s’il y en a (delta.content)
+                                // Récupérer le texte s'il y en a (delta.content)
                                 // Parfois delta.role = "assistant" pour le 1er chunk
                                 const delta = json.choices?.[0]?.delta;
                                 if (delta?.content) {
@@ -147,7 +155,7 @@ const ChatWidget: React.FC = () => {
             console.error(error);
             setMessages((prev) => [
                 ...prev,
-                { role: "assistant", content: "Erreur lors de l'appel à l'API interne." },
+                { role: "assistant", content: "Désolé, une erreur s'est produite. Veuillez réessayer." },
             ]);
         } finally {
             setIsLoading(false);
@@ -158,6 +166,11 @@ const ChatWidget: React.FC = () => {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         sendMessage(userInput);
+    };
+
+    // Gère les suggestions
+    const handleSuggestionClick = (suggestion: string) => {
+        sendMessage(suggestion);
     };
 
     // Scroll auto
@@ -172,132 +185,121 @@ const ChatWidget: React.FC = () => {
 
     return (
         <>
+            {/* Bouton flottant moderne */}
             <button className="chatButton" onClick={openModal}>
-                <PiRobotDuotone style={{ fontSize: "2em", color: "red" }} />
-                <FcMusic style={{ fontSize: "2em" }} />
+                <PiRobotDuotone className="text-2xl" />
+                <FcMusic className="text-xl" />
+                <span className="hidden sm:inline">Assistant IA</span>
             </button>
 
+            {/* Modal du chat */}
             {isOpen && (
-                <div className="chatModal" onClick={() => setIsOpen(false)}>
+                <div className="chatModal mt-20" onClick={() => setIsOpen(false)}>
                     <div className="chatModalContent" onClick={(e) => e.stopPropagation()}>
+                        {/* Header */}
                         <div className="chatModalTitle">
-                            <span>Chat Assistant</span>
-                            <button
-                                onClick={() => setIsOpen(false)}
-                                style={{
-                                    background: "transparent",
-                                    border: "none",
-                                    color: "#fff",
-                                    fontSize: "1.2rem",
-                                    cursor: "pointer",
-                                }}
-                            >
-                                ×
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 bg-gradient-to-br from-[#F2A365] to-[#D9BF77] rounded-xl flex items-center justify-center">
+                                    <PiRobotDuotone className="text-xl text-[#1C1C2E]" />
+                                </div>
+                                <div>
+                                    <h3 className="font-bold">Assistant Musical IA</h3>
+                                </div>
+                            </div>
+                            <button className="closeButton" onClick={() => setIsOpen(false)}>
+                                <FiX />
                             </button>
                         </div>
 
-                        <div
-                            ref={chatContainerRef}
-                            style={{
-                                flex: 1,
-                                overflowY: "auto",
-                                padding: "16px",
-                                backgroundColor: "#f9f9f9",
-                            }}
-                        >
+                        {/* Zone de chat */}
+                        <div className="chatContent" ref={chatContainerRef}>
+                            {messages.length === 0 && (
+                                <div className="welcomeMessage">
+                                    <h3>🎵 Bienvenue dans votre assistant musical !</h3>
+                                    <p>Je suis là pour vous aider avec tout ce qui concerne la musique sur Sonic Discover.</p>
+
+                                    <div className="suggestionChips">
+                                        {suggestions.map((suggestion, index) => (
+                                            <button
+                                                key={index}
+                                                className="suggestionChip"
+                                                onClick={() => handleSuggestionClick(suggestion)}
+                                            >
+                                                {suggestion}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
                             {messages.map((msg, i) => {
                                 const isUser = msg.role === "user";
                                 return (
                                     <div
                                         key={i}
-                                        style={{
-                                            display: "flex",
-                                            justifyContent: isUser ? "flex-end" : "flex-start",
-                                            marginBottom: "8px",
-                                        }}
+                                        className={`chatMessage ${isUser ? 'user' : 'assistant'}`}
                                     >
-                                        <div
-                                            style={{
-                                                backgroundColor: isUser ? "#007bff" : "#e0e0e0",
-                                                color: isUser ? "#fff" : "#000",
-                                                borderRadius: "12px",
-                                                padding: "8px 12px",
-                                                maxWidth: "90%",
-                                                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                                            }}
-                                        >
-                                            <p>
-                                                    {isUser ? "Vous :" : <><PiRobotDuotone /></>}
-                                            </p>
-                                            <span>
-                        <ReactMarkdown>{msg.content}</ReactMarkdown>
-                      </span>
+                                        <div className="flex items-start gap-3">
+                                            {!isUser && (
+                                                <div className="w-8 h-8 bg-gradient-to-br from-[#3E5C76] to-[#F2A365] rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                                                    <PiRobotDuotone className="text-white text-sm" />
+                                                </div>
+                                            )}
+                                            <div className="flex-1">
+                                                {isUser && (
+                                                    <div className="text-xs opacity-70 mb-1">Vous</div>
+                                                )}
+                                                <div className="prose prose-sm prose-invert max-w-none">
+                                                    <ReactMarkdown>{msg.content}</ReactMarkdown>
+                                                </div>
+                                            </div>
+                                            {isUser && (
+                                                <div className="w-8 h-8 bg-gradient-to-br from-[#F2A365] to-[#D9BF77] rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+                                                    <span className="text-[#1C1C2E] text-sm font-bold">U</span>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 );
                             })}
 
                             {isLoading && (
-                                <div
-                                    style={{
-                                        marginLeft: "8px",
-                                        width: "90%",
-                                        textAlign: "center",
-                                        display: "flex",
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                    }}
-                                >
-                                    <div
-                                        style={{
-                                            width: "24px",
-                                            height: "24px",
-                                            border: "4px solid #f3f3f3",
-                                            borderTop: "4px solid #3498db",
-                                            borderRadius: "50%",
-                                            animation: "spin 1s linear infinite",
-                                        }}
-                                    />
+                                <div className="chatMessage assistant">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-8 h-8 bg-gradient-to-br from-[#3E5C76] to-[#F2A365] rounded-lg flex items-center justify-center">
+                                            <PiRobotDuotone className="text-white text-sm" />
+                                        </div>
+                                        <div className="loadingDots">
+                                            <div className="loadingDot"></div>
+                                            <div className="loadingDot"></div>
+                                            <div className="loadingDot"></div>
+                                        </div>
+                                    </div>
                                 </div>
                             )}
                         </div>
 
-                        <form
-                            onSubmit={handleSubmit}
-                            style={{
-                                display: "flex",
-                                borderTop: "1px solid #ddd",
-                                padding: "8px",
-                                backgroundColor: "#fff",
-                            }}
-                        >
-                            <input
-                                type="text"
-                                value={userInput}
-                                onChange={(e) => setUserInput(e.target.value)}
-                                style={{
-                                    flex: 1,
-                                    marginRight: "8px",
-                                    borderRadius: "4px",
-                                    border: "1px solid #ccc",
-                                    padding: "8px",
-                                }}
-                                placeholder="Écrivez votre message..."
-                            />
-                            <button
-                                type="submit"
-                                style={{
-                                    backgroundColor: "#007bff",
-                                    color: "#fff",
-                                    border: "none",
-                                    borderRadius: "4px",
-                                    padding: "8px 16px",
-                                    cursor: "pointer",
-                                }}
-                            >
-                                Envoyer
-                            </button>
-                        </form>
+                        {/* Zone de saisie */}
+                        <div className="chatInputContainer">
+                            <form onSubmit={handleSubmit} className="flex gap-3 w-full">
+                                <input
+                                    type="text"
+                                    value={userInput}
+                                    onChange={(e) => setUserInput(e.target.value)}
+                                    className="chatInput"
+                                    placeholder="Posez votre question musicale..."
+                                    disabled={isLoading}
+                                />
+                                <button
+                                    type="submit"
+                                    className="chatSendButton"
+                                    disabled={isLoading || !userInput.trim()}
+                                >
+                                    <FiSend />
+                                    <span className="hidden sm:inline">Envoyer</span>
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             )}
