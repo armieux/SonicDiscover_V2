@@ -46,7 +46,7 @@ const MusicCard: React.FC<MusicCardProps> = ({ track, index, playlist, inPlaylis
       </div>
 
       {/* Informations du morceau */}
-      <div className="flex-1 min-w-0">
+      <div className="flex-1 min-w-0 pr-4">
         {/* Rating en haut */}
         <div className="mb-2">
           <HeatRating heat={track.likecount - track.dislikecount} trackId={track.id.toString()} />

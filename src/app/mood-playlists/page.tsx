@@ -86,9 +86,15 @@ export default function MoodPlaylistsPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 gap-4">
                   {playlistData.tracks.map((track, idx) => (
-                    <MusicCard key={`${track.id}-${idx}`} track={track} />
+                    <div key={`${track.id}-${idx}`} className="bg-gradient-to-r from-gray-800/50 to-gray-900/50 rounded-xl border border-gray-700/50 overflow-hidden backdrop-blur-sm">
+                      <MusicCard 
+                        track={track} 
+                        index={idx}
+                        playlist={playlistData.tracks}
+                      />
+                    </div>
                   ))}
                 </div>
               </div>
