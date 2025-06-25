@@ -3,14 +3,16 @@
 /**
  * MusicPlayer - Lecteur musical avec système de commentaires à timecode
  * 
- * Nouvelles fonctionnalités ajoutées :
+ * Fonctionnalités implémentées :
  * 1. Bouton commentaires en mode plein écran
- * 2. Intégration du composant TimecodeComments
+ * 2. Intégration du composant TimecodeComments (panel latéral en plein écran)
  * 3. Gestion de l'affichage du panel de commentaires
  * 4. Ajustement automatique de la mise en page quand les commentaires sont visibles
+ * 5. Commentaires flottants en mode minimisé au-dessus du lecteur
  * 
  * Usage :
- * - En mode plein écran, cliquer sur l'icône commentaire pour ouvrir le panel
+ * - En mode plein écran : cliquer sur l'icône commentaire pour ouvrir le panel
+ * - En mode minimisé : les commentaires apparaissent automatiquement au-dessus du lecteur
  * - Écrire un commentaire qui sera associé au timecode actuel
  * - Les commentaires d'autres utilisateurs apparaissent aléatoirement au bon moment
  */
@@ -23,6 +25,7 @@ import { HiVolumeUp, HiVolumeOff } from "react-icons/hi";
 import { IoClose } from "react-icons/io5";
 import Image from 'next/image';
 import TimecodeComments from '../TimecodeComments';
+import FloatingComment from '../FloatingComment';
 
 const MusicPlayer: React.FC = () => {
   const { currentTrack, playNext, playPrev, audioRef, stopPlayback } = useMusicContext();
@@ -480,6 +483,15 @@ const MusicPlayer: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Commentaires flottants en mode minimisé */}
+      {!isFullScreen && (
+        <FloatingComment
+          trackId={currentTrack.id}
+          currentTime={currentTime}
+          isVisible={!isFullScreen}
+        />
+      )}
 
       <style jsx>{`
         .volume-slider {
