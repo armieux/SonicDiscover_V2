@@ -187,7 +187,7 @@ export const DiscoveryPreview: React.FC<DiscoveryPreviewProps> = ({ onTrackSelec
                   ⭐ {track.averagerating.toFixed(1)}
                 </span>
               )}
-              <span className="px-3 py-1 bg-gradient-primary bg-opacity-20 text-peach-soft border border-peach-soft border-opacity-30 rounded-full text-xs font-medium">
+              <span className="px-3 py-1 bg-gradient-primary bg-opacity-20 text-night-blue border border-peach-soft border-opacity-30 rounded-full text-xs font-medium">
                 <FiTrendingUp className="inline mr-1" /> Nouveauté
               </span>
             </div>

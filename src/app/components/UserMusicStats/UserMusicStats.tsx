@@ -279,7 +279,7 @@ const UserMusicStats: React.FC = () => {
             {/* Ratio d'engagement */}
             <div className="mt-4 p-3 bg-gradient-to-r from-[#F2A365] to-[#D9BF77] bg-opacity-10 rounded-xl border border-[#F2A365] border-opacity-20">
               <div className="text-center">
-                <div className="text-lg font-bold text-[#F2A365]">
+                <div className="text-lg font-bold text-night-blue">
                   {stats.social.followers > 0 ? ((stats.social.followers / Math.max(stats.social.following, 1)) * 100).toFixed(1) : 0}%
                 </div>
                 <div className="text-xs text-[#8A8A8A]">Ratio d'engagement social</div>

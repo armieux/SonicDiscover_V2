@@ -178,10 +178,10 @@ export const DiscoveryPlaylist: React.FC<DiscoveryPlaylistProps> = ({ onTrackSel
               <FaRobot className="text-3xl text-night-blue" />
             </div>
             <div>
-              <h2 className="text-3xl font-bold mb-2 flex items-center gap-3">
+              <h2 className="text-3xl font-bold mb-2 flex items-center gap-3 text-night-blue">
                 <FiTrendingUp /> Playlist IA Personnalisée
               </h2>
-              <p className="opacity-80 text-lg">
+              <p className="text-lg text-night-blue opacity-50">
                 {tracks.length} nouvelles découvertes basées sur vos goûts
               </p>
             </div>
@@ -354,9 +354,6 @@ export const DiscoveryPlaylist: React.FC<DiscoveryPlaylistProps> = ({ onTrackSel
                       {track.averagerating.toFixed(1)}
                     </span>
                   )}
-                  <span className="px-3 py-1 bg-gradient-primary bg-opacity-20 text-peach-soft border border-peach-soft border-opacity-30 rounded-lg text-xs font-medium">
-                    🤖 Recommandé par IA
-                  </span>
                 </div>
               </div>
             </div>
@@ -366,7 +363,7 @@ export const DiscoveryPlaylist: React.FC<DiscoveryPlaylistProps> = ({ onTrackSel
 
       {/* Barre d'actions flottante */}
       {selectedTracks.length > 0 && (
-        <div className="fixed bottom-28 left-1/2 transform -translate-x-1/2 z-40">
+        <div className="left-1/2 w-full max-w-3xl">
           <div className="glass-effect p-4 rounded-2xl border border-peach-soft border-opacity-30 shadow-accent-strong">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2 text-text-primary">

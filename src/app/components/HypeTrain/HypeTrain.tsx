@@ -83,16 +83,16 @@ const HypeTrain: React.FC = () => {
 
             {/* Top 3 avec medals */}
             <div className="mb-12">
-                <div className="flex overflow-x-auto space-x-6 pb-6 custom-scroll">
+                <div className="flex overflow-x-auto space-x-6 py-4 custom-scroll">
                     {tracks.slice(0, 10).map((track, index) => {
                         const getMedalInfo = (position: number) => {
                             switch (position) {
                                 case 0:
-                                    return { emoji: '🥇', color: '#FFD700', glow: 'drop-shadow(0 0 20px #FFD700)' };
+                                    return { emoji: '🥇', color: '#FFD700', glow: 'drop-shadow(0 0 3px #FFD700)' };
                                 case 1:
-                                    return { emoji: '🥈', color: '#C0C0C0', glow: 'drop-shadow(0 0 15px #C0C0C0)' };
+                                    return { emoji: '🥈', color: '#C0C0C0', glow: 'drop-shadow(0 0 3px #C0C0C0)' };
                                 case 2:
-                                    return { emoji: '🥉', color: '#CD7F32', glow: 'drop-shadow(0 0 15px #CD7F32)' };
+                                    return { emoji: '🥉', color: '#CD7F32', glow: 'drop-shadow(0 0 3px #CD7F32)' };
                                 default:
                                     return { emoji: `#${position + 1}`, color: '#F2A365', glow: 'none' };
                             }

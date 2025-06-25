@@ -91,9 +91,6 @@ const HomePage: React.FC = () => {
                   <button className="btn-primary text-lg px-8 py-4 rounded-2xl font-semibold">
                     Commencer l'exploration
                   </button>
-                  <button className="btn-secondary text-lg px-8 py-4 rounded-2xl font-semibold">
-                    Voir les tendances
-                  </button>
                 </div>
               </div>
             </section>
