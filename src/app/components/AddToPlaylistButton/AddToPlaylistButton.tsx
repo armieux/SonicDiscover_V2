@@ -3,11 +3,12 @@
 import { Playlist } from "@/app/interfaces/Playlist";
 import { useEffect, useState, useRef } from "react";
 import { createPortal } from "react-dom";
-import { FaPlus, FaMusic, FaSearch, FaCheck, FaTimes, FaFolder, FaHeart } from "react-icons/fa";
+import { FaPlus, FaMusic, FaSearch, FaCheck, FaTimes, FaFolder, FaHeart, FaCheckCircle } from "react-icons/fa";
 
 export const AddToPlaylistButton = ({ trackId }: { trackId: number }) => {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const [filteredPlaylists, setFilteredPlaylists] = useState<Playlist[]>([]);
+  const [playlistsWithTrack, setPlaylistsWithTrack] = useState<Set<number>>(new Set());
   const [loading, setLoading] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedPlaylist, setSelectedPlaylist] = useState<number | null>(null);
@@ -27,6 +28,7 @@ export const AddToPlaylistButton = ({ trackId }: { trackId: number }) => {
   useEffect(() => {
     if (dropdownOpen && playlists.length === 0) {
       fetchPlaylists();
+      fetchPlaylistsWithTrack();
     }
   }, [dropdownOpen, playlists.length]);
 
@@ -119,6 +121,17 @@ export const AddToPlaylistButton = ({ trackId }: { trackId: number }) => {
     }
   };
 
+  // Fetch playlists that already contain this track
+  const fetchPlaylistsWithTrack = async () => {
+    try {
+      const response = await fetch(`/api/playlists/containing/${trackId}`);
+      const playlistIds = await response.json();
+      setPlaylistsWithTrack(new Set(playlistIds));
+    } catch (error) {
+      console.error("Error fetching playlists containing track:", error);
+    }
+  };
+
   // Handle adding a track to a playlist
   const handleAddToPlaylist = async (playlistId: number) => {
     setLoading(true);
@@ -130,23 +143,32 @@ export const AddToPlaylistButton = ({ trackId }: { trackId: number }) => {
         headers: { "Content-Type": "application/json" },
       });
 
-      if (response.ok) {
+      const data = await response.json();
+
+      if (response.ok && data.success) {
         const playlistName = playlists.find(p => p.id === playlistId)?.name || 'playlist';
         setFeedbackMessage(`Ajouté à "${playlistName}" avec succès !`);
         setFeedbackType("success");
+        
+        // Update the list of playlists containing this track
+        setPlaylistsWithTrack(prev => new Set(prev).add(playlistId));
         
         // Close dropdown after showing success message
         setTimeout(() => {
           closeDropdown();
         }, 1500);
       } else {
-        const errorData = await response.json();
-        setFeedbackMessage(errorData.message || "Erreur lors de l'ajout");
+        // Handle specific error cases
+        if (response.status === 400) {
+          setFeedbackMessage(data.message || "Cette musique est déjà dans la playlist");
+        } else {
+          setFeedbackMessage(data.message || "Erreur lors de l'ajout");
+        }
         setFeedbackType("error");
       }
     } catch (error) {
       console.error("Error adding to playlist:", error);
-      setFeedbackMessage("Erreur lors de l'ajout à la playlist");
+      setFeedbackMessage("Erreur de connexion, veuillez réessayer");
       setFeedbackType("error");
     } finally {
       setLoading(false);
@@ -229,194 +251,230 @@ export const AddToPlaylistButton = ({ trackId }: { trackId: number }) => {
               className="bg-gray-900 shadow-2xl rounded-xl w-full max-w-md z-[9999] border border-gray-700 overflow-hidden max-h-[90vh] flex flex-col"
               onClick={(e) => e.stopPropagation()}
             >
-            {/* Header */}
-            <div className="bg-gradient-to-r from-purple-600 to-pink-600 px-4 py-3">
-              <div className="flex items-center justify-between">
-                <h3 className="text-white font-semibold flex items-center gap-2">
-                  <FaMusic className="text-sm" />
-                  Ajouter à une playlist
-                </h3>
-                <button
-                  onClick={closeDropdown}
-                  className="text-white hover:text-gray-200 transition-colors"
-                >
-                  <FaTimes className="text-sm" />
-                </button>
-              </div>
-            </div>
-
-            {/* Feedback Message */}
-            {feedbackMessage && (
-              <div className={`px-4 py-3 flex items-center gap-2 text-sm ${
-                feedbackType === 'success' 
-                  ? 'bg-green-900/50 text-green-300 border-b border-green-800' 
-                  : 'bg-red-900/50 text-red-300 border-b border-red-800'
-              }`}>
-                {feedbackType === 'success' ? <FaCheck /> : <FaTimes />}
-                {feedbackMessage}
-              </div>
-            )}
-
-            {/* Search Bar */}
-            <div className="p-4 border-b border-gray-700">
-              <div className="relative">
-                <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm" />
-                <input
-                  ref={searchInputRef}
-                  type="text"
-                  placeholder="Rechercher une playlist..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-200 text-sm"
-                />
-              </div>
-            </div>
-
-            {/* Create New Playlist Button */}
-            <div className="p-4 border-b border-gray-700">
-              <button
-                onClick={() => setShowCreateForm(!showCreateForm)}
-                className="w-full flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded-lg text-white transition-all duration-200 hover:scale-[1.02] shadow-lg"
-              >
-                <FaPlus className="text-sm" />
-                <span className="font-medium">Créer une nouvelle playlist</span>
-              </button>
-            </div>
-
-            {/* Create Playlist Form */}
-            {showCreateForm && (
-              <div className="p-4 border-b border-gray-700 bg-gray-800/50">
-                <form onSubmit={handleCreatePlaylist} className="space-y-3">
-                  <div>
-                    <input
-                      type="text"
-                      placeholder="Nom de la playlist"
-                      value={newPlaylistName}
-                      onChange={(e) => setNewPlaylistName(e.target.value)}
-                      required
-                      className="w-full px-3 py-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-200 text-sm"
-                    />
-                  </div>
-                  <div>
-                    <textarea
-                      placeholder="Description (optionnel)"
-                      value={newPlaylistDescription}
-                      onChange={(e) => setNewPlaylistDescription(e.target.value)}
-                      rows={2}
-                      className="w-full px-3 py-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-200 text-sm resize-none"
-                    />
-                  </div>
-                  <div className="flex gap-2">
-                    <button
-                      type="submit"
-                      disabled={creatingPlaylist || !newPlaylistName.trim()}
-                      className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg transition-colors duration-200 text-sm"
-                    >
-                      {creatingPlaylist ? (
-                        <>
-                          <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-white"></div>
-                          Création...
-                        </>
-                      ) : (
-                        <>
-                          <FaCheck className="text-xs" />
-                          Créer et ajouter
-                        </>
-                      )}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setShowCreateForm(false)}
-                      className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors duration-200 text-sm"
-                    >
-                      Annuler
-                    </button>
-                  </div>
-                </form>
-              </div>
-            )}
-
-            {/* Playlists List */}
-            <div className="flex-1 overflow-y-auto">
-              {filteredPlaylists.length > 0 ? (
-                <div className="py-2">
-                  {filteredPlaylists.map((playlist) => (
-                    <button
-                      key={playlist.id}
-                      onClick={() => handleAddToPlaylist(playlist.id)}
-                      disabled={loading && selectedPlaylist === playlist.id}
-                      className={`w-full text-left px-4 py-3 hover:bg-gray-700 transition-all duration-200 flex items-center gap-3 group ${
-                        loading && selectedPlaylist === playlist.id ? "opacity-50 cursor-not-allowed" : ""
-                      }`}
-                    >
-                      {/* Playlist Icon */}
-                      <div className="flex-shrink-0">
-                        <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
-                          <FaFolder className="text-white text-sm" />
-                        </div>
-                      </div>
-                      
-                      {/* Playlist Info */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <h4 className="text-white font-medium truncate group-hover:text-purple-200 transition-colors">
-                            {playlist.name}
-                          </h4>
-                          {playlist.private && (
-                            <div className="flex-shrink-0 text-xs text-gray-400">
-                              🔒
-                            </div>
-                          )}
-                        </div>
-                        {playlist.description && (
-                          <p className="text-gray-400 text-sm truncate mt-1">
-                            {playlist.description}
-                          </p>
-                        )}
-                        <div className="flex items-center gap-3 mt-1 text-xs text-gray-400">
-                          <span className="flex items-center gap-1">
-                            <FaMusic className="text-xs" />
-                            {playlist.trackCount || 0} titres
-                          </span>
-                          {playlist.likeCount && playlist.likeCount > 0 && (
-                            <span className="flex items-center gap-1">
-                              <FaHeart className="text-xs" />
-                              {playlist.likeCount}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Loading Indicator */}
-                      <div className="flex-shrink-0">
-                        {loading && selectedPlaylist === playlist.id ? (
-                          <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-purple-500"></div>
-                        ) : (
-                          <FaPlus className="text-gray-400 group-hover:text-purple-400 transition-colors text-sm" />
-                        )}
-                      </div>
-                    </button>
-                  ))}
+              {/* Header */}
+              <div className="bg-gradient-to-r from-purple-600 to-pink-600 px-4 py-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-white font-semibold flex items-center gap-2">
+                    <FaMusic className="text-sm" />
+                    Ajouter à une playlist
+                  </h3>
+                  <button
+                    onClick={closeDropdown}
+                    className="text-white hover:text-gray-200 transition-colors"
+                  >
+                    <FaTimes className="text-sm" />
+                  </button>
                 </div>
-              ) : searchTerm ? (
-                <div className="p-8 text-center">
-                  <FaSearch className="mx-auto text-4xl text-gray-600 mb-3" />
-                  <p className="text-gray-400 text-sm">
-                    Aucune playlist trouvée pour "{searchTerm}"
-                  </p>
-                </div>
-              ) : (
-                <div className="p-8 text-center">
-                  <FaFolder className="mx-auto text-4xl text-gray-600 mb-3" />
-                  <p className="text-gray-400 text-sm mb-3">
-                    Aucune playlist disponible
-                  </p>
-                  <p className="text-gray-500 text-xs">
-                    Créez votre première playlist pour commencer
-                  </p>
+              </div>
+
+              {/* Feedback Message */}
+              {feedbackMessage && (
+                <div className={`px-4 py-3 flex items-center gap-2 text-sm ${
+                  feedbackType === 'success' 
+                    ? 'bg-green-900/50 text-green-300 border-b border-green-800' 
+                    : 'bg-red-900/50 text-red-300 border-b border-red-800'
+                }`}>
+                  {feedbackType === 'success' ? <FaCheck /> : <FaTimes />}
+                  {feedbackMessage}
                 </div>
               )}
-            </div>
+
+              {/* Search Bar */}
+              <div className="p-4 border-b border-gray-700">
+                <div className="relative">
+                  <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm" />
+                  <input
+                    ref={searchInputRef}
+                    type="text"
+                    placeholder="Rechercher une playlist..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-200 text-sm"
+                  />
+                </div>
+              </div>
+
+              {/* Create New Playlist Button */}
+              <div className="p-4 border-b border-gray-700">
+                <button
+                  onClick={() => setShowCreateForm(!showCreateForm)}
+                  className="w-full flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded-lg text-white transition-all duration-200 hover:scale-[1.02] shadow-lg"
+                >
+                  <FaPlus className="text-sm" />
+                  <span className="font-medium">Créer une nouvelle playlist</span>
+                </button>
+              </div>
+
+              {/* Create Playlist Form */}
+              {showCreateForm && (
+                <div className="p-4 border-b border-gray-700 bg-gray-800/50">
+                  <form onSubmit={handleCreatePlaylist} className="space-y-3">
+                    <div>
+                      <input
+                        type="text"
+                        placeholder="Nom de la playlist"
+                        value={newPlaylistName}
+                        onChange={(e) => setNewPlaylistName(e.target.value)}
+                        required
+                        className="w-full px-3 py-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-200 text-sm"
+                      />
+                    </div>
+                    <div>
+                      <textarea
+                        placeholder="Description (optionnel)"
+                        value={newPlaylistDescription}
+                        onChange={(e) => setNewPlaylistDescription(e.target.value)}
+                        rows={2}
+                        className="w-full px-3 py-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-200 text-sm resize-none"
+                      />
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        type="submit"
+                        disabled={creatingPlaylist || !newPlaylistName.trim()}
+                        className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg transition-colors duration-200 text-sm"
+                      >
+                        {creatingPlaylist ? (
+                          <>
+                            <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-white"></div>
+                            Création...
+                          </>
+                        ) : (
+                          <>
+                            <FaCheck className="text-xs" />
+                            Créer et ajouter
+                          </>
+                        )}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setShowCreateForm(false)}
+                        className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors duration-200 text-sm"
+                      >
+                        Annuler
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              )}
+
+              {/* Playlists List */}
+              <div className="flex-1 overflow-y-auto">
+                {filteredPlaylists.length > 0 ? (
+                  <>
+                    {/* Info message */}
+                    <div className="px-4 py-2 bg-gray-800/30 border-b border-gray-700">
+                      <p className="text-xs text-gray-400 flex items-center gap-2">
+                        <FaCheckCircle className="text-green-400" />
+                        Les playlists en vert contiennent déjà cette musique
+                      </p>
+                    </div>
+                    
+                    <div className="py-2">
+                      {filteredPlaylists.map((playlist) => {
+                        const hasTrack = playlistsWithTrack.has(playlist.id);
+                        return (
+                          <button
+                            key={playlist.id}
+                            onClick={() => !hasTrack && handleAddToPlaylist(playlist.id)}
+                            disabled={loading && selectedPlaylist === playlist.id || hasTrack}
+                            className={`w-full text-left px-4 py-3 transition-all duration-200 flex items-center gap-3 group ${
+                              hasTrack 
+                                ? "bg-gray-800 opacity-75 cursor-not-allowed" 
+                                : "hover:bg-gray-700"
+                            } ${
+                              loading && selectedPlaylist === playlist.id ? "opacity-50 cursor-not-allowed" : ""
+                            }`}
+                          >
+                            {/* Playlist Icon */}
+                            <div className="flex-shrink-0">
+                              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                                hasTrack 
+                                  ? "bg-gradient-to-br from-green-500 to-emerald-500" 
+                                  : "bg-gradient-to-br from-purple-500 to-pink-500"
+                              }`}>
+                                {hasTrack ? (
+                                  <FaCheckCircle className="text-white text-sm" />
+                                ) : (
+                                  <FaFolder className="text-white text-sm" />
+                                )}
+                              </div>
+                            </div>
+                            
+                            {/* Playlist Info */}
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2">
+                                <h4 className={`font-medium truncate transition-colors ${
+                                  hasTrack 
+                                    ? "text-green-300" 
+                                    : "text-white group-hover:text-purple-200"
+                                }`}>
+                                  {playlist.name}
+                                </h4>
+                                {playlist.private && (
+                                  <div className="flex-shrink-0 text-xs text-gray-400">
+                                    🔒
+                                  </div>
+                                )}
+                                {hasTrack && (
+                                  <div className="flex-shrink-0 text-xs text-green-300 font-medium">
+                                    Déjà ajoutée
+                                  </div>
+                                )}
+                              </div>
+                              {playlist.description && (
+                                <p className="text-gray-400 text-sm truncate mt-1">
+                                  {playlist.description}
+                                </p>
+                              )}
+                              <div className="flex items-center gap-3 mt-1 text-xs text-gray-400">
+                                <span className="flex items-center gap-1">
+                                  <FaMusic className="text-xs" />
+                                  {playlist.trackCount || 0} titres
+                                </span>
+                                {playlist.likeCount && playlist.likeCount > 0 && (
+                                  <span className="flex items-center gap-1">
+                                    <FaHeart className="text-xs" />
+                                    {playlist.likeCount}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Status Indicator */}
+                            <div className="flex-shrink-0">
+                              {loading && selectedPlaylist === playlist.id ? (
+                                <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-purple-500"></div>
+                              ) : hasTrack ? (
+                                <FaCheckCircle className="text-green-400 text-sm" />
+                              ) : (
+                                <FaPlus className="text-gray-400 group-hover:text-purple-400 transition-colors text-sm" />
+                              )}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </>
+                ) : searchTerm ? (
+                  <div className="p-8 text-center">
+                    <FaSearch className="mx-auto text-4xl text-gray-600 mb-3" />
+                    <p className="text-gray-400 text-sm">
+                      Aucune playlist trouvée pour "{searchTerm}"
+                    </p>
+                  </div>
+                ) : (
+                  <div className="p-8 text-center">
+                    <FaFolder className="mx-auto text-4xl text-gray-600 mb-3" />
+                    <p className="text-gray-400 text-sm mb-3">
+                      Aucune playlist disponible
+                    </p>
+                    <p className="text-gray-500 text-xs">
+                      Créez votre première playlist pour commencer
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </>,
