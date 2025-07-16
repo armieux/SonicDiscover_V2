@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { SlOptionsVertical } from "react-icons/sl";
+import { FaMusic } from "react-icons/fa";
 import { TrackArtist } from "@/app/interfaces/TrackArtist";
 import dynamic from "next/dynamic";
 import Image from 'next/image';
@@ -25,6 +26,7 @@ export default function TrackItem({ item, onDelete, isOwnProfile }: TrackItemPro
   const [showConfirm, setShowConfirm] = useState(false);
   const [showUpdate, setShowUpdate] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const handleDelete = async () => {
     try {
@@ -46,17 +48,29 @@ export default function TrackItem({ item, onDelete, isOwnProfile }: TrackItemPro
     }
   };
 
+  const handleImageError = () => {
+    setImageError(true);
+  };
+
   return (
     <div className="relative">
       <div className="flex justify-between items-center text-white">
         <div className="flex items-center">
-          <Image
-            src={tracks.tracks.trackpicture || "https://placehold.co/50"}
-            alt={tracks.tracks.title}
-            width={32}
-            height={32}
-            className="w-8 h-8 inline-block m-1 object-cover"
-          />
+          {!imageError && tracks.tracks.trackpicture ? (
+            <Image
+              src={tracks.tracks.trackpicture}
+              alt={tracks.tracks.title}
+              width={32}
+              height={32}
+              className="w-8 h-8 inline-block m-1 object-cover rounded"
+              onError={handleImageError}
+              unoptimized
+            />
+          ) : (
+            <div className="w-8 h-8 inline-block m-1 bg-gradient-to-br from-purple-600 to-purple-800 rounded flex items-center justify-center">
+              <FaMusic className="text-white text-xs" />
+            </div>
+          )}
           <p>
             {tracks.tracks.title} - {tracks.tracks.genre}
           </p>

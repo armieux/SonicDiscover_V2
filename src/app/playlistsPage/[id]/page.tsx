@@ -91,11 +91,12 @@ export default async function PlaylistPage(context: PlaylistPageProps) {
           {/* Playlist Header */}
           <div className="flex items-center space-x-4 mb-6">
             <Image
-              src={playlist.playlistpicture || "https://placehold.co/150"}
+              src={playlist.playlistpicture || "/default-artist.svg"}
               alt={playlist.name}
               width={144}
               height={144}
               className="w-36 h-36 rounded-md shadow-md object-cover"
+              unoptimized
             />
             <div>
               <h2 className="text-4xl text-white">{playlist.name}</h2>

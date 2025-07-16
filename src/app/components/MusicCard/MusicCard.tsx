@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import HeatRating from "@/app/components/HeatRating/HeatRating";
-import { FaPlay, FaUser } from "react-icons/fa";
+import { FaPlay, FaUser, FaMusic } from "react-icons/fa";
 import { useMusicContext } from "@/app/context/MusicContext";
 import { ExtendedTrack } from "@/app/musicListPage/page";
 import { AddToPlaylistButton } from "../AddToPlaylistButton/AddToPlaylistButton";
@@ -19,22 +19,35 @@ interface MusicCardProps {
 
 const MusicCard: React.FC<MusicCardProps> = ({ track, index, playlist, inPlaylist = false, playlistId }) => {
   const { setCurrentTrack } = useMusicContext();
+  const [imageError, setImageError] = useState(false);
 
   const handlePlay = () => {
     setCurrentTrack(track, playlist, index);
+  };
+
+  const handleImageError = () => {
+    setImageError(true);
   };
 
   return (
     <div className="group music-card interactive-hover flex items-center gap-4 p-5">
       {/* Cover image avec overlay */}
       <div className="relative overflow-hidden rounded-xl flex-shrink-0">
-        <Image
-          src={track.trackpicture}
-          alt={track.title}
-          width={80}
-          height={80}
-          className="w-16 h-16 md:w-20 md:h-20 object-cover transition-transform duration-300 group-hover:scale-110"
-        />
+        {!imageError && track.trackpicture ? (
+          <Image
+            src={track.trackpicture}
+            alt={track.title}
+            width={80}
+            height={80}
+            className="w-16 h-16 md:w-20 md:h-20 object-cover transition-transform duration-300 group-hover:scale-110"
+            onError={handleImageError}
+            unoptimized
+          />
+        ) : (
+          <div className="w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-purple-600 to-purple-800 flex items-center justify-center">
+            <FaMusic className="text-white text-lg" />
+          </div>
+        )}
         <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center">
           <button
             onClick={handlePlay}
@@ -59,7 +72,7 @@ const MusicCard: React.FC<MusicCardProps> = ({ track, index, playlist, inPlaylis
         
         {/* Artiste */}
         <a 
-          href={`/profilePage/${track.artistid}`} 
+          href={`/artist/${track.artistid}`} 
           className="flex items-center gap-2 text-text-secondary hover:text-peach-soft transition-colors duration-300 mb-1"
         >
           <FaUser size={12} />

@@ -181,7 +181,7 @@ const MusicPlayer: React.FC = () => {
     );
   }
 
-  const defaultCover = "/default-cover.jpg";
+  const defaultCover = "/default-artist.svg";
   const trackImage = currentTrack.trackpicture || defaultCover;
 
   return (
@@ -225,6 +225,7 @@ const MusicPlayer: React.FC = () => {
                       width={56}
                       height={56}
                       className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      unoptimized
                     />
                   </div>
                   
@@ -381,6 +382,7 @@ const MusicPlayer: React.FC = () => {
                     width={320}
                     height={320}
                     className="w-full h-full object-cover"
+                    unoptimized
                   />
                 </div>
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 group-hover:opacity-30 rounded-3xl transition-opacity duration-300" />

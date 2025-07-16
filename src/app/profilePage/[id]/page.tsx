@@ -95,11 +95,12 @@ export default async function ProfilePage(context: ProfilePageProps) {
                   {/* Profile Picture */}
                   <div className="relative w-32 h-32 mx-auto mb-6">
                     <Image 
-                      src={user.profilepicture || "/default-avatar.jpg"} 
+                      src={user.profilepicture || "/default-artist.svg"} 
                       alt="Profile" 
                       width={128}
                       height={128}
                       className="w-full h-full rounded-full object-cover border-4 border-[#F2A365] shadow-lg"
+                      unoptimized
                     />
                   </div>
 
@@ -123,9 +124,18 @@ export default async function ProfilePage(context: ProfilePageProps) {
                     </a>
                   </div>
 
-                  {/* Follow Button */}
+                  {/* Follow Button and Artist Link */}
                   {!isOwnProfile && (
                     <FollowButton userId={user.id} isFollowing={isFollowing} />
+                  )}
+                  
+                  {user.trackartists.length > 0 && (
+                    <a 
+                      href={`/artist/${user.id}`}
+                      className="block mt-4 text-center bg-gradient-to-r from-[#F2A365] to-[#D9BF77] hover:from-[#D9BF77] hover:to-[#F2A365] text-[#1C1C2E] font-semibold px-6 py-3 rounded-full transition-all duration-300 hover:scale-105"
+                    >
+                      🎵 Page Artiste
+                    </a>
                   )}
                 </div>
               </div>
