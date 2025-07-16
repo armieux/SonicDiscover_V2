@@ -22,7 +22,8 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    // Récupérer les dernières écoutes de l'utilisateur (limité aux 10 dernières)
+    // Récupérer les dernières écoutes de l'utilisateur (limité aux 3 dernières)
+    // Grouper par track pour éviter les doublons et prendre la dernière écoute de chaque track
     const recentListenings = await prisma.statistics.findMany({
       where: {
         userid: userId,
@@ -30,14 +31,25 @@ export async function GET(req: NextRequest) {
       orderBy: {
         listeningdate: 'desc',
       },
-      take: 10,
+      take: 20, // Prendre plus pour pouvoir filtrer les doublons
       include: {
         tracks: true,
       },
     });
 
+    // Filtrer pour ne garder que les 3 dernières écoutes uniques (pas de doublons de tracks)
+    const uniqueListenings = [];
+    const seenTrackIds = new Set();
+    
+    for (const listening of recentListenings) {
+      if (!seenTrackIds.has(listening.trackid) && uniqueListenings.length < 3) {
+        uniqueListenings.push(listening);
+        seenTrackIds.add(listening.trackid);
+      }
+    }
+
     // Si aucune écoute récente n'a été trouvée
-    if (recentListenings.length === 0) {
+    if (uniqueListenings.length === 0) {
       return NextResponse.json({
         message: 'Aucune écoute récente trouvée',
         playlists: []
@@ -47,7 +59,7 @@ export async function GET(req: NextRequest) {
     // Analyser les humeurs des morceaux écoutés récemment
     const moodCounts: Record<string, number> = {};
 
-    recentListenings.forEach((listening) => {
+    uniqueListenings.forEach((listening) => {
       const mood = listening.tracks.mood;
       if (mood) {
         moodCounts[mood] = (moodCounts[mood] || 0) + 1;
@@ -74,7 +86,7 @@ export async function GET(req: NextRequest) {
     }
 
     // Trouver des morceaux correspondant à l'humeur dominante (excluant ceux déjà écoutés récemment)
-    const recentTrackIds = recentListenings.map(listening => listening.trackid);
+    const recentTrackIds = uniqueListenings.map(listening => listening.trackid);
 
     const moodTracks = await prisma.tracks.findMany({
       where: {
@@ -104,7 +116,17 @@ export async function GET(req: NextRequest) {
           name: artist.users.username,
           role: artist.role
         }))
-      }))
+      })),
+      // Informations de debug
+      debug: {
+        recentListenings: uniqueListenings.map(listening => ({
+          trackName: listening.tracks.name,
+          mood: listening.tracks.mood,
+          listeningDate: listening.listeningdate
+        })),
+        moodCounts,
+        totalUniqueListenings: uniqueListenings.length
+      }
     });
 
   } catch (error) {

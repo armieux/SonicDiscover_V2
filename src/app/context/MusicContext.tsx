@@ -14,6 +14,7 @@ interface MusicContextType {
   playNext: () => void;
   playPrev: () => void;
   stopPlayback: () => void;
+  checkAndRecordListen: (trackId: number, currentTime: number, duration: number) => void;
 }
 
 const MusicContext = createContext<MusicContextType>({
@@ -27,6 +28,7 @@ const MusicContext = createContext<MusicContextType>({
   playNext: () => {},
   playPrev: () => {},
   stopPlayback: () => {},
+  checkAndRecordListen: () => {},
 });
 
 export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -35,18 +37,34 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const [listenRecorded, setListenRecorded] = useState<Set<number>>(new Set());
 
   const recordListen = async (trackId: number) => {
     try {
       await fetch(`/api/tracks/${trackId}/listen`, {
         method: "POST",
       });
+      console.log(`✅ Écoute enregistrée pour le track ${trackId}`);
     } catch (error) {
       console.error("Failed to record listen:", error);
     }
   };
 
-  const setCurrentTrack = useCallback(async (track: Track, playlistParam?: Track[], index?: number) => {
+  // Fonction pour vérifier si l'écoute doit être enregistrée
+  const checkAndRecordListen = useCallback((trackId: number, currentTime: number, duration: number) => {
+    // Enregistrer l'écoute si plus de 30% de la piste a été écoutée
+    // ou si plus de 30 secondes ont été écoutées
+    const thirtyPercent = duration * 0.3;
+    const thirtySeconds = 30;
+    const threshold = Math.min(thirtyPercent, thirtySeconds);
+    
+    if (currentTime >= threshold && !listenRecorded.has(trackId)) {
+      setListenRecorded(prev => new Set(prev).add(trackId));
+      recordListen(trackId);
+    }
+  }, [listenRecorded]);
+
+  const setCurrentTrack = useCallback((track: Track, playlistParam?: Track[], index?: number) => {
     const isNewTrack = track.id !== currentTrack?.id;
     
     setCurrentTrackState(track);
@@ -55,9 +73,9 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       setCurrentIndex(index);
     }
     
-    // Record listen if it's a new track
+    // Ne pas enregistrer l'écoute immédiatement, attendre le seuil
     if (isNewTrack) {
-      await recordListen(track.id);
+      console.log(`🎵 Nouveau track sélectionné: ${track.name} (ID: ${track.id})`);
     }
   }, [currentTrack]);
 
@@ -70,26 +88,25 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setPlaylist([]);
     setCurrentIndex(0);
     setIsPlaying(false);
+    setListenRecorded(new Set()); // Réinitialiser le set des écoutes enregistrées
   }, [audioRef]);
 
-  const playNext = useCallback(async () => {
+  const playNext = useCallback(() => {
     if (playlist.length === 0) return;
     const nextIndex = (currentIndex + 1) % playlist.length;
     setCurrentIndex(nextIndex);
     setCurrentTrackState(playlist[nextIndex]);
     
-    // Record listen for the new track
-    await recordListen(playlist[nextIndex].id);
+    console.log(`⏭️ Passage au track suivant: ${playlist[nextIndex].name} (ID: ${playlist[nextIndex].id})`);
   }, [playlist, currentIndex]);
 
-  const playPrev = useCallback(async () => {
+  const playPrev = useCallback(() => {
     if (playlist.length === 0) return;
     const prevIndex = (currentIndex - 1 + playlist.length) % playlist.length;
     setCurrentIndex(prevIndex);
     setCurrentTrackState(playlist[prevIndex]);
     
-    // Record listen for the new track
-    await recordListen(playlist[prevIndex].id);
+    console.log(`⏮️ Passage au track précédent: ${playlist[prevIndex].name} (ID: ${playlist[prevIndex].id})`);
   }, [playlist, currentIndex]);
 
   return (
@@ -105,6 +122,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         playNext,
         playPrev,
         stopPlayback,
+        checkAndRecordListen,
       }}
     >
       {children}

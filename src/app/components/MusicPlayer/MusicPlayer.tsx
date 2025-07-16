@@ -28,7 +28,7 @@ import TimecodeComments from '../TimecodeComments';
 import FloatingComment from '../FloatingComment';
 
 const MusicPlayer: React.FC = () => {
-  const { currentTrack, playNext, playPrev, audioRef, stopPlayback } = useMusicContext();
+  const { currentTrack, playNext, playPrev, audioRef, stopPlayback, checkAndRecordListen } = useMusicContext();
   const [isPlaying, setIsPlaying] = useState(false);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -76,6 +76,10 @@ const MusicPlayer: React.FC = () => {
     };
     const handleTimeUpdate = () => {
       setCurrentTime(audio.currentTime);
+      // Vérifier si l'écoute doit être enregistrée
+      if (currentTrack && audio.duration) {
+        checkAndRecordListen(currentTrack.id, audio.currentTime, audio.duration);
+      }
     };
     const handlePlay = () => {
       setIsPlaying(true);
