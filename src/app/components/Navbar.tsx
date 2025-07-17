@@ -9,7 +9,7 @@ import { User } from '@/app/interfaces/User';
 import { MdOutlineLibraryMusic } from "react-icons/md";
 import { MdOutlineVideoLibrary } from "react-icons/md";
 import { TbLibraryPlus } from "react-icons/tb";
-import { FiCompass } from "react-icons/fi";
+import { FiCompass, FiSettings } from "react-icons/fi";
 import { RiHeartPulseFill } from "react-icons/ri";
 
 interface NavbarProps {
@@ -62,6 +62,14 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
               <TbLibraryPlus size={20}/>
               <span>Ajouter</span>
             </Link>
+
+            {/* Lien Admin - visible seulement pour les administrateurs */}
+            {user && user.role === 'admin' && (
+              <Link href="/admin" className={linkClasses('/admin')}>
+                <FiSettings size={20}/>
+                <span>Admin</span>
+              </Link>
+            )}
           </div>
 
           {/* Profil utilisateur */}
@@ -99,6 +107,13 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
           <Link href="/mood-playlists" className={`${linkClasses('/mood-playlists')} px-3 py-2 text-sm`}>
             <RiHeartPulseFill size={18}/>
           </Link>
+
+          {/* Lien Admin mobile - visible seulement pour les administrateurs */}
+          {user && user.role === 'admin' && (
+            <Link href="/admin" className={`${linkClasses('/admin')} px-3 py-2 text-sm`}>
+              <FiSettings size={18}/>
+            </Link>
+          )}
         </div>
       </div>
     </nav>

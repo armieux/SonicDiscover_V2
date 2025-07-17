@@ -7,7 +7,7 @@ import TrackItem from '@/app/components/ListItems/TrackItem';
 import PlaylistItem from '@/app/components/ListItems/PlaylistItem';
 import BadgeItem from '@/app/components/ListItems/BadgeItem';
 import RatingItem from '@/app/components/ListItems/RatingItem';
-import Image from 'next/image';
+import SafeImage from '@/app/components/SafeImage/SafeImage';
 import UserMusicStats from "@/app/components/UserMusicStats/UserMusicStats";
 
 const prisma = new PrismaClient();
@@ -94,13 +94,19 @@ export default async function ProfilePage(context: ProfilePageProps) {
                 <div className="text-center">
                   {/* Profile Picture */}
                   <div className="relative w-32 h-32 mx-auto mb-6">
-                    <Image 
-                      src={user.profilepicture || "/default-artist.svg"} 
+                    <SafeImage
+                      src={user.profilepicture} 
                       alt="Profile" 
                       width={128}
                       height={128}
                       className="w-full h-full rounded-full object-cover border-4 border-[#F2A365] shadow-lg"
-                      unoptimized
+                      fallbackComponent={
+                        <div className="w-full h-full rounded-full bg-gradient-to-br from-[#F2A365] to-[#D9BF77] flex items-center justify-center border-4 border-[#F2A365] shadow-lg">
+                          <svg className="w-16 h-16 text-[#1C1C2E]" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                      }
                     />
                   </div>
 
