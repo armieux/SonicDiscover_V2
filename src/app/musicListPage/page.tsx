@@ -6,6 +6,9 @@ import { Track } from "../interfaces/Track";
 import PageLayout from "../components/PageLayout";
 import { PrismaClient } from '@prisma/client';
 
+// Force dynamic rendering - don't prerender this page
+export const dynamic = 'force-dynamic';
+
 // Extend your Track interface to add fields not stored in DB (artist, duration)
 export interface ExtendedTrack extends Omit<Track, 'genre'> {
   genre: string | null;

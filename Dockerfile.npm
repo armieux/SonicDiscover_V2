@@ -1,0 +1,63 @@
+# Dockerfile alternatif pour l'application Next.js SonicDiscover - Production (avec NPM)
+FROM node:18-alpine AS base
+
+# Installation des dépendances système nécessaires
+RUN apk add --no-cache libc6-compat
+
+# Configuration du répertoire de travail
+WORKDIR /app
+
+# Étape de préparation des dépendances
+FROM base AS deps
+# Copie des fichiers de dépendances
+COPY package.json ./
+COPY prisma ./prisma/
+
+# Génération du package-lock.json et installation des dépendances
+RUN npm install --only=production && \
+    npm cache clean --force
+
+# Génération du client Prisma
+RUN npx prisma generate
+
+# Étape de build avec toutes les dépendances
+FROM base AS builder
+WORKDIR /app
+
+# Installation de toutes les dépendances (dev + prod) pour le build
+COPY package.json ./
+RUN npm install
+
+# Copie du code source
+COPY . .
+COPY --from=deps /app/prisma ./prisma
+
+# Variables d'environnement pour le build
+ENV NEXT_TELEMETRY_DISABLED 1
+ENV NODE_ENV production
+
+# Génération du client Prisma pour le build
+RUN npx prisma generate
+
+# Build de l'application Next.js
+RUN npm run build
+
+# Étape de production finale
+FROM base AS runner
+WORKDIR /app
+
+# Création d'un utilisateur non-root pour la sécurité
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+# Configuration des variables d'environnement de production
+ENV NODE_ENV production
+ENV NEXT_TELEMETRY_DISABLED 1
+
+# Copie des fichiers nécessaires depuis le builder
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/prisma ./prisma
+
+# Copie du dossier .next avec les bonnes permissions
+COPY --from=builder --chown=nextjs:nodejs /app/.next
