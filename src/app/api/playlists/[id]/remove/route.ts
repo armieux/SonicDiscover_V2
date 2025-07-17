@@ -4,9 +4,10 @@ import authService from "@/app/services/authService"; // Ensure authentication
 
 const prisma = new PrismaClient();
 
-export async function POST(request: Request, { params }: { params: { id: string } }) {
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const playlistId = parseInt(params.id, 10);
+    const { id } = await params;
+    const playlistId = parseInt(id, 10);
     const { trackId } = await request.json();
 
     if (isNaN(playlistId) || isNaN(trackId)) {

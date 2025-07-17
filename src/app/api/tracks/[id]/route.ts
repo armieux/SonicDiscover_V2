@@ -12,9 +12,9 @@ const prisma = new PrismaClient();
  */
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { id } =  await params;
+  const { id } = await params;
 
   try {
     // Fetch the track by ID using Prisma
@@ -46,7 +46,7 @@ export async function GET(
 // PATCH /api/tracks/:id
 export async function PATCH(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
   const body = await request.json();
@@ -78,7 +78,7 @@ export async function PATCH(
 // DELETE /api/tracks/:id
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
 
@@ -122,4 +122,3 @@ export async function DELETE(
     await prisma.$disconnect();
   }
 }
-  

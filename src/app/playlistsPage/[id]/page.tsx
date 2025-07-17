@@ -9,12 +9,12 @@ import Image from 'next/image';
 const prisma = new PrismaClient();
 
 interface PlaylistPageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
-export default async function PlaylistPage(context: PlaylistPageProps) {
-  const awaitedParams = await context.params;
-  const playlistId = parseInt(awaitedParams.id, 10);
+export default async function PlaylistPage({ params }: PlaylistPageProps) {
+  const { id } = await params;
+  const playlistId = parseInt(id, 10);
   if (isNaN(playlistId)) {
     return <div>Invalid Playlist ID</div>;
   }
@@ -44,9 +44,7 @@ export default async function PlaylistPage(context: PlaylistPageProps) {
           tracks: {
             include: {
               trackartists: {
-                include: { 
-                  users: true 
-                },
+                select: { artistid: true, trackid: true, role: true, users: true, tracks: true }
               },
             },
           },
@@ -75,12 +73,46 @@ export default async function PlaylistPage(context: PlaylistPageProps) {
   const trackList: ExtendedTrack[] = playlist.playlisttracks.map(({ tracks }) => {
     const mainArtist = tracks.trackartists?.find((a) => a.role === "ARTIST");
 
+    // Fix nested trackartists.tracks fields to ensure all are non-nullable
+    const fixedTrackArtists = tracks.trackartists?.map((ta) => ({
+      ...ta,
+      tracks: {
+        ...ta.tracks,
+        trackpicture: ta.tracks.trackpicture || "https://placehold.co/400",
+        genre: ta.tracks.genre || "Unknown Genre",
+        bpm: ta.tracks.bpm != null ? ta.tracks.bpm : 0,
+        mood: ta.tracks.mood || "",
+        uploaddate: ta.tracks.uploaddate || new Date(0),
+        audiofile: ta.tracks.audiofile || "",
+        playcount: ta.tracks.playcount != null ? ta.tracks.playcount : 0,
+        likecount: ta.tracks.likecount != null ? ta.tracks.likecount : 0,
+        dislikecount: ta.tracks.dislikecount != null ? ta.tracks.dislikecount : 0,
+        averagerating: ta.tracks.averagerating != null ? ta.tracks.averagerating : 0,
+        duration: ta.tracks.duration != null ? ta.tracks.duration : 0,
+        title: ta.tracks.title || "",
+        id: ta.tracks.id != null ? ta.tracks.id : 0,
+      },
+    }));
+
     return {
       ...tracks,
+      genre: tracks.genre || "Unknown Genre",
       artistname: mainArtist?.users?.username || "Unknown Artist",
       artistid: mainArtist?.users?.id || 0,
       parsedduration: parseDuration(tracks.duration),
       trackpicture: tracks.trackpicture || "https://placehold.co/400",
+      trackartists: fixedTrackArtists, // Use the fixed array
+      bpm: tracks.bpm != null ? tracks.bpm : 0,
+      mood: tracks.mood || "",
+      uploaddate: tracks.uploaddate || new Date(0),
+      audiofile: tracks.audiofile || "",
+      playcount: tracks.playcount != null ? tracks.playcount : 0,
+      likecount: tracks.likecount != null ? tracks.likecount : 0,
+      dislikecount: tracks.dislikecount != null ? tracks.dislikecount : 0,
+      averagerating: tracks.averagerating != null ? tracks.averagerating : 0,
+      duration: tracks.duration != null ? tracks.duration : 0,
+      title: tracks.title || "",
+      id: tracks.id != null ? tracks.id : 0,
     };
   });
 

@@ -7,11 +7,12 @@ const prisma = new PrismaClient();
 // GET /api/artists/[id]
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const artistId = parseInt(params.id, 10);
-    
+    const { id } = await params;
+    const artistId = parseInt(id, 10);
+
     if (isNaN(artistId)) {
       return NextResponse.json(
         { error: 'Invalid artist ID' },
@@ -51,11 +52,11 @@ export async function GET(
     const tracks = artist.trackartists.map(ta => ta.tracks);
     const stats = {
       totalTracks: tracks.length,
-      totalPlays: tracks.reduce((sum, track) => sum + track.playcount, 0),
-      totalLikes: tracks.reduce((sum, track) => sum + track.likecount, 0),
-      totalDislikes: tracks.reduce((sum, track) => sum + track.dislikecount, 0),
-      averageRating: tracks.length > 0 
-        ? tracks.reduce((sum, track) => sum + track.averagerating, 0) / tracks.length 
+      totalPlays: tracks.reduce((sum, track) => sum + (track.playcount ?? 0), 0),
+      totalLikes: tracks.reduce((sum, track) => sum + (track.likecount ?? 0), 0),
+      totalDislikes: tracks.reduce((sum, track) => sum + (track.dislikecount ?? 0), 0),
+      averageRating: tracks.length > 0
+        ? tracks.reduce((sum, track) => sum + (track.averagerating ?? 0), 0) / tracks.length
         : 0
     };
 
@@ -66,7 +67,7 @@ export async function GET(
         profilepicture: artist.profilepicture,
         followerscount: artist.followerscount,
         followingcount: artist.followingcount,
-        joinDate: artist.joinDate
+        joinDate: artist.joindate
       },
       tracks: tracks.map(track => ({
         ...track,

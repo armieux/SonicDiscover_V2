@@ -2,26 +2,24 @@ import { cookies } from 'next/headers';
 import jwt from 'jsonwebtoken';
 import { PrismaClient } from '@prisma/client';
 import PageLayout from '@/app/components/PageLayout';
-import dynamic from 'next/dynamic';
 import TrackItem from '@/app/components/ListItems/TrackItem';
 import PlaylistItem from '@/app/components/ListItems/PlaylistItem';
 import BadgeItem from '@/app/components/ListItems/BadgeItem';
 import RatingItem from '@/app/components/ListItems/RatingItem';
 import SafeImage from '@/app/components/SafeImage/SafeImage';
 import UserMusicStats from "@/app/components/UserMusicStats/UserMusicStats";
+import { FollowButton } from "@/app/components/FollowButton/FollowButton";
+import ExpandableList from "@/app/components/ExpandableList/ExpandableList";
 
 const prisma = new PrismaClient();
 
-const FollowButton = dynamic(() => import("@/app/components/FollowButton/FollowButton"), { ssr: true });
-const ExpandableList = dynamic(() => import("@/app/components/ExpandableList/ExpandableList"), { ssr: true });
-
 interface ProfilePageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
-export default async function ProfilePage(context: ProfilePageProps) {
-  const awaitedParams = await context.params;
-  const userId = parseInt(awaitedParams.id, 10);
+export default async function ProfilePage({ params }: ProfilePageProps) {
+  const { id } = await params;
+  const userId = parseInt(id, 10);
 
   if (isNaN(userId)) {
     return <div>Invalid User ID</div>;
@@ -50,6 +48,7 @@ export default async function ProfilePage(context: ProfilePageProps) {
       userbadges: isOwnProfile ? { include: { badges: true } } : false,
       trackartists: {
         include: {
+          users: true, // Ensure users property is included for TrackArtist
           tracks: {
             include: {
               playlisttracks: {
@@ -82,6 +81,86 @@ export default async function ProfilePage(context: ProfilePageProps) {
   const playlists = user.trackartists.flatMap((artist) =>
     artist.tracks.playlisttracks.map((pt) => pt.playlists)
   );
+
+  // Before rendering, fix all non-nullable fields for all user.trackartists
+  const fixedTrackArtists = user.trackartists.map((ta) => ({
+    ...ta,
+    tracks: {
+      ...ta.tracks,
+      trackpicture: ta.tracks.trackpicture || "https://placehold.co/400",
+      genre: ta.tracks.genre || "Unknown Genre",
+      bpm: ta.tracks.bpm ?? 0,
+      mood: ta.tracks.mood || "",
+      uploaddate: ta.tracks.uploaddate || new Date(0),
+      audiofile: ta.tracks.audiofile || "",
+      playcount: ta.tracks.playcount ?? 0,
+      likecount: ta.tracks.likecount ?? 0,
+      dislikecount: ta.tracks.dislikecount ?? 0,
+      averagerating: ta.tracks.averagerating ?? 0,
+      duration: ta.tracks.duration ?? 0,
+      title: ta.tracks.title || "",
+      id: ta.tracks.id ?? 0,
+      playlisttracks: ta.tracks.playlisttracks?.map(pt => ({
+        playlistId: pt.playlistid,
+        trackId: pt.trackid,
+        order: pt.order,
+        playlist: {
+          id: pt.playlists.id,
+          name: pt.playlists.name,
+          playlistPicture: pt.playlists.playlistpicture || "",
+          description: pt.playlists.description || "",
+          creatorId: pt.playlists.creatorid,
+          playlisttracks: [],
+          playlistcreator: {
+            id: 0,
+            username: "Unknown",
+            email: "",
+            password: "",
+            role: "user",
+            profilepicture: "",
+            joindate: new Date(0),
+            followerscount: 0,
+            followingcount: 0,
+          },
+        },
+      })) || [],
+    },
+  }));
+
+  // Fix playlistpicture for all playlists before rendering
+  const fixedPlaylists = playlists.map((pl) => ({
+    ...pl,
+    playlistpicture: pl.playlistpicture || undefined,
+  }));
+
+  // Define explicit types for badges and ratings
+  interface BadgeWithArray {
+    badgeid: number;
+    badges: { badgeicon?: string; name: string }[];
+    [key: string]: unknown;
+  }
+  interface RatingWithArray {
+    id: number;
+    tracks: { id: number; title: string; trackpicture?: string }[];
+    liked: boolean;
+    [key: string]: unknown;
+  }
+
+  // Fix userbadges for ExpandableList, use first badge from badges array (type safe)
+  const fixedUserBadges = (((user.userbadges as unknown) as BadgeWithArray[]) || [])
+    .filter((ub) => Array.isArray(ub.badges) && ub.badges.length > 0)
+    .map((ub) => ({
+      ...ub,
+      badges: ub.badges[0],
+    }));
+
+  // Fix ratings for ExpandableList, use first track from tracks array (type safe)
+  const fixedRatings = (((user.ratings as unknown) as RatingWithArray[]) || [])
+    .filter((r) => Array.isArray(r.tracks) && r.tracks.length > 0)
+    .map((r) => ({
+      ...r,
+      tracks: r.tracks[0],
+    }));
 
   return (
     <PageLayout>
@@ -153,15 +232,15 @@ export default async function ProfilePage(context: ProfilePageProps) {
               {user.trackartists.length > 0 && (
                 <div className="bg-[#2A2A40] bg-opacity-70 backdrop-blur-lg border border-[#3E5C76] border-opacity-30 p-6 rounded-2xl">
                   <h3 className="text-2xl font-bold text-[#F2A365] mb-4">🎵 Vos titres</h3>
-                  <ExpandableList items={user.trackartists} ItemComponent={TrackItem} isOwnProfile={isOwnProfile} />
+                  <ExpandableList items={fixedTrackArtists} ItemComponent={TrackItem} isOwnProfile={isOwnProfile} />
                 </div>
               )}
 
               {/* Playlists Containing the User's Tracks */}
-              {playlists.length > 0 && (
+              {fixedPlaylists.length > 0 && (
                 <div className="bg-[#2A2A40] bg-opacity-70 backdrop-blur-lg border border-[#3E5C76] border-opacity-30 p-6 rounded-2xl">
                   <h3 className="text-2xl font-bold text-[#D9BF77] mb-4">📁 Playlists incluant vos titres</h3>
-                  <ExpandableList items={playlists} ItemComponent={PlaylistItem} isOwnProfile={isOwnProfile} />
+                  <ExpandableList items={fixedPlaylists} ItemComponent={PlaylistItem} isOwnProfile={isOwnProfile} />
                 </div>
               )}
 
@@ -169,7 +248,7 @@ export default async function ProfilePage(context: ProfilePageProps) {
               {isOwnProfile && user.userbadges.length > 0 && (
                 <div className="bg-[#2A2A40] bg-opacity-70 backdrop-blur-lg border border-[#3E5C76] border-opacity-30 p-6 rounded-2xl">
                   <h3 className="text-2xl font-bold text-[#3E5C76] mb-4">🏆 Badges</h3>
-                  <ExpandableList items={user.userbadges} ItemComponent={BadgeItem} isOwnProfile={isOwnProfile} />
+                  <ExpandableList items={fixedUserBadges} ItemComponent={BadgeItem} isOwnProfile={isOwnProfile} />
                 </div>
               )}
 
@@ -177,7 +256,7 @@ export default async function ProfilePage(context: ProfilePageProps) {
               {isOwnProfile && user.ratings.length > 0 && (
                 <div className="bg-[#2A2A40] bg-opacity-70 backdrop-blur-lg border border-[#3E5C76] border-opacity-30 p-6 rounded-2xl">
                   <h3 className="text-2xl font-bold text-[#F2A365] mb-4">⭐ Titres notés</h3>
-                  <ExpandableList items={user.ratings} ItemComponent={RatingItem} isOwnProfile={isOwnProfile} />
+                  <ExpandableList items={fixedRatings} ItemComponent={RatingItem} isOwnProfile={isOwnProfile} />
                 </div>
               )}
             </div>

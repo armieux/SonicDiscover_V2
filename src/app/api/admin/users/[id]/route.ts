@@ -23,7 +23,7 @@ async function verifyAdminToken(request: NextRequest) {
     }
 
     return user;
-  } catch (error) {
+  } catch {
     throw new Error('Invalid token');
   }
 }

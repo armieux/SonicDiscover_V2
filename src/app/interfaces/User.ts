@@ -10,10 +10,10 @@ export interface User {
     email: string;
     password: string;
     role: string;
-    profilepicture: string;
-    joinDate: Date;
-    followerscount: number;
-    followingcount: number;
+    profilepicture: string | null;
+    joindate: Date;
+    followerscount: number | null;
+    followingcount: number | null;
 
     userbadges?: UserBadge[];
     trackartists?: TrackArtist[];

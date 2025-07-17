@@ -1,9 +1,9 @@
 "use client";
 
 import { Playlist } from "@/app/interfaces/Playlist";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
-import { FaPlus, FaMusic, FaSearch, FaCheck, FaTimes, FaFolder, FaHeart, FaCheckCircle } from "react-icons/fa";
+import { FaPlus, FaMusic, FaSearch, FaCheck, FaTimes, FaFolder, FaCheckCircle } from "react-icons/fa";
 
 export const AddToPlaylistButton = ({ trackId }: { trackId: number }) => {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
@@ -24,13 +24,24 @@ export const AddToPlaylistButton = ({ trackId }: { trackId: number }) => {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
+  // Fetch playlists that already contain this track
+  const fetchPlaylistsWithTrack = useCallback(async () => {
+    try {
+      const response = await fetch(`/api/playlists/containing/${trackId}`);
+      const playlistIds = await response.json();
+      setPlaylistsWithTrack(new Set(playlistIds));
+    } catch (error) {
+      console.error("Error fetching playlists containing track:", error);
+    }
+  }, [trackId]);
+
   // Fetch user's playlists only when dropdown is opened for the first time
   useEffect(() => {
     if (dropdownOpen && playlists.length === 0) {
       fetchPlaylists();
       fetchPlaylistsWithTrack();
     }
-  }, [dropdownOpen, playlists.length]);
+  }, [dropdownOpen, playlists.length, fetchPlaylistsWithTrack]);
 
   // Filter playlists based on search term
   useEffect(() => {
@@ -121,17 +132,6 @@ export const AddToPlaylistButton = ({ trackId }: { trackId: number }) => {
     }
   };
 
-  // Fetch playlists that already contain this track
-  const fetchPlaylistsWithTrack = async () => {
-    try {
-      const response = await fetch(`/api/playlists/containing/${trackId}`);
-      const playlistIds = await response.json();
-      setPlaylistsWithTrack(new Set(playlistIds));
-    } catch (error) {
-      console.error("Error fetching playlists containing track:", error);
-    }
-  };
-
   // Handle adding a track to a playlist
   const handleAddToPlaylist = async (playlistId: number) => {
     setLoading(true);
@@ -147,7 +147,7 @@ export const AddToPlaylistButton = ({ trackId }: { trackId: number }) => {
 
       if (response.ok && data.success) {
         const playlistName = playlists.find(p => p.id === playlistId)?.name || 'playlist';
-        setFeedbackMessage(`Ajouté à "${playlistName}" avec succès !`);
+        setFeedbackMessage(`Ajouté à &quot;${playlistName}&quot; avec succès !`);
         setFeedbackType("success");
         
         // Update the list of playlists containing this track
@@ -196,7 +196,7 @@ export const AddToPlaylistButton = ({ trackId }: { trackId: number }) => {
       if (response.ok) {
         const newPlaylist = await response.json();
         setPlaylists(prev => [...prev, newPlaylist]);
-        setFeedbackMessage(`Playlist "${newPlaylistName}" créée avec succès !`);
+        setFeedbackMessage(`Playlist &quot;${newPlaylistName}&quot; créée avec succès !`);
         setFeedbackType("success");
         setShowCreateForm(false);
         setNewPlaylistName("");
@@ -411,11 +411,6 @@ export const AddToPlaylistButton = ({ trackId }: { trackId: number }) => {
                                 }`}>
                                   {playlist.name}
                                 </h4>
-                                {playlist.private && (
-                                  <div className="flex-shrink-0 text-xs text-gray-400">
-                                    🔒
-                                  </div>
-                                )}
                                 {hasTrack && (
                                   <div className="flex-shrink-0 text-xs text-green-300 font-medium">
                                     Déjà ajoutée
@@ -430,14 +425,8 @@ export const AddToPlaylistButton = ({ trackId }: { trackId: number }) => {
                               <div className="flex items-center gap-3 mt-1 text-xs text-gray-400">
                                 <span className="flex items-center gap-1">
                                   <FaMusic className="text-xs" />
-                                  {playlist.trackCount || 0} titres
+                                  {playlist.playlisttracks?.length || 0} titres
                                 </span>
-                                {playlist.likeCount && playlist.likeCount > 0 && (
-                                  <span className="flex items-center gap-1">
-                                    <FaHeart className="text-xs" />
-                                    {playlist.likeCount}
-                                  </span>
-                                )}
                               </div>
                             </div>
 
@@ -460,7 +449,7 @@ export const AddToPlaylistButton = ({ trackId }: { trackId: number }) => {
                   <div className="p-8 text-center">
                     <FaSearch className="mx-auto text-4xl text-gray-600 mb-3" />
                     <p className="text-gray-400 text-sm">
-                      Aucune playlist trouvée pour "{searchTerm}"
+                      Aucune playlist trouvée pour &quot;{searchTerm}&quot;
                     </p>
                   </div>
                 ) : (

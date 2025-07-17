@@ -3,9 +3,9 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function POST(request: Request, context: { params: { id: string } }) {
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = await context.params;
+    const { id } = await params;
     const trackId = parseInt(id, 10);
 
     if (isNaN(trackId)) {

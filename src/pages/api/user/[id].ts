@@ -7,7 +7,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { id } = req.query;
 
     try {
-        const user = await prisma.user.findUnique({
+        const user = await prisma.users.findUnique({
             where: { id: Number(id) },
         });
 

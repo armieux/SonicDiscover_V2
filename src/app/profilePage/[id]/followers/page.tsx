@@ -7,9 +7,9 @@ const prisma = new PrismaClient();
 export default async function FollowersPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const { id } = await Promise.resolve(params);
+  const { id } = await params;
   const userId = parseInt(id, 10);
 
   // Récupérer les informations de l'utilisateur directement

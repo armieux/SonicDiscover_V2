@@ -1,3 +1,5 @@
+import React from 'react';
+
 /**
  * Vérifie si une URL d'image est valide
  */
@@ -37,18 +39,17 @@ interface SafeImageProps {
 
 export function SafeImage({ src, alt, className, fallbackIcon, onError }: SafeImageProps) {
   if (!isValidImageUrl(src)) {
-    return <>{fallbackIcon}</>;
+    return fallbackIcon;
   }
 
-  return (
-    <img
-      src={src!}
-      alt={alt}
-      className={className}
-      onError={(e) => {
-        e.currentTarget.style.display = 'none';
-        if (onError) onError();
-      }}
-    />
-  );
+  // Créer l'élément img avec React.createElement au lieu de JSX
+  return React.createElement('img', {
+    src: src || '',
+    alt: alt,
+    className: className,
+    onError: (e: React.SyntheticEvent<HTMLImageElement>) => {
+      e.currentTarget.style.display = 'none';
+      if (onError) onError();
+    }
+  });
 }

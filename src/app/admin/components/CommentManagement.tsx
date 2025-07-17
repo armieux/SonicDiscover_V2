@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FiTrash2, FiEye, FiSearch, FiMessageSquare, FiClock } from 'react-icons/fi';
+import { FiTrash2, FiSearch, FiMessageSquare, FiClock } from 'react-icons/fi';
 
 interface Comment {
   id: number;

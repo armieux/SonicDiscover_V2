@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import PageLayout from '@/app/components/PageLayout';
 import MusicCard from '@/app/components/MusicCard/MusicCard';
 import { ExtendedTrack } from '@/app/musicListPage/page';
@@ -25,7 +24,6 @@ export default function MoodPlaylistsPage() {
       totalUniqueListenings: number;
     };
   } | null>(null);
-  const router = useRouter();
 
   const fetchMoodPlaylist = async (isRefresh = false) => {
     try {
@@ -88,7 +86,7 @@ export default function MoodPlaylistsPage() {
         <div className="flex flex-col items-start gap-6">
           <div className="flex items-center justify-between w-full">
             <h1 className="text-4xl font-bold text-white mb-2">
-              Playlist d'ambiance personnalisée
+              Playlist d&apos;ambiance personnalisée
             </h1>
             <button
               onClick={() => fetchMoodPlaylist(true)}
@@ -131,7 +129,7 @@ export default function MoodPlaylistsPage() {
 
                 <div className="mb-4 bg-blue-900/30 p-4 rounded-lg border border-blue-500/30">
                   <p className="text-blue-200 text-sm">
-                    💡 <strong>Comment ça marche ?</strong> Cette playlist se met automatiquement à jour en analysant vos 3 dernières écoutes pour déterminer votre humeur dominante. Écoutez une musique d'un genre différent pour voir la playlist changer !
+                    💡 <strong>Comment ça marche ?</strong> Cette playlist se met automatiquement à jour en analysant vos 3 dernières écoutes pour déterminer votre humeur dominante. Écoutez une musique d&apos;un genre différent pour voir la playlist changer !
                   </p>
                 </div>
 

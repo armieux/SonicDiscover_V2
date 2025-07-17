@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { Track } from "@/app/interfaces/Track";
 import HeatRating from "@/app/components/HeatRating/HeatRating";
 import { FaPlay, FaUser, FaMusic } from "react-icons/fa";
 import { useMusicContext } from "@/app/context/MusicContext";
@@ -22,7 +23,11 @@ const MusicCard: React.FC<MusicCardProps> = ({ track, index, playlist, inPlaylis
   const [imageError, setImageError] = useState(false);
 
   const handlePlay = () => {
-    setCurrentTrack(track, playlist, index);
+    const trackForPlayer: Track = {
+      ...track,
+      genre: track.genre || "Unknown Genre",
+    };
+    setCurrentTrack(trackForPlayer, playlist.map(t => ({...t, genre: t.genre || "Unknown Genre"})), index);
   };
 
   const handleImageError = () => {

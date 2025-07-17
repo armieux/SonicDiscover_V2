@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import AdminLayout from './components/AdminLayout';
 import UserManagement from './components/UserManagement';
@@ -10,16 +10,17 @@ import StatsDashboard from './components/StatsDashboard';
 import { FiUsers, FiMusic, FiMessageSquare, FiBarChart2 } from 'react-icons/fi';
 
 export default function AdminPage() {
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [currentUser, setCurrentUser] = useState<{
+    id: number;
+    username: string;
+    email: string;
+    role: string;
+  } | null>(null);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  useEffect(() => {
-    checkAdminAccess();
-  }, []);
-
-  const checkAdminAccess = async () => {
+  const checkAdminAccess = useCallback(async () => {
     try {
       const response = await fetch('/api/auth/me');
       if (response.ok) {
@@ -38,7 +39,11 @@ export default function AdminPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [router]);
+
+  useEffect(() => {
+    checkAdminAccess();
+  }, [checkAdminAccess]);
 
   if (loading) {
     return (

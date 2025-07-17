@@ -4,8 +4,8 @@ import Link from 'next/link';
 
 const prisma = new PrismaClient();
 
-export default async function FollowingPage({ params }: { params: { id: string } }) {
-  const { id } = await Promise.resolve(params);
+export default async function FollowingPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const userId = parseInt(id, 10);
 
   // Récupérer les informations de l'utilisateur directement

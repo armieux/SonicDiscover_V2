@@ -4,9 +4,11 @@ import React from "react";
 import MusicCard from "../components/MusicCard/MusicCard";
 import { Track } from "../interfaces/Track";
 import PageLayout from "../components/PageLayout";
+import { PrismaClient } from '@prisma/client';
 
 // Extend your Track interface to add fields not stored in DB (artist, duration)
-export interface ExtendedTrack extends Track {
+export interface ExtendedTrack extends Omit<Track, 'genre'> {
+  genre: string | null;
   artistname: string;
   artistid: number;
   parsedduration: string;
@@ -14,21 +16,22 @@ export interface ExtendedTrack extends Track {
 }
 
 export default async function MusicListPage() {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
-
-  const res = await fetch(`${baseUrl}/api/tracks`, {
-    method: "GET",
-    credentials: "include",
-    // next: { revalidate: 0 }, // Optional: Turn off caching/revalidation if you want fresh data every request.
-  });
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch tracks.");
+  const prisma = new PrismaClient();
+  let tracks;
+  try {
+    tracks = await prisma.tracks.findMany({
+      orderBy: { id: 'desc' },
+      include: {
+        trackartists: {
+          include: { users: true }
+        }
+      }
+    });
+  } finally {
+    await prisma.$disconnect();
   }
 
-  const data = await res.json();
-
-  // Build an array of ExtendedTrack objects from the API data
+  // Build an array of ExtendedTrack objects from the DB data
   function parseDuration(seconds: number | null | undefined): string {
     if (!seconds) return "0:00";
     const minutes = Math.floor(seconds / 60);
@@ -36,14 +39,19 @@ export default async function MusicListPage() {
     return `${minutes}:${remaining.toString().padStart(2, "0")}`;
   }
 
-  const trackList: ExtendedTrack[] = data.map((track: Track) => {
-    const mainArtist = track.trackartists?.find((a) => a.role === "ARTIST");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const trackList: ExtendedTrack[] = tracks.map((track: any) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mainArtist = track.trackartists?.find((a: any) => a.role === "ARTIST");
     return {
       ...track,
+      genre: track.genre ?? '',
+      bpm: track.bpm ?? 0,
+      mood: track.mood ?? '',
+      trackpicture: track.trackpicture || "https://placehold.co/400",
       artistname: mainArtist?.users?.username || "Unknown Artist",
       artistid: mainArtist?.users?.id || 0,
       parsedduration: parseDuration(track.duration),
-      trackpicture: track.trackpicture || "https://placehold.co/400",
     };
   });
 

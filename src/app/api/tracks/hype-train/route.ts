@@ -41,7 +41,7 @@ export async function GET() {
         // On s'assure de toujours renvoyer un objet JSON
         return NextResponse.json({ tracks: tracks ?? [] });
     } catch (error) {
-        console.error(error.stack);
+        console.error('Error in hype-train route:', error);
         return NextResponse.json(
             { error: "Erreur interne du serveur" },
             { status: 500 }

@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import { Track } from "@/app/interfaces/Track";
 import { FaPlay } from 'react-icons/fa';
 import { useMusicContext } from '@/app/context/MusicContext';
 import { ExtendedTrack } from '@/app/musicListPage/page';
@@ -17,7 +18,8 @@ const PlayAllButton: React.FC<PlayAllButtonProps> = ({ tracks, className, childr
   const handlePlayAll = () => {
     if (tracks.length > 0) {
       // Commencer par le premier morceau
-      setCurrentTrack(tracks[0], tracks, 0);
+      const playlistForPlayer: Track[] = tracks.map(t => ({...t, genre: t.genre || "Unknown Genre"}));
+      setCurrentTrack(playlistForPlayer[0], playlistForPlayer, 0);
     }
   };
 

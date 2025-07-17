@@ -109,7 +109,7 @@ const MusicPlayer: React.FC = () => {
       audio.removeEventListener("pause", handlePause);
       audio.removeEventListener("ended", handleEnded);
     };
-  }, [currentTrack, audioRef, playNext, repeatMode]);
+  }, [currentTrack, audioRef, playNext, repeatMode, checkAndRecordListen]);
 
   // Gestion du volume
   useEffect(() => {

@@ -1,12 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { PrismaClient } from "@prisma/client";
-import { getAuthSession } from '@/lib/auth';
 import {cookies} from "next/headers";
 import jwt from "jsonwebtoken";
 
 const prisma = new PrismaClient();
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   const cookieStore = await cookies();
   const rawToken = cookieStore.get("token")?.value || "";
 
@@ -120,7 +119,7 @@ export async function GET(req: NextRequest) {
       // Informations de debug
       debug: {
         recentListenings: uniqueListenings.map(listening => ({
-          trackName: listening.tracks.name,
+          trackName: listening.tracks.title,
           mood: listening.tracks.mood,
           listeningDate: listening.listeningdate
         })),

@@ -4,9 +4,10 @@ import authService from '@/app/services/authService';
 
 const prisma = new PrismaClient();
 
-export async function POST(request: Request, { params }: { params: { id: string } }) {
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const followedUserId = parseInt(params.id, 10);
+    const { id } = await params;
+    const followedUserId = parseInt(id, 10);
     if (isNaN(followedUserId)) {
       return NextResponse.json({ error: "Invalid user ID" }, { status: 400 });
     }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FiEdit, FiTrash2, FiCheck, FiX, FiShield, FiUser, FiSearch } from 'react-icons/fi';
+import { FiTrash2, FiCheck, FiUser, FiSearch } from 'react-icons/fi';
 
 interface User {
   id: number;

@@ -75,7 +75,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     
     // Ne pas enregistrer l'écoute immédiatement, attendre le seuil
     if (isNewTrack) {
-      console.log(`🎵 Nouveau track sélectionné: ${track.name} (ID: ${track.id})`);
+      console.log(`🎵 Nouveau track sélectionné: ${track.title} (ID: ${track.id})`);
     }
   }, [currentTrack]);
 
@@ -97,7 +97,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setCurrentIndex(nextIndex);
     setCurrentTrackState(playlist[nextIndex]);
     
-    console.log(`⏭️ Passage au track suivant: ${playlist[nextIndex].name} (ID: ${playlist[nextIndex].id})`);
+    console.log(`⏭️ Passage au track suivant: ${playlist[nextIndex].title} (ID: ${playlist[nextIndex].id})`);
   }, [playlist, currentIndex]);
 
   const playPrev = useCallback(() => {
@@ -106,7 +106,7 @@ export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setCurrentIndex(prevIndex);
     setCurrentTrackState(playlist[prevIndex]);
     
-    console.log(`⏮️ Passage au track précédent: ${playlist[prevIndex].name} (ID: ${playlist[prevIndex].id})`);
+    console.log(`⏮️ Passage au track précédent: ${playlist[prevIndex].title} (ID: ${playlist[prevIndex].id})`);
   }, [playlist, currentIndex]);
 
   return (
