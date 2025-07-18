@@ -215,6 +215,72 @@ async function createArtistUser(artistData) {
   }
 }
 
+// Fonction pour vérifier si un morceau existe déjà (vérification complète)
+async function checkTrackExists(track, artistData) {
+  try {
+    // 1. Vérifier par ID Jamendo (le plus fiable)
+    const existingByJamendoId = await prisma.tracks.findFirst({
+      where: {
+        OR: [
+          { audiofile: { contains: track.id.toString() } },
+          { trackpicture: { contains: track.id.toString() } }
+        ]
+      }
+    });
+
+    if (existingByJamendoId) {
+      console.log(`⚠️  Morceau déjà existant (ID Jamendo): \"${track.name}\" par ${artistData.name}`);
+      return existingByJamendoId;
+    }
+
+    // 2. Vérifier par titre et artiste exact
+    const existingByTitleArtist = await prisma.tracks.findFirst({
+      where: {
+        title: track.name,
+        trackartists: {
+          some: {
+            users: {
+              username: artistData.name
+            }
+          }
+        }
+      }
+    });
+
+    if (existingByTitleArtist) {
+      console.log(`⚠️  Morceau déjà existant (titre+artiste): \"${track.name}\" par ${artistData.name}`);
+      return existingByTitleArtist;
+    }
+
+    // 3. Vérifier par titre similaire et même artiste (pour les variantes)
+    const existingBySimilarTitle = await prisma.tracks.findFirst({
+      where: {
+        title: {
+          contains: track.name.substring(0, Math.min(track.name.length, 20))
+        },
+        trackartists: {
+          some: {
+            users: {
+              username: artistData.name
+            }
+          }
+        }
+      }
+    });
+
+    if (existingBySimilarTitle &&
+        existingBySimilarTitle.title.toLowerCase().trim() === track.name.toLowerCase().trim()) {
+      console.log(`⚠️  Morceau déjà existant (titre similaire): \"${track.name}\" par ${artistData.name}`);
+      return existingBySimilarTitle;
+    }
+
+    return null;
+  } catch (error) {
+    console.error(`❌ Erreur lors de la vérification d'existence pour \"${track.name}\":`, error.message);
+    return null;
+  }
+}
+
 // Fonction pour traiter et télécharger l'audio si nécessaire
 async function processAudioFile(track) {
   const audioUrl = CONFIG.useHighQuality ? track.audiodownload_allowed ? track.audiodownload : track.audio : track.audio;
@@ -243,23 +309,11 @@ async function processAudioFile(track) {
 // Fonction pour importer un morceau
 async function importTrack(track, artistData) {
   try {
-    // Vérifier si le morceau existe déjà
-    const existingTrack = await prisma.tracks.findFirst({
-      where: {
-        title: track.name,
-        trackartists: {
-          some: {
-            users: {
-              username: artistData.name
-            }
-          }
-        }
-      }
-    });
+    // Vérifier si le morceau existe déjà avec une vérification complète
+    const existingTrack = await checkTrackExists(track, artistData);
 
     if (existingTrack) {
-      console.log(`⚠️  Morceau déjà existant: \"${track.name}\" par ${artistData.name}`);
-      return existingTrack;
+      return null; // Retourner null pour indiquer qu'aucun nouveau morceau n'a été créé
     }
 
     // Créer l'utilisateur artiste
@@ -373,16 +427,20 @@ async function generateUserInteractions(trackId) {
 
 // Fonction principale d'import
 async function importAllTracks() {
-  console.log('🎵 Début de l\'import des morceaux depuis Jamendo API...\
-');
+  console.log('🎵 Début de l\'import des morceaux depuis Jamendo API...\n');
 
   try {
+    // Afficher l'état initial de la base de données
+    const initialTrackCount = await prisma.tracks.count();
+    console.log(`📊 État initial: ${initialTrackCount} morceaux déjà en base`);
+
     // Créer les dossiers nécessaires
     if (CONFIG.downloadAudio) {
       ensureDirectoryExists(path.join(process.cwd(), 'public', 'uploads'));
     }
 
     let importedCount = 0;
+    let skippedCount = 0;
     const targetCount = CONFIG.totalTracks;
     const shuffledGenres = [...GENRES].sort(() => Math.random() - 0.5);
 
@@ -406,10 +464,12 @@ async function importAllTracks() {
               await generateUserInteractions(importedTrack.id);
 
               importedCount++;
-              console.log(`📈 Progression: ${importedCount}/${targetCount} morceaux importés`);
+              console.log(`📈 Progression: ${importedCount}/${targetCount} morceaux importés (${skippedCount} doublons ignorés)`);
 
               // Pause pour éviter de surcharger l'API
               await new Promise(resolve => setTimeout(resolve, 500));
+            } else {
+              skippedCount++;
             }
 
           } catch (error) {
@@ -424,8 +484,7 @@ async function importAllTracks() {
       }
     }
 
-    console.log(`\
-🎉 Import terminé ! ${importedCount} morceaux importés avec succès.`);
+    console.log(`\n🎉 Import terminé ! ${importedCount} nouveaux morceaux importés, ${skippedCount} doublons ignorés.`);
 
     // Afficher un résumé
     const totalTracksInDB = await prisma.tracks.count();
@@ -535,5 +594,20 @@ Usage:
   node scripts/music-importer-jamendo.js --help       # Afficher cette aide
 
 Ce script va:
-✅ Récupérer de vraies musiques`)
+✅ Récupérer de vraies musiques libres de droits depuis Jamendo
+✅ Importer les morceaux dans la base de données avec toutes les métadonnées
+✅ Créer des utilisateurs artistes automatiquement
+✅ Télécharger les fichiers audio (optionnel)
+✅ Générer des interactions utilisateur aléatoires (écoutes, likes, etc.)
+
+Options:
+  --download   : Télécharger les fichiers audio localement (sinon, seuls les liens sont importés)
+  --clean      : Nettoyer la base de données avant l'import (supprime tous les morceaux, artistes, etc.)
+  --test       : Tester la connexion à l'API Jamendo (vérifie si l'API est accessible)
+  --help       : Afficher cette aide
+
+Remarque: Ce script utilise des données de démonstration et peut créer un grand nombre d'entrées. Utilisez avec précaution sur une base de données en production.
+`);
+} else {
+  importAllTracks();
 }

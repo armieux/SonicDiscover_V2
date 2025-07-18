@@ -71,6 +71,11 @@ COPY --from=deps --chown=nextjs:nodejs /app/node_modules ./node_modules
 # Copie des scripts depuis le builder
 COPY --from=builder /app/scripts ./scripts
 
+# Importation des musiques via commande node scripts/music-importer-v2.js --download
+RUN chmod +x ./scripts/music-importer-v2.js
+# Exécution du script d'importation des musiques (optionnel, à commenter si non nécessaire)
+RUN node scripts/music-importer-v2.js --download
+
 # Changement vers l'utilisateur non-root
 USER nextjs
 
