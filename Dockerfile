@@ -36,7 +36,7 @@ COPY --from=deps /app/prisma ./prisma
 ENV NEXT_TELEMETRY_DISABLED 1
 ENV NODE_ENV production
 # Add a placeholder DATABASE_URL for build time (will be overridden at runtime)
-ENV DATABASE_URL=postgresql://user:password@db:5432/sonicdiscover
+#ENV DATABASE_URL=postgresql://user:password@db:5432/sonicdiscover
 
 # Génération du client Prisma pour le build
 RUN npx prisma generate
