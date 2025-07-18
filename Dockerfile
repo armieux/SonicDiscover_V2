@@ -9,6 +9,7 @@ WORKDIR /app
 
 # Étape de préparation des dépendances
 FROM base AS deps
+
 # Copie des fichiers de dépendances
 COPY package.json ./
 COPY prisma ./prisma/
@@ -22,6 +23,11 @@ RUN npx prisma generate
 
 # Étape de build avec toutes les dépendances
 FROM base AS builder
+
+# Add DATABASE_URL argument
+ARG DATABASE_URL
+
+
 WORKDIR /app
 
 # Installation de toutes les dépendances (dev + prod) pour le build
