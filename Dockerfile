@@ -50,15 +50,6 @@ RUN npx prisma generate
 # Build de l'application Next.js (with build-time env vars)
 RUN npm run build
 
-# Copy les fichiers nécessaires pour le script d'importation de musiques
-COPY scripts/music-importer-v2.js ./scripts/music-importer-v2.js
-
-# Importation des musiques via commande node scripts/music-importer-v2.js --download
-RUN chmod +x ./scripts/music-importer-v2.js
-
-# Exécution du script d'importation des musiques (optionnel, à commenter si non nécessaire)
-RUN npm run import:music
-
 # Étape de production finale
 FROM base AS runner
 WORKDIR /app
@@ -87,7 +78,15 @@ COPY --from=deps --chown=nextjs:nodejs /app/node_modules ./node_modules
 COPY --from=builder /app/scripts ./scripts
 
 # Changement vers l'utilisateur non-root
-USER nextjs
+#USER nextjs
+# Copy les fichiers nécessaires pour le script d'importation de musiques
+COPY scripts/music-importer-v2.js ./scripts/music-importer-v2.js
+
+# Importation des musiques via commande node scripts/music-importer-v2.js --download
+RUN chmod +x ./scripts/music-importer-v2.js
+
+# Exécution du script d'importation des musiques (optionnel, à commenter si non nécessaire)
+RUN npm run import:music
 
 # Exposition du port
 EXPOSE 3000
